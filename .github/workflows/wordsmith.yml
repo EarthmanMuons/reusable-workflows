@@ -1,0 +1,91 @@
+name: wordsmith
+
+"on":
+  workflow_call:
+
+jobs:
+  changes:
+    name: detect file changes
+    permissions:
+      pull-requests: read
+    runs-on: ubuntu-latest
+    outputs:
+      markdown: ${{ steps.filter.outputs.markdown }}
+      markdown_files: ${{ steps.filter.outputs.markdown_files }}
+    steps:
+      - name: Checkout source code
+        uses: actions/checkout@c85c95e3d7251135ab7dc9ce3241c5835cc595a9
+        with:
+          fetch-depth: 20
+      - name: Filter changed repository files
+        uses: dorny/paths-filter@4512585405083f25c027a35db413c2b3b9006d50
+        id: filter
+        with:
+          list-files: shell
+          filters: |
+            markdown:
+              - added|modified: '**/*.md'
+
+  markdown_format:
+    name: markdown / format
+    needs:
+      - changes
+    runs-on: ubuntu-latest
+    if: github.event_name == 'pull_request' && needs.changes.outputs.markdown == 'true'
+    steps:
+      - name: Checkout source code
+        uses: actions/checkout@c85c95e3d7251135ab7dc9ce3241c5835cc595a9
+      - name: Check formatting
+        run: npx --yes prettier@2.8.8 --check --color --prose-wrap always -- ${{ needs.changes.outputs.markdown_files }}
+
+  spell_check:
+    name: spell check
+    needs:
+      - changes
+    runs-on: ubuntu-latest
+    if: github.event_name == 'pull_request'
+    steps:
+      - name: Checkout source code
+        uses: actions/checkout@c85c95e3d7251135ab7dc9ce3241c5835cc595a9
+      - name: Check common misspellings
+        uses: crate-ci/typos@20b36ca07fa1bfe124912287ac8502cf12f140e6
+
+  merge_queue:
+    name: wordsmith workflow ready
+    needs:
+      - changes
+      - markdown_format
+      - spell_check
+    runs-on: ubuntu-latest
+    if: always()
+    steps:
+      - name: "Check status of job_id: changes"
+        run: |-
+          RESULT="${{ needs.changes.result }}";
+          if [[ $RESULT == "success" || $RESULT == "skipped" ]]; then
+              exit 0
+          else
+              echo "***"
+              echo "Error: The required job did not pass."
+              exit 1
+          fi
+      - name: "Check status of job_id: markdown_format"
+        run: |-
+          RESULT="${{ needs.markdown_format.result }}";
+          if [[ $RESULT == "success" || $RESULT == "skipped" ]]; then
+              exit 0
+          else
+              echo "***"
+              echo "Error: The required job did not pass."
+              exit 1
+          fi
+      - name: "Check status of job_id: spell_check"
+        run: |-
+          RESULT="${{ needs.spell_check.result }}";
+          if [[ $RESULT == "success" || $RESULT == "skipped" ]]; then
+              exit 0
+          else
+              echo "***"
+              echo "Error: The required job did not pass."
+              exit 1
+          fi
