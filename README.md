@@ -4,6 +4,10 @@ A library of [reusable GitHub Actions workflows][reusable].
 
 [reusable]: https://docs.github.com/en/actions/using-workflows/reusing-workflows
 
+## Usage
+
+### wordsmith.yml
+
 ## License
 
 These workflows are provided under the terms of the
