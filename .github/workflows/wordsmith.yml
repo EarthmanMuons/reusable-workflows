@@ -3,9 +3,12 @@ name: wordsmith
 "on":
   workflow_call:
 
+env:
+  PRETTIER_VERSION: 2.8.8
+
 jobs:
-  changes:
-    name: detect file changes
+  changed_files:
+    name: detect changed files
     permissions:
       pull-requests: read
     runs-on: ubuntu-latest
@@ -26,42 +29,41 @@ jobs:
             markdown:
               - added|modified: '**/*.md'
 
-  markdown_format:
-    name: markdown / format
+  check_markdown:
+    name: check markdown
     needs:
-      - changes
+      - changed_files
     runs-on: ubuntu-latest
-    if: github.event_name == 'pull_request' && needs.changes.outputs.markdown == 'true'
+    if: needs.changed_files.outputs.markdown == 'true'
     steps:
       - name: Checkout source code
         uses: actions/checkout@c85c95e3d7251135ab7dc9ce3241c5835cc595a9
-      - name: Check formatting
-        run: npx --yes prettier@2.8.8 --check --color --prose-wrap always -- ${{ needs.changes.outputs.markdown_files }}
+      - name: Check Markdown formatting
+        run: npx --yes "prettier@${{ env.PRETTIER_VERSION }}" --check --color --prose-wrap always -- ${{ needs.changes.outputs.markdown_files }}
 
-  spell_check:
-    name: spell check
+  check_spelling:
+    name: check spelling
     needs:
-      - changes
+      - changed_files
     runs-on: ubuntu-latest
-    if: github.event_name == 'pull_request'
     steps:
       - name: Checkout source code
         uses: actions/checkout@c85c95e3d7251135ab7dc9ce3241c5835cc595a9
       - name: Check common misspellings
         uses: crate-ci/typos@20b36ca07fa1bfe124912287ac8502cf12f140e6
 
-  merge_queue:
-    name: wordsmith workflow ready
+  workflow_ready:
+    name: workflow ready
     needs:
-      - changes
-      - markdown_format
-      - spell_check
+      - changed_files
+      - check_markdown
+      - check_spelling
     runs-on: ubuntu-latest
     if: always()
     steps:
-      - name: "Check status of job_id: changes"
+      - name: "Check status of job_id: changed_files"
         run: |-
-          RESULT="${{ needs.changes.result }}";
+          RESULT="${{ needs.changed_files.result }}";
           if [[ $RESULT == "success" || $RESULT == "skipped" ]]; then
               exit 0
           else
@@ -69,9 +71,9 @@ jobs:
               echo "Error: The required job did not pass."
               exit 1
           fi
-      - name: "Check status of job_id: markdown_format"
+      - name: "Check status of job_id: check_markdown"
         run: |-
-          RESULT="${{ needs.markdown_format.result }}";
+          RESULT="${{ needs.check_markdown.result }}";
           if [[ $RESULT == "success" || $RESULT == "skipped" ]]; then
               exit 0
           else
@@ -79,9 +81,9 @@ jobs:
               echo "Error: The required job did not pass."
               exit 1
           fi
-      - name: "Check status of job_id: spell_check"
+      - name: "Check status of job_id: check_spelling"
         run: |-
-          RESULT="${{ needs.spell_check.result }}";
+          RESULT="${{ needs.check_spelling.result }}";
           if [[ $RESULT == "success" || $RESULT == "skipped" ]]; then
               exit 0
           else
