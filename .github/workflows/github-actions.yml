@@ -1,0 +1,70 @@
+name: github-actions
+
+"on":
+  workflow_call:
+
+jobs:
+  changed_files:
+    name: detect changed files
+    permissions:
+      pull-requests: read
+    runs-on: ubuntu-latest
+    outputs:
+      github-actions: ${{ steps.filter.outputs.github-actions }}
+      github-actions_files: ${{ steps.filter.outputs.github-actions_files }}
+    steps:
+      - name: Checkout source code
+        uses: actions/checkout@c85c95e3d7251135ab7dc9ce3241c5835cc595a9
+        with:
+          fetch-depth: 20
+      - name: Filter changed repository files
+        uses: dorny/paths-filter@4512585405083f25c027a35db413c2b3b9006d50
+        id: filter
+        with:
+          list-files: shell
+          filters: |
+            github-actions:
+              - .github/workflows/*.yml
+
+  lint_workflows:
+    name: lint workflows
+    needs:
+      - changed_files
+    runs-on: ubuntu-latest
+    if: needs.changed_files.outputs.github-actions == 'true'
+    steps:
+      - name: Checkout source code
+        uses: actions/checkout@c85c95e3d7251135ab7dc9ce3241c5835cc595a9
+      - name: Check lints
+        uses: raven-actions/actionlint@d6c9e3222b489401880e866bc6715049773b63a3
+        with:
+          group-result: false
+
+  workflow_ready:
+    name: workflow ready
+    needs:
+      - changed_files
+      - lint_workflows
+    runs-on: ubuntu-latest
+    if: always()
+    steps:
+      - name: "Check status of job_id: changed_files"
+        run: |-
+          RESULT="${{ needs.changed_files.result }}";
+          if [[ $RESULT == "success" || $RESULT == "skipped" ]]; then
+              exit 0
+          else
+              echo "***"
+              echo "Error: The required job did not pass."
+              exit 1
+          fi
+      - name: "Check status of job_id: lint_workflows"
+        run: |-
+          RESULT="${{ needs.lint_workflows.result }}";
+          if [[ $RESULT == "success" || $RESULT == "skipped" ]]; then
+              exit 0
+          else
+              echo "***"
+              echo "Error: The required job did not pass."
+              exit 1
+          fi
