@@ -1,0 +1,21 @@
+name: markdown
+
+"on":
+  workflow_call:
+    inputs:
+      markdown_files:
+        type: string
+        default: "**/*.md"
+      prettier_version:
+        type: string
+        default: "3.0.0"
+
+jobs:
+  check_formatting:
+    name: check formatting
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout source code
+        uses: actions/checkout@c85c95e3d7251135ab7dc9ce3241c5835cc595a9
+      - name: Check Markdown file formatting
+        run: npx --yes "prettier@${{ inputs.prettier_version }}" --check --debug-check --color --prose-wrap always -- ${{ inputs.markdown_files }}
