@@ -16,5 +16,37 @@ concurrency:
   cancel-in-progress: true
 
 jobs:
+  github_actions:
+    uses: ./.github/workflows/github-actions.yml
+
   wordsmith:
     uses: ./.github/workflows/wordsmith.yml
+
+  ready_to_merge:
+    name: ready to merge
+    needs:
+      - github_actions
+      - wordsmith
+    runs-on: ubuntu-latest
+    if: always()
+    steps:
+      - name: "Check status of job_id: github_actions"
+        run: |-
+          RESULT="${{ needs.github_actions.result }}";
+          if [[ $RESULT == "success" || $RESULT == "skipped" ]]; then
+              exit 0
+          else
+              echo "***"
+              echo "Error: The required job did not pass."
+              exit 1
+          fi
+      - name: "Check status of job_id: wordsmith"
+        run: |-
+          RESULT="${{ needs.wordsmith.result }}";
+          if [[ $RESULT == "success" || $RESULT == "skipped" ]]; then
+              exit 0
+          else
+              echo "***"
+              echo "Error: The required job did not pass."
+              exit 1
+          fi
