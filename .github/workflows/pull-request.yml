@@ -16,20 +16,46 @@ concurrency:
   cancel-in-progress: true
 
 jobs:
+  changed_files:
+    name: detect changed files
+    uses: ./.github/workflows/changed-files.yml
+
   github_actions:
+    name: github actions
+    needs:
+      - changed_files
     uses: ./.github/workflows/github-actions.yml
 
-  wordsmith:
-    uses: ./.github/workflows/wordsmith.yml
+  markdown:
+    needs:
+      - changed_files
+    uses: ./.github/workflows/markdown.yml
+
+  spelling:
+    needs:
+      - changed_files
+    uses: ./.github/workflows/spelling.yml
 
   ready_to_merge:
     name: ready to merge
     needs:
+      - changed_files
       - github_actions
-      - wordsmith
+      - markdown
+      - spelling
     runs-on: ubuntu-latest
     if: always()
     steps:
+      - name: "Check status of job_id: changed_files"
+        run: |-
+          RESULT="${{ needs.changed_files.result }}";
+          if [[ $RESULT == "success" || $RESULT == "skipped" ]]; then
+              exit 0
+          else
+              echo "***"
+              echo "Error: The required job did not pass."
+              exit 1
+          fi
       - name: "Check status of job_id: github_actions"
         run: |-
           RESULT="${{ needs.github_actions.result }}";
@@ -40,9 +66,19 @@ jobs:
               echo "Error: The required job did not pass."
               exit 1
           fi
-      - name: "Check status of job_id: wordsmith"
+      - name: "Check status of job_id: markdown"
         run: |-
-          RESULT="${{ needs.wordsmith.result }}";
+          RESULT="${{ needs.markdown.result }}";
+          if [[ $RESULT == "success" || $RESULT == "skipped" ]]; then
+              exit 0
+          else
+              echo "***"
+              echo "Error: The required job did not pass."
+              exit 1
+          fi
+      - name: "Check status of job_id: spelling"
+        run: |-
+          RESULT="${{ needs.spelling.result }}";
           if [[ $RESULT == "success" || $RESULT == "skipped" ]]; then
               exit 0
           else
