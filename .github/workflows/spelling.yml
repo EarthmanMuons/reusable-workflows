@@ -3,7 +3,7 @@ name: spelling
 "on":
   workflow_call:
     inputs:
-      changed_files:
+      files:
         type: string
         default: "."
 
@@ -14,9 +14,9 @@ jobs:
     steps:
       - name: Checkout source code
         uses: actions/checkout@c85c95e3d7251135ab7dc9ce3241c5835cc595a9
-      - name: Check all files for common misspellings
+      - name: Check files for common misspellings
         # NOTE: dependabot struggles with determining the latest release version
         #       in this monorepo; see https://github.com/crate-ci/typos/releases
         uses: crate-ci/typos@ccdede0f8c1e877aa3248b9c837f3f9b0abbbdf9
         with:
-          files: "${{ inputs.changed_files }}"
+          files: "${{ inputs.files }}"

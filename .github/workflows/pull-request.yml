@@ -23,17 +23,24 @@ jobs:
   github_actions:
     name: github actions
     needs: detect_changed_files
+    if: needs.detect_changed_files.outputs.github_actions == 'true'
     uses: ./.github/workflows/github-actions.yml
 
   markdown:
     name: markdown
     needs: detect_changed_files
+    if: needs.detect_changed_files.outputs.markdown == 'true'
     uses: ./.github/workflows/markdown.yml
+    with:
+      files: ${{ needs.detect_changed_files.outputs.markdown_files }}
 
   spelling:
     name: spelling
     needs: detect_changed_files
+    if: needs.detect_changed_files.outputs.added_or_modified == 'true'
     uses: ./.github/workflows/spelling.yml
+    with:
+      files: ${{ needs.detect_changed_files.outputs.added_or_modified_files }}
 
   ready_to_merge:
     name: ready to merge
@@ -45,4 +52,4 @@ jobs:
     if: always()
     uses: ./.github/workflows/ready-to-merge.yml
     with:
-      needs_context: "${{ toJson(needs) }}"
+      needs_context: ${{ toJson(needs) }}
