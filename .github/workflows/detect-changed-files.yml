@@ -3,10 +3,14 @@ name: detect changed files
 "on":
   workflow_call:
     outputs:
-      github-actions:
-        value: ${{ jobs.filter_changes.outputs.github-actions }}
-      github-actions_files:
-        value: ${{ jobs.filter_changes.outputs.github-actions_files }}
+      added_or_modified:
+        value: ${{ jobs.filter_changes.outputs.added_or_modified }}
+      added_or_modified_files:
+        value: ${{ jobs.filter_changes.outputs.added_or_modified_files }}
+      github_actions:
+        value: ${{ jobs.filter_changes.outputs.github_actions }}
+      github_actions_files:
+        value: ${{ jobs.filter_changes.outputs.github_actions_files }}
       markdown:
         value: ${{ jobs.filter_changes.outputs.markdown }}
       markdown_files:
@@ -19,8 +23,10 @@ jobs:
       pull-requests: read
     runs-on: ubuntu-latest
     outputs:
-      github-actions: ${{ steps.filter.outputs.github-actions }}
-      github-actions_files: ${{ steps.filter.outputs.github-actions_files }}
+      added_or_modified: ${{ steps.filter.outputs.added_or_modified }}
+      added_or_modified_files: ${{ steps.filter.outputs.added_or_modified_files }}
+      github_actions: ${{ steps.filter.outputs.github_actions }}
+      github_actions_files: ${{ steps.filter.outputs.github_actions_files }}
       markdown: ${{ steps.filter.outputs.markdown }}
       markdown_files: ${{ steps.filter.outputs.markdown_files }}
     steps:
@@ -34,7 +40,9 @@ jobs:
         with:
           list-files: shell
           filters: |
-            github-actions:
-              - .github/workflows/*.yml
+            added_or_modified:
+              - added|modified: '**/*'
+            github_actions:
+              - added|modified: .github/workflows/*.yml
             markdown:
               - added|modified: '**/*.md'
