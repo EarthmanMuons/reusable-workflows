@@ -1,0 +1,17 @@
+name: labeler
+
+"on":
+  workflow_call:
+
+jobs:
+  label_pr:
+    name: label pr
+    permissions:
+      contents: read
+      pull-requests: write
+    runs-on: ubuntu-latest
+    steps:
+      - name: Label pull request based on paths of changed files
+        uses: actions/labeler@0967ca812e7fdc8f5f71402a1b486d5bd061fe20
+        with:
+          dot: true
