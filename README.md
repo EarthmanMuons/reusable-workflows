@@ -6,8 +6,6 @@ A library of [reusable GitHub Actions workflows][reusable].
 
 ## Usage
 
-### wordsmith.yml
-
 ## License
 
 These workflows are provided under the terms of the
