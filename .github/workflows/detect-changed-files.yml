@@ -1,20 +1,20 @@
-name: changed-files
+name: detect changed files
 
 "on":
   workflow_call:
     outputs:
       github-actions:
-        value: ${{ jobs.changed_files.outputs.github-actions }}
+        value: ${{ jobs.filter_changes.outputs.github-actions }}
       github-actions_files:
-        value: ${{ jobs.changed_files.outputs.github-actions_files }}
+        value: ${{ jobs.filter_changes.outputs.github-actions_files }}
       markdown:
-        value: ${{ jobs.changed_files.outputs.markdown }}
+        value: ${{ jobs.filter_changes.outputs.markdown }}
       markdown_files:
-        value: ${{ jobs.changed_files.outputs.markdown_files }}
+        value: ${{ jobs.filter_changes.outputs.markdown_files }}
 
 jobs:
-  changed_files:
-    name: detect changed files
+  filter_changes:
+    name: filter changes
     permissions:
       pull-requests: read
     runs-on: ubuntu-latest
