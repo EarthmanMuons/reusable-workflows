@@ -1,0 +1,7 @@
+# See https://github.com/actions/labeler for more information.
+
+documentation:
+  - "**/*.md"
+
+github_actions:
+  - .github/workflows/*.yml
