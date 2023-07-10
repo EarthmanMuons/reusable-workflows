@@ -1,0 +1,15 @@
+name: preload cache / actionlint
+
+"on":
+  workflow_call:
+
+jobs:
+  cache_actionlint:
+    name: cache actionlint
+    runs-on: ubuntu-latest
+    steps:
+      - name: Save actionlint into GitHub Actions cache
+        uses: raven-actions/actionlint@d6c9e3222b489401880e866bc6715049773b63a3
+        with:
+          group-result: false
+          flags: -version
