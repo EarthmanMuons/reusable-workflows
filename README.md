@@ -146,6 +146,15 @@ binary to run; if not specified, the latest available version will be used.
 
 ---
 
+### preload-cache-actionlint.yml
+
+Saves the [actionlint][] binary into the [GitHub Actions cache][].
+
+[GitHub Actions cache]:
+  https://docs.github.com/en/actions/using-workflows/caching-dependencies-to-speed-up-workflows
+
+---
+
 ### ready-to-merge.yml
 
 Used as the final step in pull request workflows to ensure that all required
@@ -157,8 +166,8 @@ required status checks.
 
 To prevent false positive cases due to the above behavior, the "ready to merge"
 job will explicitly check all of the `needs` job statuses to ensure there was no
-failure in the dependency chain. The job's commit status context can then be
-used as the singular required status check when defining branch protection
+failure in the dependency chain. The commit status context of this job can then
+be used as the singular required status check when defining branch protection
 rules.
 
 #### Inputs

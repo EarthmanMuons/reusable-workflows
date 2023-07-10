@@ -1,0 +1,14 @@
+name: schedule weekly
+
+"on":
+  schedule:
+    # Run every Monday at 7:45am UTC.
+    - cron: 45 7 * * 1
+
+  # Allow manually running this workflow.
+  workflow_dispatch:
+
+jobs:
+  cache_actionlint:
+    name: cache actionlint
+    uses: ./.github/workflows/preload-cache-actionlint.yml
