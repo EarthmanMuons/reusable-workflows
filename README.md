@@ -131,10 +131,10 @@ Checks the formatting of Markdown files, using [Prettier][].
 
 #### Inputs
 
-| Name               | Type   | Required | Default     |
-| :----------------- | :----- | :------- | :---------- |
-| `files`            | string | false    | `"**/*.md"` |
-| `prettier_version` | string | false    | `"latest"`  |
+| Name               | Type   | Required | Default   |
+| :----------------- | :----- | :------- | :-------- |
+| `files`            | string | false    | `**/*.md` |
+| `prettier_version` | string | false    | `latest`  |
 
 The `files` input specifies a list of files or glob patterns that the job should
 check; if not specified, all Markdown files in the repository will be checked.
@@ -169,8 +169,9 @@ rules.
 
 The [`needs` context][] contains outputs from all jobs that are defined as a
 direct dependency of the current job, and is automatically populated by GitHub
-Actions. The value should be the JSON representation of that built-in context
-information, which you can set using the [expression][] `${{ toJson(needs) }}`.
+Actions. Here, the `needs_context` input value should be the JSON representation
+of that built-in context information, which you can set using the [expression][]
+`${{ toJson(needs) }}`.
 
 [`needs` context]:
   https://docs.github.com/en/actions/learn-github-actions/contexts#needs-context
@@ -211,7 +212,7 @@ Checks for common misspellings in all file types, using [typos][].
 
 | Name    | Type   | Required | Default |
 | :------ | :----- | :------- | :------ |
-| `files` | string | false    | `"."`   |
+| `files` | string | false    | `.`     |
 
 The `files` input specifies a list of files or glob patterns that the job should
 check; if not specified, all files in the repository will be checked.
