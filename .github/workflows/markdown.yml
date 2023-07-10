@@ -8,7 +8,7 @@ name: markdown
         default: "**/*.md"
       prettier_version:
         type: string
-        default: "3.0.0"
+        default: "latest"
 
 jobs:
   check_formatting:
