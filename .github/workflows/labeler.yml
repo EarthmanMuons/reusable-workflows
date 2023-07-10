@@ -5,9 +5,8 @@ name: labeler
 
 jobs:
   label_pr:
-    name: label pr
+    name: label pull request
     permissions:
-      contents: read
       pull-requests: write
     runs-on: ubuntu-latest
     steps:

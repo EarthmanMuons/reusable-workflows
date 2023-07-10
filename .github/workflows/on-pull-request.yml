@@ -32,6 +32,7 @@ jobs:
     uses: ./.github/workflows/markdown.yml
     with:
       files: ${{ needs.detect_changed_files.outputs.markdown_files }}
+      prettier_version: "3.0.0"
 
   spelling:
     name: spelling
