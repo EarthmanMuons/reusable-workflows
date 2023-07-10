@@ -54,8 +54,8 @@ changed files.
 #### Outputs
 
 - For each filter, it sets an output variable named by the filter to the text:
-  - `"true"` - if **any** of changed files matches any of filter rules
-  - `"false"` - if **none** of changed files matches any of filter rules
+  - `'true'` - if **any** of changed files matches any of filter rules
+  - `'false'` - if **none** of changed files matches any of filter rules
 - For each filter, it sets an output variable with the name
   `${FILTER_NAME}_files`. It will contain a list of all files matching the
   filter.
