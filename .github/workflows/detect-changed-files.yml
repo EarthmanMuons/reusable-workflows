@@ -41,7 +41,7 @@ jobs:
           list-files: shell
           filters: |
             added_or_modified:
-              - added|modified: '**/*'
+              - added|modified: '**'
             github_actions:
               - added|modified: .github/workflows/*.yml
             markdown:
