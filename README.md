@@ -155,6 +155,18 @@ Saves the [actionlint][] binary into the [GitHub Actions cache][].
 
 ---
 
+### preload-cache-rust.yml
+
+Saves the Rust project dependencies for both the _stable_ and _MSRV_ (Minimum
+Supported Rust Version) toolchains into the [GitHub Actions cache][], using
+[rust-cache][].
+
+[GitHub Actions cache]:
+  https://docs.github.com/en/actions/using-workflows/caching-dependencies-to-speed-up-workflows
+[rust-cache]: https://github.com/Swatinem/rust-cache
+
+---
+
 ### ready-to-merge.yml
 
 Used as the final step in pull request workflows to ensure that all required
