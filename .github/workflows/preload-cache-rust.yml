@@ -1,0 +1,77 @@
+name: preload cache / rust
+
+"on":
+  workflow_call:
+
+env:
+  CARGO_INCREMENTAL: 0
+  CARGO_TERM_COLOR: always
+  RUST_BACKTRACE: 1
+  RUSTFLAGS: -D warnings
+
+jobs:
+  cache_rust_stable:
+    name: cache rust / stable
+    defaults:
+      run:
+        shell: bash
+    strategy:
+      fail-fast: false
+      matrix:
+        platform:
+          - macos-latest
+          - ubuntu-latest
+          - windows-latest
+    runs-on: ${{ matrix.platform }}
+    steps:
+      - name: Checkout source code
+        uses: actions/checkout@c85c95e3d7251135ab7dc9ce3241c5835cc595a9
+      - name: Install stable Rust toolchain
+        uses: dtolnay/rust-toolchain@0e66bd3e6b38ec0ad5312288c83e47c143e6b09e
+        with:
+          toolchain: stable
+      - name: Cache dependencies
+        uses: Swatinem/rust-cache@2656b87321093db1cb55fbd73183d195214fdfd1
+        with:
+          shared-key: stable-${{ matrix.platform }}
+        timeout-minutes: 5
+      - name: Install cargo-nextest
+        uses: taiki-e/install-action@d3712f40a2bae95e3ce25a24f82a795ed3df0f1c
+        with:
+          tool: cargo-nextest
+      - name: Check packages and dependencies for errors
+        run: cargo check --locked --all-targets
+
+  # Minimum Supported Rust Version
+  cache_rust_msrv:
+    name: cache rust / msrv
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout source code
+        uses: actions/checkout@c85c95e3d7251135ab7dc9ce3241c5835cc595a9
+      - id: msrv
+        name: Get MSRV from package metadata
+        run: awk -F '"' '/rust-version/{ print "version=" $2 }' Cargo.toml >> "$GITHUB_OUTPUT"
+      - name: Install ${{ steps.msrv.outputs.version }} Rust toolchain
+        uses: dtolnay/rust-toolchain@0e66bd3e6b38ec0ad5312288c83e47c143e6b09e
+        with:
+          toolchain: ${{ steps.msrv.outputs.version }}
+      - name: Install nightly Rust toolchain
+        uses: dtolnay/rust-toolchain@0e66bd3e6b38ec0ad5312288c83e47c143e6b09e
+        with:
+          toolchain: nightly
+      - name: Resolve minimal dependency versions instead of maximum
+        run: cargo +nightly update -Z direct-minimal-versions
+      - name: Set override to MSRV Rust
+        run: rustup override set ${{ steps.msrv.outputs.version }}
+      - name: Cache dependencies
+        uses: Swatinem/rust-cache@2656b87321093db1cb55fbd73183d195214fdfd1
+        with:
+          shared-key: msrv-ubuntu-latest
+        timeout-minutes: 5
+      - name: Install cargo-nextest
+        uses: taiki-e/install-action@d3712f40a2bae95e3ce25a24f82a795ed3df0f1c
+        with:
+          tool: cargo-nextest
+      - name: Check packages and dependencies for errors
+        run: cargo check --locked --all-targets
