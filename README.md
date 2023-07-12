@@ -5,9 +5,6 @@ Actions. Its primary goal is to centralize common workflows used across multiple
 projects, streamlining the process of updating actions and sharing improvements
 consistently.
 
-[reusable workflows]:
-  https://docs.github.com/en/actions/using-workflows/reusing-workflows
-
 ## Usage
 
 In GitHub Actions, you call a reusable workflow by using the `uses` keyword in a
@@ -27,10 +24,8 @@ jobs:
 
 ## Workflows
 
-You'll find the following reusable workflows under the [`.github/workflows/`][]
-directory of this repository...
-
-[`.github/workflows/`]: .github/workflows/
+You'll find the following reusable workflows under the
+[`.github/workflows/`](.github/workflows/) directory of this repository...
 
 ---
 
@@ -40,16 +35,11 @@ Detects the files changed by a pull request or recently-pushed commit, using
 [paths-filter][]. This is useful to enable conditional execution of other
 workflow steps.
 
-[paths-filter]: https://github.com/dorny/paths-filter
-
 #### Permissions
 
 This job requires that the environment's `GITHUB_TOKEN` has `read` access
 [permissions][] to the `pull-requests` scope, in order to gather metadata on the
 changed files.
-
-[permissions]:
-  https://docs.github.com/en/actions/security-guides/automatic-token-authentication#permissions-for-the-github_token
 
 #### Outputs
 
@@ -90,12 +80,23 @@ jobs:
 
 ---
 
+### flush-cache.yml
+
+Flush all cache entries from the [GitHub Actions cache][] for the current
+branch.
+
+#### Permissions
+
+This job requires that the environment's `GITHUB_TOKEN` has `write` access
+[permissions][] to the `actions` scope, in order delete files from the GitHub
+Actions cache.
+
+---
+
 ### github-actions.yml
 
 Lints all defined GitHub Actions workflows, using the static checker
 [actionlint][].
-
-[actionlint]: https://github.com/rhysd/actionlint
 
 ---
 
@@ -104,8 +105,6 @@ Lints all defined GitHub Actions workflows, using the static checker
 Labels pull requests based on the paths of files changed, using [labeler][]. The
 job expects that the caller repository already has a `.github/labeler.yml`
 configuration file defined (see the upstream documentation for details).
-
-[labeler]: https://github.com/actions/labeler
 
 #### Permissions
 
@@ -116,18 +115,11 @@ You'll want to trigger this job from the [`pull_request_target`][] event, rather
 than the [`pull_request`][] event, to securely allow labeling of pull requests
 that originate from forked repositories.
 
-[`pull_request_target`]:
-  https://docs.github.com/en/actions/using-workflows/events-that-trigger-workflows#pull_request_target
-[`pull_request`]:
-  https://docs.github.com/en/actions/using-workflows/events-that-trigger-workflows#pull_request
-
 ---
 
 ### markdown.yml
 
 Checks the formatting of Markdown files, using [Prettier][].
-
-[Prettier]: https://prettier.io/
 
 #### Inputs
 
@@ -142,28 +134,19 @@ check; if not specified, all Markdown files in the repository will be checked.
 The `prettier_version` input specifies the [release version][] of the `prettier`
 binary to run; if not specified, the latest available version will be used.
 
-[release version]: https://github.com/prettier/prettier/releases
-
 ---
 
 ### preload-cache-actionlint.yml
 
 Saves the [actionlint][] binary into the [GitHub Actions cache][].
 
-[GitHub Actions cache]:
-  https://docs.github.com/en/actions/using-workflows/caching-dependencies-to-speed-up-workflows
-
 ---
 
 ### preload-cache-rust.yml
 
-Saves the Rust project dependencies for both the _stable_ and _MSRV_ (Minimum
-Supported Rust Version) toolchains into the [GitHub Actions cache][], using
-[rust-cache][].
-
-[GitHub Actions cache]:
-  https://docs.github.com/en/actions/using-workflows/caching-dependencies-to-speed-up-workflows
-[rust-cache]: https://github.com/Swatinem/rust-cache
+Saves the repository's Rust project dependencies for both the _stable_ and
+_MSRV_ (Minimum Supported Rust Version) toolchains into the [GitHub Actions
+cache][], using [rust-cache][].
 
 ---
 
@@ -194,11 +177,6 @@ Actions. Here, the `needs_context` input value should be the JSON representation
 of that built-in context information, which you can set using the [expression][]
 `${{ toJson(needs) }}`.
 
-[`needs` context]:
-  https://docs.github.com/en/actions/learn-github-actions/contexts#needs-context
-[expression]:
-  https://docs.github.com/en/actions/learn-github-actions/expressions
-
 #### Example
 
 The caller of this job should _always_ be run and have an explicit dependency on
@@ -227,8 +205,6 @@ jobs:
 
 Checks for common misspellings in all file types, using [typos][].
 
-[typos]: https://github.com/crate-ci/typos
-
 #### Inputs
 
 | Name    | Type   | Required | Default |
@@ -242,8 +218,31 @@ check; if not specified, all files in the repository will be checked.
 
 ## License
 
-These reusable workflows are provided under the terms of the [MIT License][].
+These reusable workflows are provided under the terms of the
+[MIT License](LICENSE).
 
 Copyright &copy; 2023 [Aaron Bull Schaefer](mailto:aaron@elasticdog.com)
 
-[MIT License]: LICENSE
+<!-- REFERENCES -->
+
+[actionlint]: https://github.com/rhysd/actionlint
+[expression]:
+  https://docs.github.com/en/actions/learn-github-actions/expressions
+[GitHub Actions cache]:
+  https://docs.github.com/en/actions/using-workflows/caching-dependencies-to-speed-up-workflows
+[labeler]: https://github.com/actions/labeler
+[`needs` context]:
+  https://docs.github.com/en/actions/learn-github-actions/contexts#needs-context
+[paths-filter]: https://github.com/dorny/paths-filter
+[permissions]:
+  https://docs.github.com/en/actions/security-guides/automatic-token-authentication#permissions-for-the-github_token
+[Prettier]: https://prettier.io/
+[`pull_request_target`]:
+  https://docs.github.com/en/actions/using-workflows/events-that-trigger-workflows#pull_request_target
+[`pull_request`]:
+  https://docs.github.com/en/actions/using-workflows/events-that-trigger-workflows#pull_request
+[release version]: https://github.com/prettier/prettier/releases
+[reusable workflows]:
+  https://docs.github.com/en/actions/using-workflows/reusing-workflows
+[rust-cache]: https://github.com/Swatinem/rust-cache
+[typos]: https://github.com/crate-ci/typos
