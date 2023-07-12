@@ -9,8 +9,6 @@ name: push to main
   workflow_dispatch:
 
 jobs:
-  detect_changed_files:
-    name: detect changed files
-    permissions:
-      pull-requests: read
-    uses: ./.github/workflows/detect-changed-files.yml
+  cache_actionlint:
+    name: cache actionlint
+    uses: ./.github/workflows/preload-cache-actionlint.yml
