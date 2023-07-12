@@ -9,6 +9,14 @@ name: schedule weekly
   workflow_dispatch:
 
 jobs:
+  flush_cache:
+    name: flush cache
+    permissions:
+      actions: write
+    if: github.event_name == 'workflow_dispatch'
+    uses: ./.github/workflows/flush-cache.yml
+
   cache_actionlint:
     name: cache actionlint
+    needs: flush_cache
     uses: ./.github/workflows/preload-cache-actionlint.yml
