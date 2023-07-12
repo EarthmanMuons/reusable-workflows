@@ -4,15 +4,15 @@ name: flush cache
   workflow_call:
 
 jobs:
-  flush_cache:
-    name: flush cache
+  delete_cache_entries:
+    name: delete cache entries
     permissions:
       actions: write
     runs-on: ubuntu-latest
     steps:
       - name: Checkout source code
         uses: actions/checkout@c85c95e3d7251135ab7dc9ce3241c5835cc595a9
-      - name: Flush GitHub Actions cache for the current branch
+      - name: Delete all GitHub Actions cache entries for the current branch
         env:
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: |-

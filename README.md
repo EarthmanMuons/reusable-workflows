@@ -82,13 +82,13 @@ jobs:
 
 ### flush-cache.yml
 
-Flush all cache entries from the [GitHub Actions cache][] for the current
+Deletes all cache entries from the [GitHub Actions cache][] for the current
 branch.
 
 #### Permissions
 
 This job requires that the environment's `GITHUB_TOKEN` has `write` access
-[permissions][] to the `actions` scope, in order delete files from the GitHub
+[permissions][] to the `actions` scope, in order delete entries from the GitHub
 Actions cache.
 
 ---
@@ -131,8 +131,8 @@ Checks the formatting of Markdown files, using [Prettier][].
 The `files` input specifies a list of files or glob patterns that the job should
 check; if not specified, all Markdown files in the repository will be checked.
 
-The `prettier_version` input specifies the [release version][] of the `prettier`
-binary to run; if not specified, the latest available version will be used.
+The `prettier_version` input specifies the release version of the [`prettier`
+binary][] to run; if not specified, the latest available version will be used.
 
 ---
 
@@ -237,11 +237,11 @@ Copyright &copy; 2023 [Aaron Bull Schaefer](mailto:aaron@elasticdog.com)
 [permissions]:
   https://docs.github.com/en/actions/security-guides/automatic-token-authentication#permissions-for-the-github_token
 [Prettier]: https://prettier.io/
-[`pull_request_target`]:
-  https://docs.github.com/en/actions/using-workflows/events-that-trigger-workflows#pull_request_target
+[`prettier` binary]: https://github.com/prettier/prettier/releases
 [`pull_request`]:
   https://docs.github.com/en/actions/using-workflows/events-that-trigger-workflows#pull_request
-[release version]: https://github.com/prettier/prettier/releases
+[`pull_request_target`]:
+  https://docs.github.com/en/actions/using-workflows/events-that-trigger-workflows#pull_request_target
 [reusable workflows]:
   https://docs.github.com/en/actions/using-workflows/reusing-workflows
 [rust-cache]: https://github.com/Swatinem/rust-cache
