@@ -1,4 +1,4 @@
-name: markdown
+name: check markdown
 
 "on":
   workflow_call:
