@@ -29,6 +29,16 @@ You'll find the following reusable workflows under the
 
 ---
 
+### check-rust.yml
+
+Performs comprehensive testing on a Rust project, including checking for proper
+formatting with `cargo fmt`, linting with `cargo clippy`, running unit tests
+across `macos-latest`, `ubuntu-latest`, and `windows-latest` using the latest
+stable release of Rust, and finally testing on the Minimum Supported Rust
+Version (MSRV).
+
+---
+
 ### detect-changed-files.yml
 
 Detects the files changed by a pull request or recently-pushed commit, using
