@@ -100,6 +100,20 @@ Lints all defined GitHub Actions workflows, using the static checker
 
 ---
 
+### github-pages-rust.yml
+
+Generates the [rustdoc][] documentation for the project's local package(s) and
+then deploys it to the repository's [GitHub Pages][] environment.
+
+#### Permissions
+
+This job requires that the environment's `GITHUB_TOKEN` has `write` access
+[permissions][] for both the `id-token` and `pages` scopes. The `id-token` scope
+is needed to verify the source of the deployment, while the `pages` scope allows
+the job to deploy to [GitHub Pages][].
+
+---
+
 ### labeler.yml
 
 Labels pull requests based on the paths of files changed, using [labeler][]. The
@@ -230,6 +244,7 @@ Copyright &copy; 2023 [Aaron Bull Schaefer](mailto:aaron@elasticdog.com)
   https://docs.github.com/en/actions/learn-github-actions/expressions
 [GitHub Actions cache]:
   https://docs.github.com/en/actions/using-workflows/caching-dependencies-to-speed-up-workflows
+[GitHub Pages]: https://docs.github.com/pages
 [labeler]: https://github.com/actions/labeler
 [`needs` context]:
   https://docs.github.com/en/actions/learn-github-actions/contexts#needs-context
@@ -245,4 +260,5 @@ Copyright &copy; 2023 [Aaron Bull Schaefer](mailto:aaron@elasticdog.com)
 [reusable workflows]:
   https://docs.github.com/en/actions/using-workflows/reusing-workflows
 [rust-cache]: https://github.com/Swatinem/rust-cache
+[rustdoc]: https://doc.rust-lang.org/rustdoc/index.html
 [typos]: https://github.com/crate-ci/typos
