@@ -1,0 +1,45 @@
+name: github pages / rust
+
+"on":
+  workflow_call:
+
+env:
+  CARGO_INCREMENTAL: 0
+  CARGO_TERM_COLOR: always
+  RUST_BACKTRACE: 1
+  RUSTFLAGS: -D warnings
+
+jobs:
+  build_docs:
+    name: build docs
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout source code
+        uses: actions/checkout@c85c95e3d7251135ab7dc9ce3241c5835cc595a9
+      - name: Install nightly Rust toolchain
+        uses: dtolnay/rust-toolchain@0e66bd3e6b38ec0ad5312288c83e47c143e6b09e
+        with:
+          toolchain: nightly
+      - name: Build docs
+        env:
+          RUSTDOCFLAGS: --enable-index-page -Z unstable-options
+        run: cargo +nightly doc --no-deps
+      - name: Upload github-pages artifact
+        uses: actions/upload-pages-artifact@a753861a5debcf57bf8b404356158c8e1e33150c
+        with:
+          path: target/doc
+
+  deploy_github_pages:
+    name: deploy github-pages
+    permissions:
+      id-token: write
+      pages: write
+    needs: build_docs
+    runs-on: ubuntu-latest
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    steps:
+      - id: deployment
+        name: Deploy to GitHub Pages
+        uses: actions/deploy-pages@12ab2b16cf43a7a061fe99da74b6f8f11fb77f5b
