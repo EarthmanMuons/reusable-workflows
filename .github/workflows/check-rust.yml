@@ -1,4 +1,4 @@
-name: test rust
+name: check rust
 
 "on":
   workflow_call:

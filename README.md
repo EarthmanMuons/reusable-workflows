@@ -19,13 +19,39 @@ For example, to call the "spelling.yml" reusable workflow:
 ```yml
 jobs:
   spelling:
-    uses: EarthmanMuons/reusable-workflows/.github/workflows/spelling.yml@main
+    uses: EarthmanMuons/reusable-workflows/.github/workflows/check-spelling.yml@main
 ```
 
 ## Workflows
 
 You'll find the following reusable workflows under the
 [`.github/workflows/`](.github/workflows/) directory of this repository...
+
+---
+
+### check-github-actions.yml
+
+Lints all defined GitHub Actions workflows, using the static checker
+[actionlint][].
+
+---
+
+### check-markdown.yml
+
+Checks the formatting of Markdown files, using [Prettier][].
+
+#### Inputs
+
+| Name               | Type   | Required | Default   |
+| :----------------- | :----- | :------- | :-------- |
+| `files`            | string | false    | `**/*.md` |
+| `prettier_version` | string | false    | `latest`  |
+
+The `files` input specifies a list of files or glob patterns that the job should
+check; if not specified, all Markdown files in the repository will be checked.
+
+The `prettier_version` input specifies the release version of the [`prettier`
+binary][] to run; if not specified, the latest available version will be used.
 
 ---
 
@@ -36,6 +62,21 @@ formatting with `cargo fmt`, linting with `cargo clippy`, running unit tests
 across `macos-latest`, `ubuntu-latest`, and `windows-latest` using the latest
 stable release of Rust, and finally testing on the Minimum Supported Rust
 Version (MSRV).
+
+---
+
+### check-spelling.yml
+
+Checks for common misspellings in all file types, using [typos][].
+
+#### Inputs
+
+| Name    | Type   | Required | Default |
+| :------ | :----- | :------- | :------ |
+| `files` | string | false    | `.`     |
+
+The `files` input specifies a list of files or glob patterns that the job should
+check; if not specified, all files in the repository will be checked.
 
 ---
 
@@ -83,7 +124,7 @@ jobs:
     name: spelling
     needs: detect_changed_files
     if: needs.detect_changed_files.outputs.added_or_modified == 'true'
-    uses: EarthmanMuons/reusable-workflows/.github/workflows/spelling.yml@main
+    uses: EarthmanMuons/reusable-workflows/.github/workflows/check-spelling.yml@main
     with:
       files: ${{ needs.detect_changed_files.outputs.added_or_modified_files }}
 ```
@@ -100,13 +141,6 @@ branch.
 This job requires that the environment's `GITHUB_TOKEN` has `write` access
 [permissions][] to the `actions` scope, in order delete entries from the GitHub
 Actions cache.
-
----
-
-### github-actions.yml
-
-Lints all defined GitHub Actions workflows, using the static checker
-[actionlint][].
 
 ---
 
@@ -138,25 +172,6 @@ This job requires that the environment's `GITHUB_TOKEN` has `write` access
 You'll want to trigger this job from the [`pull_request_target`][] event, rather
 than the [`pull_request`][] event, to securely allow labeling of pull requests
 that originate from forked repositories.
-
----
-
-### markdown.yml
-
-Checks the formatting of Markdown files, using [Prettier][].
-
-#### Inputs
-
-| Name               | Type   | Required | Default   |
-| :----------------- | :----- | :------- | :-------- |
-| `files`            | string | false    | `**/*.md` |
-| `prettier_version` | string | false    | `latest`  |
-
-The `files` input specifies a list of files or glob patterns that the job should
-check; if not specified, all Markdown files in the repository will be checked.
-
-The `prettier_version` input specifies the release version of the [`prettier`
-binary][] to run; if not specified, the latest available version will be used.
 
 ---
 
@@ -222,21 +237,6 @@ jobs:
     with:
       needs_context: ${{ toJson(needs) }}
 ```
-
----
-
-### spelling.yml
-
-Checks for common misspellings in all file types, using [typos][].
-
-#### Inputs
-
-| Name    | Type   | Required | Default |
-| :------ | :----- | :------- | :------ |
-| `files` | string | false    | `.`     |
-
-The `files` input specifies a list of files or glob patterns that the job should
-check; if not specified, all files in the repository will be checked.
 
 ---
 

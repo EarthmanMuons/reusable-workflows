@@ -19,26 +19,26 @@ jobs:
       pull-requests: read
     uses: ./.github/workflows/detect-changed-files.yml
 
-  github_actions:
-    name: github actions
+  check_github_actions:
+    name: check github actions
     needs: detect_changed_files
     if: needs.detect_changed_files.outputs.github_actions == 'true'
-    uses: ./.github/workflows/github-actions.yml
+    uses: ./.github/workflows/check-github-actions.yml
 
-  markdown:
-    name: markdown
+  check_markdown:
+    name: check markdown
     needs: detect_changed_files
     if: needs.detect_changed_files.outputs.markdown == 'true'
-    uses: ./.github/workflows/markdown.yml
+    uses: ./.github/workflows/check-markdown.yml
     with:
       files: ${{ needs.detect_changed_files.outputs.markdown_files }}
       prettier_version: "3.0.0"
 
-  spelling:
-    name: spelling
+  check_spelling:
+    name: check spelling
     needs: detect_changed_files
     if: needs.detect_changed_files.outputs.added_or_modified == 'true'
-    uses: ./.github/workflows/spelling.yml
+    uses: ./.github/workflows/check-spelling.yml
     with:
       files: ${{ needs.detect_changed_files.outputs.added_or_modified_files }}
 
@@ -46,9 +46,9 @@ jobs:
     name: ready to merge
     needs:
       - detect_changed_files
-      - github_actions
-      - markdown
-      - spelling
+      - check_github_actions
+      - check_markdown
+      - check_spelling
     if: always()
     uses: ./.github/workflows/ready-to-merge.yml
     with:
