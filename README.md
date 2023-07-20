@@ -80,6 +80,20 @@ check; if not specified, all files in the repository will be checked.
 
 ---
 
+### deploy-github-pages-rust.yml
+
+Generates the [rustdoc][] documentation for the project's local package(s) and
+then deploys it to the repository's [GitHub Pages][] environment.
+
+#### Permissions
+
+This job requires that the environment's `GITHUB_TOKEN` has `write` access
+[permissions][] for both the `id-token` and `pages` scopes. The `id-token` scope
+is needed to verify the source of the deployment, while the `pages` scope allows
+the job to deploy to [GitHub Pages][].
+
+---
+
 ### detect-changed-files.yml
 
 Detects the files changed by a pull request or recently-pushed commit, using
@@ -142,20 +156,6 @@ branch.
 This job requires that the environment's `GITHUB_TOKEN` has `write` access
 [permissions][] to the `actions` scope, in order delete entries from the GitHub
 Actions cache.
-
----
-
-### github-pages-rust.yml
-
-Generates the [rustdoc][] documentation for the project's local package(s) and
-then deploys it to the repository's [GitHub Pages][] environment.
-
-#### Permissions
-
-This job requires that the environment's `GITHUB_TOKEN` has `write` access
-[permissions][] for both the `id-token` and `pages` scopes. The `id-token` scope
-is needed to verify the source of the deployment, while the `pages` scope allows
-the job to deploy to [GitHub Pages][].
 
 ---
 
