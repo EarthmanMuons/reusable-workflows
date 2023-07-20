@@ -106,6 +106,7 @@ changed files.
 | `added_or_modified` |
 | `github_actions`    |
 | `markdown`          |
+| `rust`              |
 
 #### Example
 
@@ -120,8 +121,8 @@ jobs:
       pull-requests: read
     uses: EarthmanMuons/reusable-workflows/.github/workflows/detect-changed-files.yml@main
 
-  spelling:
-    name: spelling
+  check_spelling:
+    name: check spelling
     needs: detect_changed_files
     if: needs.detect_changed_files.outputs.added_or_modified == 'true'
     uses: EarthmanMuons/reusable-workflows/.github/workflows/check-spelling.yml@main
@@ -229,9 +230,9 @@ jobs:
     name: ready to merge
     needs:
       - detect_changed_files
-      - github_actions
-      - markdown
-      - spelling
+      - check_github_actions
+      - check_markdown
+      - check_spelling
     if: always()
     uses: EarthmanMuons/reusable-workflows/.github/workflows/ready-to-merge.yml@main
     with:
