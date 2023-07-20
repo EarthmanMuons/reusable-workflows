@@ -1,6 +1,6 @@
 name: preload cache / rust
 
-"on":
+on:
   workflow_call:
 
 env:

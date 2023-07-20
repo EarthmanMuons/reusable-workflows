@@ -1,6 +1,6 @@
 name: call flush cache
 
-"on":
+on:
   # Allow manually running this workflow.
   workflow_dispatch:
 
