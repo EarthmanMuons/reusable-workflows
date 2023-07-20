@@ -1,6 +1,6 @@
 name: github pages / rust
 
-"on":
+on:
   workflow_call:
 
 env:

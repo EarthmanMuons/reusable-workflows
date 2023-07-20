@@ -1,6 +1,6 @@
 name: check markdown
 
-"on":
+on:
   workflow_call:
     inputs:
       files:

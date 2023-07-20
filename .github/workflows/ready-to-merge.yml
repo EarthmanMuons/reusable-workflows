@@ -1,6 +1,6 @@
 name: ready to merge
 
-"on":
+on:
   workflow_call:
     inputs:
       needs_context:

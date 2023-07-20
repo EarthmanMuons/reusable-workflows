@@ -1,6 +1,6 @@
 name: check spelling
 
-"on":
+on:
   workflow_call:
     inputs:
       files:
