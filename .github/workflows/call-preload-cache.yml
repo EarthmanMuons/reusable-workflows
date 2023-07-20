@@ -1,12 +1,22 @@
-name: schedule weekly
+name: call preload cache
 
 on:
+  push:
+    branches:
+      - main
+    paths:
+      - .github/workflows/*.yml
+
   schedule:
     # Run every Monday at 7:45am UTC.
     - cron: 45 7 * * 1
 
   # Allow manually running this workflow.
   workflow_dispatch:
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
 
 jobs:
   cache_actionlint:

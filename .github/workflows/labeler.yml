@@ -1,6 +1,6 @@
 name: labeler
 
-"on":
+on:
   workflow_call:
 
 jobs:

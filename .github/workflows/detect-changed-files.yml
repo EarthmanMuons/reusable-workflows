@@ -1,6 +1,6 @@
 name: detect changed files
 
-"on":
+on:
   workflow_call:
     outputs:
       added_or_modified:

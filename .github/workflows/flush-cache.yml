@@ -1,6 +1,6 @@
 name: flush cache
 
-"on":
+on:
   workflow_call:
 
 jobs:

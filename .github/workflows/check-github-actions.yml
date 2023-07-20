@@ -1,6 +1,6 @@
 name: check github actions
 
-"on":
+on:
   workflow_call:
 
 jobs:

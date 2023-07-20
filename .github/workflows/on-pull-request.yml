@@ -1,6 +1,6 @@
-name: pull request
+name: on pull request
 
-"on":
+on:
   pull_request:
     branches:
       - main
