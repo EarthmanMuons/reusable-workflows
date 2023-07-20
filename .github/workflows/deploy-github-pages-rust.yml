@@ -1,4 +1,4 @@
-name: github pages / rust
+name: deploy github pages / rust
 
 on:
   workflow_call:
@@ -30,7 +30,7 @@ jobs:
           path: target/doc
 
   deploy_github_pages:
-    name: deploy github-pages
+    name: deploy github pages
     permissions:
       id-token: write
       pages: write
