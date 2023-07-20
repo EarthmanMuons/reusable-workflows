@@ -1,6 +1,6 @@
 name: preload cache / actionlint
 
-"on":
+on:
   workflow_call:
 
 jobs:

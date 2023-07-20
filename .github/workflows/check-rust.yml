@@ -1,6 +1,6 @@
 name: check rust
 
-"on":
+on:
   workflow_call:
 
 env:
