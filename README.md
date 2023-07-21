@@ -22,6 +22,9 @@ jobs:
     uses: EarthmanMuons/reusable-workflows/.github/workflows/check-spelling.yml@main
 ```
 
+For a more comprehensive example of these workflows being used in a real-world
+scenario, see the [spellout][] project.
+
 ## Workflows
 
 You'll find the following reusable workflows under the
@@ -312,4 +315,5 @@ Copyright &copy; 2023 [Aaron Bull Schaefer](mailto:aaron@elasticdog.com)
   https://docs.github.com/en/actions/using-workflows/reusing-workflows
 [rust-cache]: https://github.com/Swatinem/rust-cache
 [rustdoc]: https://doc.rust-lang.org/rustdoc/index.html
+[spellout]: https://github.com/EarthmanMuons/spellout
 [typos]: https://github.com/crate-ci/typos
