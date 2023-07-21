@@ -57,11 +57,24 @@ binary][] to run; if not specified, the latest available version will be used.
 
 ### check-rust.yml
 
-Performs comprehensive testing on a Rust project, including checking for proper
-formatting with `cargo fmt`, linting with `cargo clippy`, running unit tests
-across `macos-latest`, `ubuntu-latest`, and `windows-latest` using the latest
-stable release of Rust, and finally testing on the Minimum Supported Rust
-Version (MSRV).
+Performs comprehensive testing of a Rust project, including checking for proper
+formatting with `cargo fmt`, linting with `cargo clippy`, running tests across
+`macos-latest`, `ubuntu-latest`, and `windows-latest` using the latest stable
+release of Rust, and finally running tests on the Minimum Supported Rust Version
+(MSRV) as defined by the project's _Cargo.toml_ configuration file.
+
+---
+
+### check-rust-beta.yml
+
+Runs tests for a Rust project using the latest beta release of Rust.
+
+---
+
+### check-rust-miri.yml
+
+Runs tests for a Rust project using the latest nightly version of the
+experimental [Miri interpreter][].
 
 ---
 
@@ -259,6 +272,7 @@ Copyright &copy; 2023 [Aaron Bull Schaefer](mailto:aaron@elasticdog.com)
   https://docs.github.com/en/actions/using-workflows/caching-dependencies-to-speed-up-workflows
 [GitHub Pages]: https://docs.github.com/pages
 [labeler]: https://github.com/actions/labeler
+[Miri interpreter]: https://github.com/rust-lang/miri
 [`needs` context]:
   https://docs.github.com/en/actions/learn-github-actions/contexts#needs-context
 [paths-filter]: https://github.com/dorny/paths-filter
