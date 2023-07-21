@@ -1,11 +1,11 @@
-name: labeler
+name: label pull request
 
 on:
   workflow_call:
 
 jobs:
-  label_pr:
-    name: label pull request
+  check_labeler_matches:
+    name: check labeler matches
     permissions:
       pull-requests: write
     runs-on: ubuntu-latest

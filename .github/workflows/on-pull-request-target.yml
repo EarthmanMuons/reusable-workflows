@@ -12,9 +12,9 @@ concurrency:
   cancel-in-progress: true
 
 jobs:
-  labeler:
-    name: labeler
+  label_pull_request:
+    name: label pull request
     permissions:
       contents: read
       pull-requests: write
-    uses: ./.github/workflows/labeler.yml
+    uses: ./.github/workflows/label-pull-request.yml
