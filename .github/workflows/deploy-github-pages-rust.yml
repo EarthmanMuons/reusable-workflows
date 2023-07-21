@@ -32,8 +32,8 @@ jobs:
         with:
           path: target/doc
 
-  deploy_github_pages:
-    name: deploy github pages
+  deploy_docs_artifact:
+    name: deploy docs artifact
     permissions:
       id-token: write
       pages: write
