@@ -1,4 +1,4 @@
-name: check rust beta
+name: check rust / beta
 
 on:
   workflow_call:
@@ -11,7 +11,7 @@ env:
 
 jobs:
   test_beta:
-    name: test / beta
+    name: test beta
     runs-on: ubuntu-latest
     steps:
       - name: Checkout source code
