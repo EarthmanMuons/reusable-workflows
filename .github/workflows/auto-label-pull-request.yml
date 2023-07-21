@@ -1,4 +1,4 @@
-name: on pull request target
+name: auto-label pull request
 
 on:
   pull_request_target:
