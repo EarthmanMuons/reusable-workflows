@@ -1,4 +1,4 @@
-name: preload cache / rust
+name: preload caches / rust
 
 on:
   workflow_call:

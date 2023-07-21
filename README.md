@@ -146,7 +146,7 @@ jobs:
 
 ---
 
-### flush-cache.yml
+### flush-caches.yml
 
 Deletes all cache entries from the [GitHub Actions cache][] for the current
 branch.
@@ -176,13 +176,13 @@ that originate from forked repositories.
 
 ---
 
-### preload-cache-actionlint.yml
+### preload-caches-actionlint.yml
 
 Saves the [actionlint][] binary into the [GitHub Actions cache][].
 
 ---
 
-### preload-cache-rust.yml
+### preload-caches-rust.yml
 
 Saves the repository's Rust project dependencies for both the _stable_ and
 _MSRV_ (Minimum Supported Rust Version) toolchains into the [GitHub Actions

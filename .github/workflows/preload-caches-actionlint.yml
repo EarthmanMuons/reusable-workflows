@@ -1,4 +1,4 @@
-name: preload cache / actionlint
+name: preload caches / actionlint
 
 on:
   workflow_call:
