@@ -29,6 +29,12 @@ You'll find the following reusable workflows under the
 
 ---
 
+### bump-version-rust.yml
+
+**TODO**
+
+---
+
 ### check-github-actions.yml
 
 Lints all defined GitHub Actions workflows, using the static checker
