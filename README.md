@@ -159,10 +159,10 @@ Actions cache.
 
 ---
 
-### labeler.yml
+### label-pull-request.yml
 
-Labels pull requests based on the paths of files changed, using [labeler][]. The
-job expects that the caller repository already has a `.github/labeler.yml`
+Labels a pull request based on the paths of files changed, using [labeler][].
+The job expects that the caller repository already has a `.github/labeler.yml`
 configuration file defined (see the upstream documentation for details).
 
 #### Permissions
