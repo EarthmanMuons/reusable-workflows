@@ -11,8 +11,8 @@ on:
         default: "latest"
 
 jobs:
-  check_formatting:
-    name: check formatting
+  format:
+    name: format
     runs-on: ubuntu-latest
     steps:
       - name: Checkout source code

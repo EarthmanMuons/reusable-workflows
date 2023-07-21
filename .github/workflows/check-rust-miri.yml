@@ -1,4 +1,4 @@
-name: check rust miri
+name: check rust / miri
 
 on:
   workflow_call:
@@ -11,7 +11,7 @@ env:
 
 jobs:
   test_miri:
-    name: test / miri
+    name: test miri
     runs-on: ubuntu-latest
     steps:
       - name: Checkout source code

@@ -8,8 +8,8 @@ on:
         default: "."
 
 jobs:
-  check_for_typos:
-    name: check for typos
+  find_typos:
+    name: find typos
     runs-on: ubuntu-latest
     steps:
       - name: Checkout source code
