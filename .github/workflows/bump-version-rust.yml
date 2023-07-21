@@ -80,8 +80,8 @@ jobs:
           version=$(cargo metadata --no-deps --format-version=1 | jq -r '.packages[] | select(.name == "${{ inputs.package }}") | .version')
           echo "release_version=${version}" >> "$GITHUB_ENV"
 
-      - name: Create pull request
-        id: cpr
+      - id: cpr
+        name: Create pull request
         uses: peter-evans/create-pull-request@153407881ec5c347639a548ade7d8ad1d6740e38
         with:
           token: ${{ steps.generate_token.outputs.token }}
