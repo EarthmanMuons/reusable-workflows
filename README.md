@@ -178,7 +178,8 @@ that originate from forked repositories.
 
 ### preload-caches-actionlint.yml
 
-Saves the [actionlint][] binary into the [GitHub Actions cache][].
+Saves the latest [actionlint][] binary into the [GitHub Actions cache][], using
+the [actionlint action][].
 
 ---
 
@@ -251,6 +252,7 @@ Copyright &copy; 2023 [Aaron Bull Schaefer](mailto:aaron@elasticdog.com)
 <!-- REFERENCES -->
 
 [actionlint]: https://github.com/rhysd/actionlint
+[actionlint action]: https://github.com/raven-actions/actionlint
 [expression]:
   https://docs.github.com/en/actions/learn-github-actions/expressions
 [GitHub Actions cache]:
