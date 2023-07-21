@@ -1,12 +1,12 @@
-name: call flush cache
+name: call flush caches
 
 on:
   # Allow manually running this workflow.
   workflow_dispatch:
 
 jobs:
-  flush_cache:
-    name: flush cache
+  flush_caches:
+    name: flush caches
     permissions:
       actions: write
-    uses: ./.github/workflows/flush-cache.yml
+    uses: ./.github/workflows/flush-caches.yml

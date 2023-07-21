@@ -1,4 +1,4 @@
-name: flush cache
+name: flush caches
 
 on:
   workflow_call:

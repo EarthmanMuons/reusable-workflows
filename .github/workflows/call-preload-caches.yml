@@ -1,11 +1,9 @@
-name: call preload cache
+name: call preload caches
 
 on:
   push:
     branches:
       - main
-    paths:
-      - .github/workflows/*.yml
 
   schedule:
     # Run every Monday at 7:45am UTC.
@@ -21,4 +19,4 @@ concurrency:
 jobs:
   cache_actionlint:
     name: cache actionlint
-    uses: ./.github/workflows/preload-cache-actionlint.yml
+    uses: ./.github/workflows/preload-caches-actionlint.yml
