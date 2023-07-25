@@ -22,13 +22,30 @@ jobs:
     uses: EarthmanMuons/reusable-workflows/.github/workflows/check-spelling.yml@main
 ```
 
-For a more comprehensive example of these workflows being used in a real-world
-scenario, see the [spellout][] project.
+> _For a more comprehensive example of these workflows being used in a
+> real-world scenario, see the [spellout][] project._
 
 ## Workflows
 
 You'll find the following reusable workflows under the
-[`.github/workflows/`](.github/workflows/) directory of this repository...
+[`.github/workflows/`](.github/workflows/) directory of this repository:
+
+- [bump-version-rust.yml](#bump-version-rustyml)
+- [check-github-actions.yml](#check-github-actionsyml)
+- [check-markdown.yml](#check-markdownyml)
+- [check-rust.yml](#check-rustyml)
+- [check-rust-beta.yml](#check-rust-betayml)
+- [check-rust-miri.yml](#check-rust-miriyml)
+- [check-spelling.yml](#check-spellingyml)
+- [deploy-github-pages-rust.yml](#deploy-github-pages-rustyml)
+- [detect-changed-files.yml](#detect-changed-filesyml)
+- [draft-release-rust.yml](#draft-release-rustyml)
+- [label-pull-request.yml](#label-pull-requestyml)
+- [preload-caches-actionlint.yml](#preload-caches-actionlintyml)
+- [preload-caches-rust.yml](#preload-caches-rustyml)
+- [publish-crate.yml](#publish-crateyml)
+- [ready-to-merge.yml](#ready-to-mergeyml)
+- [tag-untagged-releases-rust.yml](#tag-untagged-releases-rustyml)
 
 ---
 
@@ -58,11 +75,12 @@ The `level` input specifies the [bump level][] of the release you're preparing.
 | `APP_ID`          | true     |
 | `APP_PRIVATE_KEY` | true     |
 
-The `APP_ID` and `APP_PRIVATE_KEY` [encrypted secrets][] must be available in
-the environment. They should correspond to a GitHub Apps application previously
-set up by your organization. The application is used to generate an installation
-access token via the [github-app-token action][], and is required in order for
-subsequent steps in the release process to be automatically triggered.
+The `APP_ID` and `APP_PRIVATE_KEY` [encrypted secrets][secrets] must be
+available in the environment. They should correspond to a GitHub Apps
+application previously set up by your organization. The application is used to
+generate an installation access token via the [github-app-token action][], and
+is required in order for subsequent steps in the release process to be
+automatically triggered.
 
 The permissions that the GitHub Apps application will need on the repository
 are:
@@ -204,7 +222,26 @@ jobs:
 
 ### draft-release-rust.yml
 
-**TODO**
+Generates a new draft GitHub release, builds, and attaches Rust binary package
+files to that release. When the workflow completes, it will display an
+annotation with a link to the draft release for your review.
+
+> _NOTE: This workflow makes many conventional assumptions surrounding the
+> process of building the distributable artifacts._
+
+#### Permissions
+
+This job requires that the environment's `GITHUB_TOKEN` has `write` access
+[permissions][] to the `contents` scope, in order to create the draft release.
+
+#### Inputs
+
+| Name      | Type   | Required |
+| :-------- | :----- | :------- |
+| `package` | string | true     |
+
+The `package` input specifies the name of the Cargo package that is being
+released.
 
 ---
 
@@ -255,7 +292,21 @@ cache][], using [rust-cache][].
 
 ### publish-crate.yml
 
-**TODO**
+Builds and publishes a Rust crate to https://crates.io/ if the current version
+has not previously been published, using [cargo-release][]. When the workflow
+completes, it will display an annotation with a link to the crate's page where
+you can confirm successful publication by examining the displayed metadata.
+
+#### Secrets
+
+| Name                   | Required |
+| :--------------------- | :------- |
+| `CARGO_REGISTRY_TOKEN` | true     |
+
+The `CARGO_REGISTRY_TOKEN` [encrypted secret][secrets] must be available in the
+environment. Its value should be a [crates.io API Token][] that can be used to
+publish your crate. The scopes that the token needs are **publish-new** and
+**publish-update**.
 
 ---
 
@@ -312,7 +363,29 @@ jobs:
 
 ### tag-untagged-releases-rust.yml
 
-**TODO**
+Tags a Git commit with the current version number if that version of the Rust
+crate has not previously been tagged, using [cargo-release][]. When the workflow
+completes, it will display an annotation with any new tags.
+
+#### Secrets
+
+| Name              | Required |
+| :---------------- | :------- |
+| `APP_ID`          | true     |
+| `APP_PRIVATE_KEY` | true     |
+
+The `APP_ID` and `APP_PRIVATE_KEY` [encrypted secrets][secrets] must be
+available in the environment. They should correspond to a GitHub Apps
+application previously set up by your organization. The application is used to
+generate an installation access token via the [github-app-token action][], and
+is required in order for subsequent steps in the release process to be
+automatically triggered.
+
+The permissions that the GitHub Apps application will need on the repository
+are:
+
+- **Read** access to metadata
+- **Read** and **write** access to code and pull requests
 
 ---
 
@@ -330,8 +403,8 @@ Copyright &copy; 2023 [Aaron Bull Schaefer](mailto:aaron@elasticdog.com)
 [bump level]:
   https://github.com/crate-ci/cargo-release/blob/master/docs/reference.md#bump-level
 [cargo-release]: https://github.com/crate-ci/cargo-release
-[encrypted secrets]:
-  https://docs.github.com/en/actions/security-guides/encrypted-secrets
+[crates.io API Token]: https://crates.io/settings/tokens
+[secrets]: https://docs.github.com/en/actions/security-guides/encrypted-secrets
 [expression]:
   https://docs.github.com/en/actions/learn-github-actions/expressions
 [GitHub Actions cache]:
@@ -355,5 +428,6 @@ Copyright &copy; 2023 [Aaron Bull Schaefer](mailto:aaron@elasticdog.com)
   https://docs.github.com/en/actions/using-workflows/reusing-workflows
 [rust-cache]: https://github.com/Swatinem/rust-cache
 [rustdoc]: https://doc.rust-lang.org/rustdoc/index.html
-[spellout]: https://github.com/EarthmanMuons/spellout
+[spellout]:
+  https://github.com/EarthmanMuons/spellout/tree/main/.github/workflows
 [typos]: https://github.com/crate-ci/typos
