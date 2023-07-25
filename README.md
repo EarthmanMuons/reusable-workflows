@@ -34,7 +34,41 @@ You'll find the following reusable workflows under the
 
 ### bump-version-rust.yml
 
-**TODO**
+Updates all version numbers across the codebase and documentation based on the
+level of the release (patch, minor, major, etc.) and the Rust project's
+`package.metadata.release` Cargo configuration, using [cargo-release][]. This
+workflow will then create a pull request with these updates, which helps to
+prepare the codebase for the next release.
+
+#### Inputs
+
+| Name      | Type   | Required |
+| :-------- | :----- | :------- |
+| `package` | string | true     |
+| `level`   | string | true     |
+
+The `package` input specifies the Cargo package to bump the version for.
+
+The `level` input specifies the [bump level][] of the release you're preparing.
+
+#### Secrets
+
+| Name              | Required |
+| :---------------- | :------- |
+| `APP_ID`          | true     |
+| `APP_PRIVATE_KEY` | true     |
+
+The `APP_ID` and `APP_PRIVATE_KEY` [encrypted secrets][] must be available in
+the environment. They should correspond to a GitHub Apps application previously
+set up by your organization. The application is used to generate an installation
+access token via the [github-app-token action][], and is required in order for
+subsequent steps in the release process to be automatically triggered.
+
+The permissions that the GitHub Apps application will need on the repository
+are:
+
+- **Read** access to metadata
+- **Read** and **write** access to code and pull requests
 
 ---
 
@@ -293,11 +327,17 @@ Copyright &copy; 2023 [Aaron Bull Schaefer](mailto:aaron@elasticdog.com)
 
 [actionlint]: https://github.com/rhysd/actionlint
 [actionlint action]: https://github.com/raven-actions/actionlint
+[bump level]:
+  https://github.com/crate-ci/cargo-release/blob/master/docs/reference.md#bump-level
+[cargo-release]: https://github.com/crate-ci/cargo-release
+[encrypted secrets]:
+  https://docs.github.com/en/actions/security-guides/encrypted-secrets
 [expression]:
   https://docs.github.com/en/actions/learn-github-actions/expressions
 [GitHub Actions cache]:
   https://docs.github.com/en/actions/using-workflows/caching-dependencies-to-speed-up-workflows
 [GitHub Pages]: https://docs.github.com/pages
+[github-app-token action]: https://github.com/tibdex/github-app-token
 [labeler]: https://github.com/actions/labeler
 [Miri interpreter]: https://github.com/rust-lang/miri
 [`needs` context]:
