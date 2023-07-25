@@ -8,11 +8,8 @@ on:
         required: true
         type: string
       level:
+        # https://github.com/crate-ci/cargo-release/blob/master/docs/reference.md#bump-level
         description: Bump level
-        # options:
-        #   - patch
-        #   - minor
-        #   - major
         required: true
         type: string
     secrets:
