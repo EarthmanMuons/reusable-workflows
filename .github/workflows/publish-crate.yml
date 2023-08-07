@@ -29,13 +29,13 @@ jobs:
           toolchain: stable
 
       - name: Cache dependencies
-        uses: Swatinem/rust-cache@dd05243424bd5c0e585e4b55eb2d7615cdd32f1f
+        uses: Swatinem/rust-cache@b8a6852b4f997182bdea832df3f9e153038b5191
         with:
           shared-key: stable-ubuntu-latest
         timeout-minutes: 5
 
       - name: Install cargo-release
-        uses: taiki-e/install-action@c23f6ec97c3f04c157e927356f351e2b16b9b043
+        uses: taiki-e/install-action@44516826f137d1069df1fbc585d112eed7cfec2c
         with:
           tool: cargo-release
 
