@@ -15,7 +15,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout source code
-        uses: actions/checkout@f43a0e5ff2bd294095638e18286ca9a3d1956744
+        uses: actions/checkout@3df4ab11eba7bda6032a0b82a6bb43b11571feac
       - name: Install nightly Rust toolchain
         uses: dtolnay/rust-toolchain@0e66bd3e6b38ec0ad5312288c83e47c143e6b09e
         with:
@@ -29,7 +29,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout source code
-        uses: actions/checkout@f43a0e5ff2bd294095638e18286ca9a3d1956744
+        uses: actions/checkout@3df4ab11eba7bda6032a0b82a6bb43b11571feac
       - name: Install stable Rust toolchain
         uses: dtolnay/rust-toolchain@0e66bd3e6b38ec0ad5312288c83e47c143e6b09e
         with:
@@ -61,7 +61,7 @@ jobs:
     runs-on: ${{ matrix.platform }}
     steps:
       - name: Checkout source code
-        uses: actions/checkout@f43a0e5ff2bd294095638e18286ca9a3d1956744
+        uses: actions/checkout@3df4ab11eba7bda6032a0b82a6bb43b11571feac
       - name: Install stable Rust toolchain
         uses: dtolnay/rust-toolchain@0e66bd3e6b38ec0ad5312288c83e47c143e6b09e
         with:
@@ -72,7 +72,7 @@ jobs:
           shared-key: stable-${{ matrix.platform }}
         timeout-minutes: 5
       - name: Install cargo-nextest
-        uses: taiki-e/install-action@7f27b7d8d5665668956bfcdeebcf0ff14480dadd
+        uses: taiki-e/install-action@5692c4095a0678a0783fb9efe3a7fee3df081104
         with:
           tool: cargo-nextest
       - name: Compile tests
@@ -90,7 +90,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout source code
-        uses: actions/checkout@f43a0e5ff2bd294095638e18286ca9a3d1956744
+        uses: actions/checkout@3df4ab11eba7bda6032a0b82a6bb43b11571feac
       - id: msrv
         name: Get MSRV from package metadata
         run: awk -F '"' '/rust-version/{ print "version=" $2 }' Cargo.toml >> "$GITHUB_OUTPUT"
@@ -112,7 +112,7 @@ jobs:
           shared-key: msrv-ubuntu-latest
         timeout-minutes: 5
       - name: Install cargo-nextest
-        uses: taiki-e/install-action@7f27b7d8d5665668956bfcdeebcf0ff14480dadd
+        uses: taiki-e/install-action@5692c4095a0678a0783fb9efe3a7fee3df081104
         with:
           tool: cargo-nextest
       - name: Compile tests
