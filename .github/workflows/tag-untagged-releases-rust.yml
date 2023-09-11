@@ -26,13 +26,13 @@ jobs:
     steps:
       - id: generate_token
         name: Generate a GitHub App token
-        uses: tibdex/github-app-token@b62528385c34dbc9f38e5f4225ac829252d1ea92
+        uses: tibdex/github-app-token@0914d50df753bbc42180d982a6550f195390069f
         with:
           app_id: ${{ secrets.APP_ID }}
           private_key: ${{ secrets.APP_PRIVATE_KEY }}
 
       - name: Checkout source code
-        uses: actions/checkout@f43a0e5ff2bd294095638e18286ca9a3d1956744
+        uses: actions/checkout@3df4ab11eba7bda6032a0b82a6bb43b11571feac
         with:
           ref: main
           token: ${{ steps.generate_token.outputs.token }}
@@ -50,7 +50,7 @@ jobs:
         timeout-minutes: 5
 
       - name: Install cargo-release
-        uses: taiki-e/install-action@7f27b7d8d5665668956bfcdeebcf0ff14480dadd
+        uses: taiki-e/install-action@9afdc872091b7327e91d6161c0c3a35ff7addd78
         with:
           tool: cargo-release
 
