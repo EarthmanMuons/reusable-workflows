@@ -39,18 +39,18 @@ jobs:
           fetch-depth: 0
 
       - name: Install stable Rust toolchain
-        uses: dtolnay/rust-toolchain@0e66bd3e6b38ec0ad5312288c83e47c143e6b09e
+        uses: dtolnay/rust-toolchain@1482605bfc5719782e1267fd0c0cc350fe7646b8
         with:
           toolchain: stable
 
       - name: Cache dependencies
-        uses: Swatinem/rust-cache@e207df5d269b42b69c8bc5101da26f7d31feddb4
+        uses: Swatinem/rust-cache@a95ba195448af2da9b00fb742d14ffaaf3c21f43
         with:
           shared-key: stable-ubuntu-latest
         timeout-minutes: 5
 
       - name: Install cargo-release
-        uses: taiki-e/install-action@9afdc872091b7327e91d6161c0c3a35ff7addd78
+        uses: taiki-e/install-action@2358ab643982f73276ef3aef08759c6cc3693530
         with:
           tool: cargo-release
 
