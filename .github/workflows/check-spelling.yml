@@ -17,6 +17,6 @@ jobs:
       - name: Check files for common misspellings
         # NOTE: dependabot struggles with determining the latest release version
         #       in this monorepo; see https://github.com/crate-ci/typos/releases
-        uses: crate-ci/typos@5edf45b39e546b1ff8af3ee205d68969434d8138
+        uses: crate-ci/typos@35a8bc67870d6c0b7407683319ae175577e24261
         with:
           files: "${{ inputs.files }}"
