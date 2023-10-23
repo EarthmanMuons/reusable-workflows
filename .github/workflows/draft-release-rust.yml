@@ -26,7 +26,7 @@ jobs:
       url: ${{ steps.gh_release.outputs.url }}
     steps:
       - name: Checkout source code
-        uses: actions/checkout@8ade135a41bc03ea155e62e844d188df1ea18608
+        uses: actions/checkout@b4ffde65f46336ab88eb53be808477a3936bae11
       - id: gh_release
         name: Create a new GitHub draft release
         uses: softprops/action-gh-release@de2c0eb89ae2a093876385947365aca7b0e5f844
@@ -70,7 +70,7 @@ jobs:
       GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
     steps:
       - name: Checkout source code
-        uses: actions/checkout@8ade135a41bc03ea155e62e844d188df1ea18608
+        uses: actions/checkout@b4ffde65f46336ab88eb53be808477a3936bae11
       - name: Install musl tools
         if: matrix.os == 'ubuntu-latest'
         run: sudo apt-get install -y musl-tools
@@ -80,13 +80,13 @@ jobs:
           toolchain: stable
           targets: ${{ matrix.target }}
       - name: Cache dependencies
-        uses: Swatinem/rust-cache@a95ba195448af2da9b00fb742d14ffaaf3c21f43
+        uses: Swatinem/rust-cache@3cf7f8cc28d1b4e7d01e3783be10a97d55d483c8
         with:
           shared-key: stable-ubuntu-latest
         timeout-minutes: 5
       - name: Install cross
         if: matrix.os == 'ubuntu-latest'
-        uses: taiki-e/install-action@5b205dd5b807eef56fdbfeedeedcee63c5d44090
+        uses: taiki-e/install-action@212ce016f02c04bbd7becdef0e0b68b53d80b3ab
         with:
           tool: cross
       - name: Building release assets
