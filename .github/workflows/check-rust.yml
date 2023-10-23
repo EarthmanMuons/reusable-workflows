@@ -36,7 +36,7 @@ jobs:
           toolchain: stable
           components: clippy
       - name: Cache dependencies
-        uses: Swatinem/rust-cache@a95ba195448af2da9b00fb742d14ffaaf3c21f43
+        uses: Swatinem/rust-cache@3cf7f8cc28d1b4e7d01e3783be10a97d55d483c8
         with:
           shared-key: stable-ubuntu-latest
         timeout-minutes: 5
@@ -67,7 +67,7 @@ jobs:
         with:
           toolchain: stable
       - name: Cache dependencies
-        uses: Swatinem/rust-cache@a95ba195448af2da9b00fb742d14ffaaf3c21f43
+        uses: Swatinem/rust-cache@3cf7f8cc28d1b4e7d01e3783be10a97d55d483c8
         with:
           shared-key: stable-${{ matrix.platform }}
         timeout-minutes: 5
@@ -107,7 +107,7 @@ jobs:
       - name: Set override to MSRV Rust
         run: rustup override set ${{ steps.msrv.outputs.version }}
       - name: Cache dependencies
-        uses: Swatinem/rust-cache@a95ba195448af2da9b00fb742d14ffaaf3c21f43
+        uses: Swatinem/rust-cache@3cf7f8cc28d1b4e7d01e3783be10a97d55d483c8
         with:
           shared-key: msrv-ubuntu-latest
         timeout-minutes: 5
