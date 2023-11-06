@@ -39,7 +39,7 @@ jobs:
           private_key: ${{ secrets.APP_PRIVATE_KEY }}
 
       - name: Checkout source code
-        uses: actions/checkout@8ade135a41bc03ea155e62e844d188df1ea18608
+        uses: actions/checkout@b4ffde65f46336ab88eb53be808477a3936bae11
         with:
           ref: main
           fetch-depth: 0
@@ -50,13 +50,13 @@ jobs:
           toolchain: stable
 
       - name: Cache dependencies
-        uses: Swatinem/rust-cache@a95ba195448af2da9b00fb742d14ffaaf3c21f43
+        uses: Swatinem/rust-cache@3cf7f8cc28d1b4e7d01e3783be10a97d55d483c8
         with:
           shared-key: stable-ubuntu-latest
         timeout-minutes: 5
 
       - name: Install cargo-release
-        uses: taiki-e/install-action@5b205dd5b807eef56fdbfeedeedcee63c5d44090
+        uses: taiki-e/install-action@11dea51b35bc2bfa42820716c6cabb14fd4c3266
         with:
           tool: cargo-release
 
