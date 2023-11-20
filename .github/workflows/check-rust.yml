@@ -15,7 +15,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout source code
-        uses: actions/checkout@8ade135a41bc03ea155e62e844d188df1ea18608
+        uses: actions/checkout@b4ffde65f46336ab88eb53be808477a3936bae11
       - name: Install nightly Rust toolchain
         uses: dtolnay/rust-toolchain@439cf607258077187679211f12aa6f19af4a0af7
         with:
@@ -29,14 +29,14 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout source code
-        uses: actions/checkout@8ade135a41bc03ea155e62e844d188df1ea18608
+        uses: actions/checkout@b4ffde65f46336ab88eb53be808477a3936bae11
       - name: Install stable Rust toolchain
         uses: dtolnay/rust-toolchain@439cf607258077187679211f12aa6f19af4a0af7
         with:
           toolchain: stable
           components: clippy
       - name: Cache dependencies
-        uses: Swatinem/rust-cache@a95ba195448af2da9b00fb742d14ffaaf3c21f43
+        uses: Swatinem/rust-cache@3cf7f8cc28d1b4e7d01e3783be10a97d55d483c8
         with:
           shared-key: stable-ubuntu-latest
         timeout-minutes: 5
@@ -61,18 +61,18 @@ jobs:
     runs-on: ${{ matrix.platform }}
     steps:
       - name: Checkout source code
-        uses: actions/checkout@8ade135a41bc03ea155e62e844d188df1ea18608
+        uses: actions/checkout@b4ffde65f46336ab88eb53be808477a3936bae11
       - name: Install stable Rust toolchain
         uses: dtolnay/rust-toolchain@439cf607258077187679211f12aa6f19af4a0af7
         with:
           toolchain: stable
       - name: Cache dependencies
-        uses: Swatinem/rust-cache@a95ba195448af2da9b00fb742d14ffaaf3c21f43
+        uses: Swatinem/rust-cache@3cf7f8cc28d1b4e7d01e3783be10a97d55d483c8
         with:
           shared-key: stable-${{ matrix.platform }}
         timeout-minutes: 5
       - name: Install cargo-nextest
-        uses: taiki-e/install-action@5b205dd5b807eef56fdbfeedeedcee63c5d44090
+        uses: taiki-e/install-action@ccc14bdc8d34cddf54e4f9fb2da0c208427207a3
         with:
           tool: cargo-nextest
       - name: Compile tests
@@ -90,7 +90,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout source code
-        uses: actions/checkout@8ade135a41bc03ea155e62e844d188df1ea18608
+        uses: actions/checkout@b4ffde65f46336ab88eb53be808477a3936bae11
       - id: msrv
         name: Get MSRV from package metadata
         run: awk -F '"' '/rust-version/{ print "version=" $2 }' Cargo.toml >> "$GITHUB_OUTPUT"
@@ -107,12 +107,12 @@ jobs:
       - name: Set override to MSRV Rust
         run: rustup override set ${{ steps.msrv.outputs.version }}
       - name: Cache dependencies
-        uses: Swatinem/rust-cache@a95ba195448af2da9b00fb742d14ffaaf3c21f43
+        uses: Swatinem/rust-cache@3cf7f8cc28d1b4e7d01e3783be10a97d55d483c8
         with:
           shared-key: msrv-ubuntu-latest
         timeout-minutes: 5
       - name: Install cargo-nextest
-        uses: taiki-e/install-action@5b205dd5b807eef56fdbfeedeedcee63c5d44090
+        uses: taiki-e/install-action@ccc14bdc8d34cddf54e4f9fb2da0c208427207a3
         with:
           tool: cargo-nextest
       - name: Compile tests
