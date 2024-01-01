@@ -17,13 +17,13 @@ jobs:
       - name: Checkout source code
         uses: actions/checkout@b4ffde65f46336ab88eb53be808477a3936bae11
       - name: Install beta Rust toolchain
-        uses: dtolnay/rust-toolchain@439cf607258077187679211f12aa6f19af4a0af7
+        uses: dtolnay/rust-toolchain@be73d7920c329f220ce78e0234b8f96b7ae60248
         with:
           toolchain: beta
       - name: Set override to beta Rust
         run: rustup override set beta
       - name: Install cargo-nextest
-        uses: taiki-e/install-action@addb7d697b0081ef0a2b09d830daf6269d640920
+        uses: taiki-e/install-action@56ab7930c591507f833cbaed864d201386d518a8
         with:
           tool: cargo-nextest
       - name: Compile tests
