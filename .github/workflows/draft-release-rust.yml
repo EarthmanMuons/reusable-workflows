@@ -75,18 +75,18 @@ jobs:
         if: matrix.os == 'ubuntu-latest'
         run: sudo apt-get install -y musl-tools
       - name: Install stable Rust toolchain
-        uses: dtolnay/rust-toolchain@439cf607258077187679211f12aa6f19af4a0af7
+        uses: dtolnay/rust-toolchain@be73d7920c329f220ce78e0234b8f96b7ae60248
         with:
           toolchain: stable
           targets: ${{ matrix.target }}
       - name: Cache dependencies
-        uses: Swatinem/rust-cache@3cf7f8cc28d1b4e7d01e3783be10a97d55d483c8
+        uses: Swatinem/rust-cache@23bce251a8cd2ffc3c1075eaa2367cf899916d84
         with:
           shared-key: stable-ubuntu-latest
         timeout-minutes: 5
       - name: Install cross
         if: matrix.os == 'ubuntu-latest'
-        uses: taiki-e/install-action@addb7d697b0081ef0a2b09d830daf6269d640920
+        uses: taiki-e/install-action@b09bcf095ef0b9e2a3fd03a62f1c79cd0dbcb187
         with:
           tool: cross
       - name: Building release assets

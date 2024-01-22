@@ -17,7 +17,7 @@ jobs:
       - name: Checkout source code
         uses: actions/checkout@b4ffde65f46336ab88eb53be808477a3936bae11
       - name: Install nightly Rust toolchain
-        uses: dtolnay/rust-toolchain@439cf607258077187679211f12aa6f19af4a0af7
+        uses: dtolnay/rust-toolchain@be73d7920c329f220ce78e0234b8f96b7ae60248
         with:
           toolchain: nightly
           components: rustfmt
@@ -31,12 +31,12 @@ jobs:
       - name: Checkout source code
         uses: actions/checkout@b4ffde65f46336ab88eb53be808477a3936bae11
       - name: Install stable Rust toolchain
-        uses: dtolnay/rust-toolchain@439cf607258077187679211f12aa6f19af4a0af7
+        uses: dtolnay/rust-toolchain@be73d7920c329f220ce78e0234b8f96b7ae60248
         with:
           toolchain: stable
           components: clippy
       - name: Cache dependencies
-        uses: Swatinem/rust-cache@3cf7f8cc28d1b4e7d01e3783be10a97d55d483c8
+        uses: Swatinem/rust-cache@23bce251a8cd2ffc3c1075eaa2367cf899916d84
         with:
           shared-key: stable-ubuntu-latest
         timeout-minutes: 5
@@ -63,16 +63,16 @@ jobs:
       - name: Checkout source code
         uses: actions/checkout@b4ffde65f46336ab88eb53be808477a3936bae11
       - name: Install stable Rust toolchain
-        uses: dtolnay/rust-toolchain@439cf607258077187679211f12aa6f19af4a0af7
+        uses: dtolnay/rust-toolchain@be73d7920c329f220ce78e0234b8f96b7ae60248
         with:
           toolchain: stable
       - name: Cache dependencies
-        uses: Swatinem/rust-cache@3cf7f8cc28d1b4e7d01e3783be10a97d55d483c8
+        uses: Swatinem/rust-cache@23bce251a8cd2ffc3c1075eaa2367cf899916d84
         with:
           shared-key: stable-${{ matrix.platform }}
         timeout-minutes: 5
       - name: Install cargo-nextest
-        uses: taiki-e/install-action@addb7d697b0081ef0a2b09d830daf6269d640920
+        uses: taiki-e/install-action@b09bcf095ef0b9e2a3fd03a62f1c79cd0dbcb187
         with:
           tool: cargo-nextest
       - name: Compile tests
@@ -95,11 +95,11 @@ jobs:
         name: Get MSRV from package metadata
         run: awk -F '"' '/rust-version/{ print "version=" $2 }' Cargo.toml >> "$GITHUB_OUTPUT"
       - name: Install ${{ steps.msrv.outputs.version }} Rust toolchain
-        uses: dtolnay/rust-toolchain@439cf607258077187679211f12aa6f19af4a0af7
+        uses: dtolnay/rust-toolchain@be73d7920c329f220ce78e0234b8f96b7ae60248
         with:
           toolchain: ${{ steps.msrv.outputs.version }}
       - name: Install nightly Rust toolchain
-        uses: dtolnay/rust-toolchain@439cf607258077187679211f12aa6f19af4a0af7
+        uses: dtolnay/rust-toolchain@be73d7920c329f220ce78e0234b8f96b7ae60248
         with:
           toolchain: nightly
       - name: Resolve minimal dependency versions instead of maximum
@@ -107,12 +107,12 @@ jobs:
       - name: Set override to MSRV Rust
         run: rustup override set ${{ steps.msrv.outputs.version }}
       - name: Cache dependencies
-        uses: Swatinem/rust-cache@3cf7f8cc28d1b4e7d01e3783be10a97d55d483c8
+        uses: Swatinem/rust-cache@23bce251a8cd2ffc3c1075eaa2367cf899916d84
         with:
           shared-key: msrv-ubuntu-latest
         timeout-minutes: 5
       - name: Install cargo-nextest
-        uses: taiki-e/install-action@addb7d697b0081ef0a2b09d830daf6269d640920
+        uses: taiki-e/install-action@b09bcf095ef0b9e2a3fd03a62f1c79cd0dbcb187
         with:
           tool: cargo-nextest
       - name: Compile tests
