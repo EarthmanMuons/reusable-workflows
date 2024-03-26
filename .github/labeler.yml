@@ -1,7 +1,9 @@
 # See https://github.com/actions/labeler for more information.
 
 documentation:
-  - "**/*.md"
+  - changed-files:
+      - any-glob-to-any-file: "**/*.md"
 
 github_actions:
-  - .github/workflows/*.yml
+  - changed-files:
+      - any-glob-to-any-file: .github/workflows/*.yml
