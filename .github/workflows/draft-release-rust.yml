@@ -26,10 +26,10 @@ jobs:
       url: ${{ steps.gh_release.outputs.url }}
     steps:
       - name: Checkout source code
-        uses: actions/checkout@b4ffde65f46336ab88eb53be808477a3936bae11
+        uses: actions/checkout@9bb56186c3b09b4f86b1c65136769dd318469633
       - id: gh_release
         name: Create a new GitHub draft release
-        uses: softprops/action-gh-release@de2c0eb89ae2a093876385947365aca7b0e5f844
+        uses: softprops/action-gh-release@9d7c94cfd0a1f3ed45544c887983e9fa900f0564
         with:
           draft: true
           generate_release_notes: true
@@ -70,23 +70,23 @@ jobs:
       GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
     steps:
       - name: Checkout source code
-        uses: actions/checkout@b4ffde65f46336ab88eb53be808477a3936bae11
+        uses: actions/checkout@9bb56186c3b09b4f86b1c65136769dd318469633
       - name: Install musl tools
         if: matrix.os == 'ubuntu-latest'
         run: sudo apt-get install -y musl-tools
       - name: Install stable Rust toolchain
-        uses: dtolnay/rust-toolchain@439cf607258077187679211f12aa6f19af4a0af7
+        uses: dtolnay/rust-toolchain@be73d7920c329f220ce78e0234b8f96b7ae60248
         with:
           toolchain: stable
           targets: ${{ matrix.target }}
       - name: Cache dependencies
-        uses: Swatinem/rust-cache@3cf7f8cc28d1b4e7d01e3783be10a97d55d483c8
+        uses: Swatinem/rust-cache@23bce251a8cd2ffc3c1075eaa2367cf899916d84
         with:
           shared-key: stable-ubuntu-latest
         timeout-minutes: 5
       - name: Install cross
         if: matrix.os == 'ubuntu-latest'
-        uses: taiki-e/install-action@addb7d697b0081ef0a2b09d830daf6269d640920
+        uses: taiki-e/install-action@0d6353d3dc1eac4359c520185c44119bfbd812b5
         with:
           tool: cross
       - name: Building release assets
