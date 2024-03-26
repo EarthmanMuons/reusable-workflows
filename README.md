@@ -38,6 +38,7 @@ You'll find the following reusable workflows under the
 - [check-rust-miri.yml](#check-rust-miriyml)
 - [check-spelling.yml](#check-spellingyml)
 - [deploy-github-pages-rust.yml](#deploy-github-pages-rustyml)
+- [deploy-github-pages-zig.yml](#deploy-github-pages-zigyml)
 - [detect-changed-files.yml](#detect-changed-filesyml)
 - [draft-release-rust.yml](#draft-release-rustyml)
 - [label-pull-request.yml](#label-pull-requestyml)
@@ -158,6 +159,11 @@ check; if not specified, all files in the repository will be checked.
 
 Generates the [rustdoc][] documentation for the project's local package(s) and
 then deploys it to the repository's [GitHub Pages][] environment.
+
+### deploy-github-pages-zig.yml
+
+Generates the Zig documentation for the project's local module(s) and then
+deploys it to the repository's [GitHub Pages][] environment.
 
 #### Permissions
 

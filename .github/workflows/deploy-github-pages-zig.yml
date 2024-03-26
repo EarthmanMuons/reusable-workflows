@@ -1,0 +1,37 @@
+name: deploy github pages / zig
+
+on:
+  workflow_call:
+
+jobs:
+  build_docs:
+    name: build docs
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout source code
+        uses: actions/checkout@9bb56186c3b09b4f86b1c65136769dd318469633
+      - uses: korandoru/setup-zig@0be275f61450b5aec6a34c075b34ae3d480c6e8a
+        with:
+          zig-version: master
+      - name: Build docs
+        run: zig test -femit-docs src/main.zig
+      - name: Upload github-pages artifact
+        uses: actions/upload-pages-artifact@56afc609e74202658d3ffba0e8f6dda462b719fa
+        with:
+          path: docs
+
+  deploy_docs_artifact:
+    name: deploy docs artifact
+    permissions:
+      actions: read
+      id-token: write
+      pages: write
+    needs: build_docs
+    runs-on: ubuntu-latest
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    steps:
+      - id: deployment
+        name: Deploy to GitHub Pages
+        uses: actions/deploy-pages@d6db90164ac5ed86f2b6aed7e0febac5b3c0c03e
