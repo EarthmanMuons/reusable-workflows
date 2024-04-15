@@ -24,7 +24,7 @@ jobs:
           fetch-depth: 0
 
       - name: Install stable Rust toolchain
-        uses: dtolnay/rust-toolchain@be73d7920c329f220ce78e0234b8f96b7ae60248
+        uses: dtolnay/rust-toolchain@bb45937a053e097f8591208d8e74c90db1873d07
         with:
           toolchain: stable
 
@@ -35,7 +35,7 @@ jobs:
         timeout-minutes: 5
 
       - name: Install cargo-release
-        uses: taiki-e/install-action@0d6353d3dc1eac4359c520185c44119bfbd812b5
+        uses: taiki-e/install-action@99774fec7fd4f75144bd0134a24a992297768308
         with:
           tool: cargo-release
 
