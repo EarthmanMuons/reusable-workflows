@@ -19,6 +19,10 @@ on:
         value: ${{ jobs.filter_changes.outputs.rust }}
       rust_files:
         value: ${{ jobs.filter_changes.outputs.rust_files }}
+      zig:
+        value: ${{ jobs.filter_changes.outputs.zig }}
+      zig_files:
+        value: ${{ jobs.filter_changes.outputs.zig_files }}
 
 jobs:
   filter_changes:
@@ -35,6 +39,8 @@ jobs:
       markdown_files: ${{ steps.filter.outputs.markdown_files }}
       rust: ${{ steps.filter.outputs.rust }}
       rust_files: ${{ steps.filter.outputs.rust_files }}
+      zig: ${{ steps.filter.outputs.zig }}
+      zig_files: ${{ steps.filter.outputs.zig_files }}
     steps:
       - name: Checkout source code
         uses: actions/checkout@9bb56186c3b09b4f86b1c65136769dd318469633
@@ -55,3 +61,6 @@ jobs:
             rust:
               - '**/*.rs'
               - '**/Cargo.*'
+            zig:
+              - '**/*.zig'
+              - '**/*.zon'
