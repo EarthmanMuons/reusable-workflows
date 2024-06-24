@@ -9,8 +9,8 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout source code
-        uses: actions/checkout@0ad4b8fadaa221de15dcec353f45205ec38ea70b
-      - uses: korandoru/setup-zig@0be275f61450b5aec6a34c075b34ae3d480c6e8a
+        uses: actions/checkout@692973e3d937129bcbf40652eb9f2f61becf3332
+      - uses: korandoru/setup-zig@c1a533bcbce8c31ca826fd771dfce53deaf1ca77
         with:
           zig-version: master
       - name: Build docs
