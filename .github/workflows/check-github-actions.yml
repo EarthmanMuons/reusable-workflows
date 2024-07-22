@@ -9,8 +9,8 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout source code
-        uses: actions/checkout@0ad4b8fadaa221de15dcec353f45205ec38ea70b
+        uses: actions/checkout@692973e3d937129bcbf40652eb9f2f61becf3332
       - name: Lint GitHub Actions workflow files
-        uses: raven-actions/actionlint@789059c543ab20522fb3e7240794e13b0f69ad67
+        uses: raven-actions/actionlint@01fce4f43a270a612932cb1c64d40505a029f821
         with:
           group-result: false
