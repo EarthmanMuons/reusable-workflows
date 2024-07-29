@@ -13,10 +13,10 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout source code
-        uses: actions/checkout@0ad4b8fadaa221de15dcec353f45205ec38ea70b
+        uses: actions/checkout@692973e3d937129bcbf40652eb9f2f61becf3332
       - name: Check files for common misspellings
         # NOTE: dependabot struggles with determining the latest release version
         #       in this monorepo; see https://github.com/crate-ci/typos/releases
-        uses: crate-ci/typos@f2c1f08a7b3c1b96050cb786baaa2a94797bdb7d
+        uses: crate-ci/typos@c7af4712eda24dd1ef54bd8212973888489eb0ce
         with:
           files: "${{ inputs.files }}"
