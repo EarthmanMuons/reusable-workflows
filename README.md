@@ -1,9 +1,8 @@
 # Reusable Workflows
 
-This repository houses a collection of [reusable workflows][] for GitHub
-Actions. Its primary goal is to centralize common workflows used across multiple
-projects, streamlining the process of updating actions and sharing improvements
-consistently.
+This repository houses a collection of [reusable workflows][] for GitHub Actions.
+Its primary goal is to centralize common workflows used across multiple projects,
+streamlining the process of updating actions and sharing improvements consistently.
 
 ## Usage
 
@@ -79,9 +78,9 @@ The `level` input specifies the [bump level][] of the release you're preparing.
 The `APP_ID` and `APP_PRIVATE_KEY` [encrypted secrets][secrets] must be
 available in the environment. They should correspond to a GitHub Apps
 application previously set up by your organization. The application is used to
-generate an installation access token via the [github-app-token action][], and
-is required in order for subsequent steps in the release process to be
-automatically triggered.
+generate an installation access token via the [github-app-token action][], and is
+required in order for subsequent steps in the release process to be automatically
+triggered.
 
 The permissions that the GitHub Apps application will need on the repository
 are:
@@ -291,8 +290,8 @@ the [actionlint action][].
 ### preload-caches-rust.yml
 
 Saves the repository's Rust project dependencies for both the _stable_ and
-_MSRV_ (Minimum Supported Rust Version) toolchains into the [GitHub Actions
-cache][], using [rust-cache][].
+_MSRV_ (Minimum Supported Rust Version) toolchains into the [GitHub
+Actions cache][], using [rust-cache][].
 
 ---
 
@@ -337,11 +336,10 @@ rules.
 | :-------------- | :----- | :------- |
 | `needs_context` | string | true     |
 
-The [`needs` context][] contains outputs from all jobs that are defined as a
-direct dependency of the current job, and is automatically populated by GitHub
-Actions. Here, the `needs_context` input value should be the JSON representation
-of that built-in context information, which you can set using the [expression][]
-`${{ toJson(needs) }}`.
+The [`needs` context][] contains outputs from all jobs that are defined as a direct
+dependency of the current job, and is automatically populated by GitHub Actions.
+Here, the `needs_context` input value should be the JSON representation of that built-in
+context information, which you can set using the [expression][] `${{ toJson(needs) }}`.
 
 #### Example
 
@@ -383,9 +381,9 @@ completes, it will display an annotation with any new tags.
 The `APP_ID` and `APP_PRIVATE_KEY` [encrypted secrets][secrets] must be
 available in the environment. They should correspond to a GitHub Apps
 application previously set up by your organization. The application is used to
-generate an installation access token via the [github-app-token action][], and
-is required in order for subsequent steps in the release process to be
-automatically triggered.
+generate an installation access token via the [github-app-token action][], and is
+required in order for subsequent steps in the release process to be automatically
+triggered.
 
 The permissions that the GitHub Apps application will need on the repository
 are:
@@ -397,10 +395,13 @@ are:
 
 ## License
 
-These reusable workflows are provided under the terms of the
-[MIT License](LICENSE).
+These reusable workflows are released under the [Zero Clause BSD
+License][LICENSE] (SPDX: 0BSD).
 
-Copyright &copy; 2023 [Aaron Bull Schaefer](mailto:aaron@elasticdog.com)
+Copyright &copy; 2023 [Aaron Bull Schaefer][EMAIL] and contributors
+
+[LICENSE]: https://github.com/EarthmanMuons/spellout/blob/main/LICENSE
+[EMAIL]: mailto:aaron@elasticdog.com
 
 <!-- REFERENCES -->
 
