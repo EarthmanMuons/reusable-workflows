@@ -23,7 +23,7 @@ jobs:
       - name: Set override to beta Rust
         run: rustup override set beta
       - name: Install cargo-nextest
-        uses: taiki-e/install-action@0593da407881e996340c22f60617ba9d95f2b995
+        uses: taiki-e/install-action@f172798ba087526822a4f43dd08714d08a45aa37
         with:
           tool: cargo-nextest
       - name: Compile tests

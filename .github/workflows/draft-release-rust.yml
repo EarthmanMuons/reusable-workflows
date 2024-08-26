@@ -86,7 +86,7 @@ jobs:
         timeout-minutes: 5
       - name: Install cross
         if: matrix.os == 'ubuntu-latest'
-        uses: taiki-e/install-action@0593da407881e996340c22f60617ba9d95f2b995
+        uses: taiki-e/install-action@f172798ba087526822a4f43dd08714d08a45aa37
         with:
           tool: cross
       - name: Building release assets
