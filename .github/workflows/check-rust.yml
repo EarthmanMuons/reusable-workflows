@@ -72,7 +72,7 @@ jobs:
           shared-key: stable-${{ matrix.platform }}
         timeout-minutes: 5
       - name: Install cargo-nextest
-        uses: taiki-e/install-action@0593da407881e996340c22f60617ba9d95f2b995
+        uses: taiki-e/install-action@ae888b48c8777229768754549e5463ba726cb1b3
         with:
           tool: cargo-nextest
       - name: Compile tests
@@ -112,7 +112,7 @@ jobs:
           shared-key: msrv-ubuntu-latest
         timeout-minutes: 5
       - name: Install cargo-nextest
-        uses: taiki-e/install-action@0593da407881e996340c22f60617ba9d95f2b995
+        uses: taiki-e/install-action@ae888b48c8777229768754549e5463ba726cb1b3
         with:
           tool: cargo-nextest
       - name: Compile tests
