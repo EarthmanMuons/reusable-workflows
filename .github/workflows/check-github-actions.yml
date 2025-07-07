@@ -11,6 +11,6 @@ jobs:
       - name: Checkout source code
         uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683
       - name: Lint GitHub Actions workflow files
-        uses: raven-actions/actionlint@01fce4f43a270a612932cb1c64d40505a029f821
+        uses: raven-actions/actionlint@3a24062651993d40fed1019b58ac6fbdfbf276cc
         with:
           group-result: false
