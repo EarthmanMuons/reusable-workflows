@@ -16,6 +16,8 @@ jobs:
           channel: stable
           flutter-version-file: pubspec.yaml
           cache: true
+      - name: Install dependencies
+        run: flutter pub get
       - name: Check formatting
         run: dart format --output=none --set-exit-if-changed .
 
