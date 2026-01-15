@@ -31,6 +31,7 @@ You'll find the following reusable workflows under the
 [`.github/workflows/`](.github/workflows/) directory of this repository:
 
 - [bump-version-rust.yml](#bump-version-rustyml)
+- [check-flutter.yml](#check-flutteryml)
 - [check-github-actions.yml](#check-github-actionsyml)
 - [check-markdown.yml](#check-markdownyml)
 - [check-rust.yml](#check-rustyml)
@@ -88,6 +89,15 @@ are:
 
 - **Read** access to metadata
 - **Read** and **write** access to code and pull requests
+
+---
+
+### check-flutter.yml
+
+Performs comprehensive testing of a Flutter project, including checking for
+proper formatting with `dart format`, linting with `flutter analyze`, and
+running tests on `ubuntu-latest` using the pinned version of Flutter as defined
+by the project's _pubspec.yaml_ configuration file.
 
 ---
 
