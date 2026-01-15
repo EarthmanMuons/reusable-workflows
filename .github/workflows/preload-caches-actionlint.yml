@@ -9,7 +9,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Save latest actionlint into GitHub Actions cache
-        uses: raven-actions/actionlint@01fce4f43a270a612932cb1c64d40505a029f821
+        uses: raven-actions/actionlint@963d4779ef039e217e5d0e6fd73ce9ab7764e493
         with:
           group-result: false
           flags: -version
