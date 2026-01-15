@@ -7,6 +7,10 @@ on:
         value: ${{ jobs.filter_changes.outputs.added_or_modified }}
       added_or_modified_files:
         value: ${{ jobs.filter_changes.outputs.added_or_modified_files }}
+      flutter:
+        value: ${{ jobs.filter_changes.outputs.flutter }}
+      flutter_files:
+        value: ${{ jobs.filter_changes.outputs.flutter_files }}
       github_actions:
         value: ${{ jobs.filter_changes.outputs.github_actions }}
       github_actions_files:
@@ -33,6 +37,8 @@ jobs:
     outputs:
       added_or_modified: ${{ steps.filter.outputs.added_or_modified }}
       added_or_modified_files: ${{ steps.filter.outputs.added_or_modified_files }}
+      flutter: ${{ steps.filter.outputs.flutter }}
+      flutter_files: ${{ steps.filter.outputs.flutter_files }}
       github_actions: ${{ steps.filter.outputs.github_actions }}
       github_actions_files: ${{ steps.filter.outputs.github_actions_files }}
       markdown: ${{ steps.filter.outputs.markdown }}
@@ -54,6 +60,10 @@ jobs:
           filters: |
             added_or_modified:
               - added|modified: '**'
+            flutter:
+              - '**/*.dart'
+              - '**/pubspec.*'
+              - 'analysis_options.yaml'
             github_actions:
               - added|modified: .github/workflows/*.yml
             markdown:
