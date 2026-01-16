@@ -9,101 +9,96 @@ on:
         type: string
 
 permissions:
-  contents: write
+  contents: read
 
 jobs:
   create_draft_release:
     name: create draft release
     runs-on: ubuntu-latest
+    permissions:
+      contents: write
     outputs:
       upload_url: ${{ steps.gh_release.outputs.upload_url }}
       url: ${{ steps.gh_release.outputs.url }}
     steps:
       - name: Checkout source code
         uses: actions/checkout@8e8c483db84b4bee98b60c0593521ed34d9990e8
+
       - id: gh_release
         name: Create a new GitHub draft release
         uses: softprops/action-gh-release@a06a81a03ee405af7f2048a818ed3f03bbf83c7b
         with:
           draft: true
           generate_release_notes: true
+
       - name: Annotate workflow run with draft release URL
         run: 'echo "### :shipit: Opened draft release for: [${{ inputs.slug }} ${{ github.ref_name }}](${{ steps.gh_release.outputs.url }})" >> "$GITHUB_STEP_SUMMARY"'
 
-  upload_release_assets:
-    name: upload release assets
+  build_release_assets:
+    name: build release assets
     needs:
       - create_draft_release
-    strategy:
-      fail-fast: false
-      matrix:
-        include:
-          - command: flutter build apk
-          - command: flutter build apk --split-per-abi
-          - command: flutter build appbundle
     runs-on: ubuntu-latest
     steps:
       - name: Checkout source code
         uses: actions/checkout@8e8c483db84b4bee98b60c0593521ed34d9990e8
+
       - name: Set up Flutter
         uses: subosito/flutter-action@fd55f4c5af5b953cc57a2be44cb082c8f6635e8e
         with:
           channel: stable
           flutter-version-file: pubspec.yaml
           cache: true
+
       - name: Install dependencies
         run: flutter pub get --enforce-lockfile
+
+      - name: Configure Android app signing
+        env:
+          ANDROID_KEYSTORE_B64: ${{ secrets.ANDROID_KEYSTORE_B64 }}
+          ANDROID_KEYSTORE_PASSWORD: ${{ secrets.ANDROID_KEYSTORE_PASSWORD }}
+          ANDROID_KEY_ALIAS: ${{ secrets.ANDROID_KEY_ALIAS }}
+          ANDROID_KEY_PASSWORD: ${{ secrets.ANDROID_KEY_PASSWORD }}
+        run: ./bin/android-signing-setup
+
       - name: Build release App Bundle
         run: flutter build appbundle
+
       - name: Build release APK
         run: flutter build apk
+
       - name: Stage assets + checksums
-        run: |
-          set -euo pipefail
+        run: ./bin/stage-release-assets --slug "{{ inputs.slug }}"
 
-          slug='${{ inputs.slug }}'
-          if [[ -z $slug ]]; then
-            echo "ERROR: inputs.slug is required and must be non-empty." >&2
-            exit 2
-          fi
+      - name: Upload staged dist/ as workflow artifact
+        uses: actions/upload-artifact@b7c566a772e6b6bfb58ed0dc250532a479d7789f
+        with:
+          name: release-dist
+          path: dist/**
+          if-no-files-found: error
+          retention-days: 7
 
-          if [[ '${{ github.ref_type }}' != 'tag' ]]; then
-            echo "ERROR: This workflow must be invoked from a tag ref." >&2
-            echo "       ref_type='${{ github.ref_type }}' ref='${{ github.ref }}'" >&2
-            exit 2
-          fi
+  upload_release_assets:
+    name: upload release assets
+    needs:
+      - create_draft_release
+      - build_release_assets
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+    steps:
+      - name: Download staged dist/ artifact
+        uses: actions/download-artifact@37930b1c2abaa49bbe596cd826c3c89aef350131
+        with:
+          name: release-dist
+          path: dist
 
-          tag='${{ github.ref_name }}'
-          if [[ -z $tag ]]; then
-            echo "ERROR: github.ref_name was empty; expected a tag name." >&2
-            exit 2
-          fi
-
-          dist_dir="dist"
-          mkdir -p -- "$dist_dir"
-
-          aab_src="build/app/outputs/bundle/release/app-release.aab"
-          apk_src="build/app/outputs/flutter-apk/app-release.apk"
-          [[ -f "$aab_src" ]] || { echo "ERROR: AAB not found at $aab_src" >&2; exit 2; }
-          [[ -f "$apk_src" ]] || { echo "ERROR: APK not found at $apk_src" >&2; exit 2; }
-
-          aab_dst="${dist_dir}/${slug}-${tag}.aab"
-          apk_dst="${dist_dir}/${slug}-${tag}.apk"
-
-          cp -v -- "$aab_src" "$aab_dst"
-          cp -v -- "$apk_src" "$apk_dst"
-
-          pushd "$dist_dir" >/dev/null
-          sha256sum -- *.aab *.apk > sha256sums.txt
-          popd >/dev/null
-
-          echo "Prepared assets:"
-          printf '  %s\n' "$apk_dst" "$aab_dst" "${dist_dir}/sha256sums.txt"
-
-      - name: Uploading release assets
+      - name: Upload release assets
         env:
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: |
+          set -euo pipefail
           echo "Uploading assets to: ${{ needs.create_draft_release.outputs.upload_url }}"
+          ls -la dist/
           gh release upload "$GITHUB_REF_NAME" dist/* --clobber
           echo ":arrow_up: Uploaded release assets" >>"$GITHUB_STEP_SUMMARY"
