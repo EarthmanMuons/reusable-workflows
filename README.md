@@ -44,6 +44,7 @@ You'll find the following reusable workflows under the
 - [draft-release-rust.yml](#draft-release-rustyml)
 - [label-pull-request.yml](#label-pull-requestyml)
 - [preload-caches-actionlint.yml](#preload-caches-actionlintyml)
+- [preload-caches-flutter.yml](#preload-caches-flutteryml)
 - [preload-caches-rust.yml](#preload-caches-rustyml)
 - [publish-crate.yml](#publish-crateyml)
 - [ready-to-merge.yml](#ready-to-mergeyml)
@@ -300,6 +301,13 @@ the [actionlint action][].
 
 ---
 
+### preload-caches-flutter.yml
+
+Saves the repository's Flutter project dependencies for the pinned toolchain
+into the [GitHub Actions cache][], using [flutter-action][].
+
+---
+
 ### preload-caches-rust.yml
 
 Saves the repository's Rust project dependencies for both the _stable_ and
@@ -428,6 +436,7 @@ Copyright &copy; 2023 [Aaron Bull Schaefer][EMAIL] and contributors
 [secrets]: https://docs.github.com/en/actions/security-guides/encrypted-secrets
 [expression]:
   https://docs.github.com/en/actions/learn-github-actions/expressions
+[flutter-action]: https://github.com/subosito/flutter-action
 [GitHub Actions cache]:
   https://docs.github.com/en/actions/using-workflows/caching-dependencies-to-speed-up-workflows
 [GitHub Pages]: https://docs.github.com/pages
