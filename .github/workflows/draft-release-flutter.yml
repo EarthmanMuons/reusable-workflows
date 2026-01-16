@@ -7,6 +7,12 @@ on:
         description: Asset slug name
         required: true
         type: string
+      android_key_alias:
+        description: >
+          Alias name of the signing key inside the Android keystore.
+        required: false
+        type: string
+        default: release
     secrets:
       ANDROID_KEYSTORE_B64:
         description: >
@@ -16,10 +22,6 @@ on:
       ANDROID_KEYSTORE_PASSWORD:
         description: >
           Password protecting the Android signing keystore file.
-        required: true
-      ANDROID_KEY_ALIAS:
-        description: >
-          Alias name of the signing key inside the Android keystore.
         required: true
       ANDROID_KEY_PASSWORD:
         description: >
@@ -76,7 +78,7 @@ jobs:
         env:
           ANDROID_KEYSTORE_B64: ${{ secrets.ANDROID_KEYSTORE_B64 }}
           ANDROID_KEYSTORE_PASSWORD: ${{ secrets.ANDROID_KEYSTORE_PASSWORD }}
-          ANDROID_KEY_ALIAS: ${{ secrets.ANDROID_KEY_ALIAS }}
+          ANDROID_KEY_ALIAS: ${{ inputs.android_key_alias }}
           ANDROID_KEY_PASSWORD: ${{ secrets.ANDROID_KEY_PASSWORD }}
         run: ./bin/android-signing-setup
 
@@ -87,7 +89,7 @@ jobs:
         run: flutter build apk
 
       - name: Stage assets + checksums
-        run: ./bin/stage-release-assets --slug "{{ inputs.slug }}"
+        run: ./bin/stage-release-assets --slug "${{ inputs.slug }}"
 
       - name: Upload staged dist/ as workflow artifact
         uses: actions/upload-artifact@b7c566a772e6b6bfb58ed0dc250532a479d7789f
