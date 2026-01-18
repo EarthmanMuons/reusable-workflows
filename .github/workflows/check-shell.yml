@@ -1,0 +1,29 @@
+name: check shell
+
+on:
+  workflow_call:
+
+jobs:
+  format:
+    name: format
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout source code
+        uses: actions/checkout@8e8c483db84b4bee98b60c0593521ed34d9990e8
+      - name: Check formatting
+        uses: luizm/action-sh-checker@883217215b11c1fabbf00eb1a9a041f62d74c744
+        env:
+          SHFMT_OPTS: --simplify
+        with:
+          sh_checker_shellcheck_disable: true
+
+  lint:
+    name: lint
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout source code
+        uses: actions/checkout@8e8c483db84b4bee98b60c0593521ed34d9990e8
+      - name: Check lints
+        uses: luizm/action-sh-checker@883217215b11c1fabbf00eb1a9a041f62d74c744
+        with:
+          sh_checker_shfmt_disable: true
