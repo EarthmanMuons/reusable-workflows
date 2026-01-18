@@ -64,6 +64,13 @@ jobs:
       - name: Checkout source code
         uses: actions/checkout@8e8c483db84b4bee98b60c0593521ed34d9990e8
 
+      - name: Add Toolbox Envy to PATH
+        uses: EarthmanMuons/toolbox-envy/.github/actions/add-to-path@main
+        with:
+          include_bins: |
+            common
+            flutter
+
       - name: Set up Flutter
         uses: subosito/flutter-action@fd55f4c5af5b953cc57a2be44cb082c8f6635e8e
         with:
@@ -80,7 +87,7 @@ jobs:
           ANDROID_KEYSTORE_PASSWORD: ${{ secrets.ANDROID_KEYSTORE_PASSWORD }}
           ANDROID_KEY_ALIAS: ${{ inputs.android_key_alias }}
           ANDROID_KEY_PASSWORD: ${{ secrets.ANDROID_KEY_PASSWORD }}
-        run: ./bin/android-signing-setup
+        run: android-signing-setup
 
       - name: Build release App Bundle
         run: flutter build appbundle
@@ -89,7 +96,7 @@ jobs:
         run: flutter build apk
 
       - name: Stage assets + checksums
-        run: ./bin/stage-release-assets --slug "${{ inputs.slug }}"
+        run: stage-release-assets --slug "${{ inputs.slug }}"
 
       - name: Upload staged dist/ as workflow artifact
         uses: actions/upload-artifact@b7c566a772e6b6bfb58ed0dc250532a479d7789f
