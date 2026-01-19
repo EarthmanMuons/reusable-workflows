@@ -76,7 +76,7 @@ jobs:
       - id: version
         name: Get the new release version
         run: |
-          echo "release_version=$(get-package-version)" >> "$GITHUB_OUTPUT"
+          echo "release_version=$(get-package-version)" >>"$GITHUB_OUTPUT"
 
       - name: Verify changes exist
         run: |
@@ -111,5 +111,9 @@ jobs:
 
       - name: Annotate workflow run with PR URL
         run: |
-          echo "### :shipit: Opened pull request for ${{ inputs.level }} release v${{ steps.version.outputs.release_version }}:" >> "$GITHUB_STEP_SUMMARY"
-          echo "- ${{ steps.cpr.outputs.pull-request-url }}" >> "$GITHUB_STEP_SUMMARY"
+          set -euo pipefail
+          {
+          echo "### :shipit: Opened pull request for ${{ inputs.level }} release v${{ steps.version.outputs.release_version }}"
+          echo
+          echo "- ${{ steps.cpr.outputs.pull-request-url }}"
+          } >>"$GITHUB_STEP_SUMMARY"
