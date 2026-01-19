@@ -107,7 +107,7 @@ jobs:
 
             **Please review the submitted changes.**
 
-            Once this PR is merged into the _main_ branch, an automated process will tag the commit.
+            Once this PR is merged into the _main_ branch, an automated process will tag the commit and create a draft GitHub Release with signed assets attached for final review before publishing.
 
       - name: Annotate workflow run with PR URL
         run: |
