@@ -1,0 +1,115 @@
+name: bump version / flutter
+
+on:
+  workflow_call:
+    inputs:
+      level:
+        description: Bump level
+        required: true
+        type: string
+    secrets:
+      APP_ID:
+        description: GitHub App installation ID
+        required: true
+      APP_PRIVATE_KEY:
+        description: GitHub App private key
+        required: true
+
+jobs:
+  prepare_next_release:
+    name: prepare next release
+    runs-on: ubuntu-latest
+    steps:
+      - name: Validate bump level
+        run: |
+          case "${{ inputs.level }}" in
+            major|minor|patch) ;;
+            *) echo "Invalid level: '${{ inputs.level }}' (expected major|minor|patch)"; exit 1 ;;
+          esac
+
+      - id: generate_token
+        name: Generate a GitHub App token
+        uses: tibdex/github-app-token@3beb63f4bd073e61482598c45c71c1019b59b73a
+        with:
+          app_id: ${{ secrets.APP_ID }}
+          private_key: ${{ secrets.APP_PRIVATE_KEY }}
+
+      - name: Checkout source code
+        uses: actions/checkout@8e8c483db84b4bee98b60c0593521ed34d9990e8
+        with:
+          token: ${{ steps.generate_token.outputs.token }}
+          ref: main
+          fetch-depth: 0
+
+      - name: Add Toolbox Envy to PATH
+        uses: EarthmanMuons/toolbox-envy/.github/actions/add-to-path@main
+        with:
+          include_bins: |
+            common
+            flutter
+
+      - name: Configure Git identity
+        run: |
+          git config user.name "senile-errata[bot]"
+          git config user.email "senile-errata@users.noreply.github.com"
+
+      - name: Set up Flutter
+        uses: subosito/flutter-action@fd55f4c5af5b953cc57a2be44cb082c8f6635e8e
+        with:
+          channel: stable
+          flutter-version-file: pubspec.yaml
+          cache: true
+
+      - name: Install dependencies
+        run: flutter pub get --enforce-lockfile
+
+      - name: Update dependencies
+        run: flutter pub upgrade --unlock-transitive
+
+      - name: Bump ${{ inputs.level }} version for project
+        run: |
+          get-package-version | bump-semver --"${{ inputs.level }}" | set-package-version
+
+      - name: Bump CHANGELOG version to match
+        run: get-package-version | bump-changelog-version
+
+      - id: version
+        name: Get the new release version
+        run: |
+          echo "release_version=$(get-package-version)" >> "$GITHUB_OUTPUT"
+
+      - name: Verify changes exist
+        run: |
+          git update-index -q --really-refresh
+          if git diff-index --quiet HEAD --; then
+            echo "No changes detected; refusing to open PR."
+            exit 1
+          fi
+
+      - id: cpr
+        name: Create pull request
+        uses: peter-evans/create-pull-request@98357b18bf14b5342f975ff684046ec3b2a07725
+        with:
+          token: ${{ steps.generate_token.outputs.token }}
+          branch: chore/bump-version-${{ inputs.level }}
+          branch-suffix: timestamp
+          commit-message: Prepare v${{ steps.version.outputs.release_version }} ${{ inputs.level }} release.
+          title: Release v${{ steps.version.outputs.release_version }}
+          body: |-
+            This PR was automatically created by the [bump-version](https://github.com/${{ github.repository }}/actions/runs/${{ github.run_id }}) workflow, which ran the following commands:
+
+
+            ```
+            $ flutter pub upgrade --unlock-transitive
+            $ get-package-version | bump-semver --${{ inputs.level }} | set-package-version
+            $ get-package-version | bump-changelog-version
+            ```
+
+            **Please review the submitted changes.**
+
+            Once this PR is merged into the _main_ branch, an automated process will tag the commit.
+
+      - name: Annotate workflow run with PR URL
+        run: |
+          echo "### :shipit: Opened pull request for ${{ inputs.level }} release v${{ steps.version.outputs.release_version }}:" >> "$GITHUB_STEP_SUMMARY"
+          echo "- ${{ steps.cpr.outputs.pull-request-url }}" >> "$GITHUB_STEP_SUMMARY"
