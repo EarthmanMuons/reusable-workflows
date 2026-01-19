@@ -5,6 +5,15 @@ Actions. Its primary goal is to centralize common workflows used across multiple
 projects, streamlining the process of updating actions and sharing improvements
 consistently.
 
+Reusable Workflows is designed to pair with the [Toolbox Envy][] repository.
+Where this repository defines high-level CI workflows and execution structure,
+Toolbox Envy provides the reusable scripts those workflows invoke, keeping
+procedural logic centralized and out of workflow definitions.
+
+[reusable workflows]:
+  https://docs.github.com/en/actions/using-workflows/reusing-workflows
+[Toolbox Envy]: https://github.com/EarthmanMuons/toolbox-envy
+
 ## Usage
 
 In GitHub Actions, you call a reusable workflow by using the `uses` keyword in a
@@ -454,8 +463,6 @@ Copyright &copy; 2023 [Aaron Bull Schaefer][EMAIL] and contributors
   https://docs.github.com/en/actions/using-workflows/events-that-trigger-workflows#pull_request
 [`pull_request_target`]:
   https://docs.github.com/en/actions/using-workflows/events-that-trigger-workflows#pull_request_target
-[reusable workflows]:
-  https://docs.github.com/en/actions/using-workflows/reusing-workflows
 [rust-cache]: https://github.com/Swatinem/rust-cache
 [rustdoc]: https://doc.rust-lang.org/rustdoc/index.html
 [spellout]:
