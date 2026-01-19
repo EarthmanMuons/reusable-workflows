@@ -8,7 +8,7 @@ documentation to GitHub Pages.
 ```yml
 jobs:
   zig_docs:
-    uses: EarthmanMuons/reusable-workflows/.github/workflows/zig/deploy-github-pages-zig.yml@main
+    uses: EarthmanMuons/reusable-workflows/.github/workflows/deploy-github-pages-zig.yml@main
 ```
 
 ---

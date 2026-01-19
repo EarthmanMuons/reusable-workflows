@@ -9,4 +9,4 @@ jobs:
     name: flush caches
     permissions:
       actions: write
-    uses: ./.github/workflows/common/flush-caches.yml
+    uses: ./.github/workflows/flush-caches.yml

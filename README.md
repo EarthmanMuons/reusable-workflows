@@ -17,14 +17,14 @@ procedural logic centralized and out of workflow definitions.
 
 You call a reusable workflow by using `uses` at the job level:
 
-- `{owner}/{repo}/.github/workflows/<path>.yml@{ref}`
+- `{owner}/{repo}/.github/workflows/<workflow>.yml@{ref}`
 
 For example, to call the "spelling.yml" reusable workflow:
 
 ```yml
 jobs:
   spelling:
-    uses: EarthmanMuons/reusable-workflows/.github/workflows/common/check-spelling.yml@main
+    uses: EarthmanMuons/reusable-workflows/.github/workflows/check-spelling.yml@main
 ```
 
 > _For a more comprehensive example of these workflows being used in a
@@ -37,26 +37,24 @@ jobs:
 
 ## Workflow Index
 
-Reusable workflows are organized by namespace under
+Reusable workflows are defined as top-level files under
 [`.github/workflows/`](.github/workflows/).
 
 ### Common
 
 General-purpose workflows intended for use by any repository:
 
-- `common/check-github-actions.yml` – Lint workflows via actionlint
-- `common/check-markdown.yml` – Format and lint Markdown via Prettier
-- `common/check-shell.yml` – Format and lint shell scripts
-- `common/check-spelling.yml` – Spellcheck via typos
-- `common/detect-changed-files.yml` – Expose paths-filter outputs for
-  conditional jobs
-- `common/flush-caches.yml` – Delete GitHub Actions caches for the current
-  branch
-- `common/label-pull-request.yml` – Apply labels via actions/labeler
-- `common/preload-caches-actionlint.yml` – Cache the actionlint binary
-- `common/ready-to-merge.yml` – Ensure all required jobs truly passed
-- `common/tag-if-missing.yml` – Create and push a missing tag using Toolbox Envy
-  conventions
+- `detect-changed-files.yml` – Expose paths-filter outputs for conditional jobs
+- `check-github-actions.yml` – Lint workflows via actionlint
+- `check-markdown.yml` – Format and lint Markdown via Prettier
+- `check-shell.yml` – Format and lint shell scripts
+- `check-spelling.yml` – Spellcheck via typos
+- `label-pull-request.yml` – Apply labels via actions/labeler
+- `ready-to-merge.yml` – Ensure all required jobs truly passed
+- `preload-caches-actionlint.yml` – Cache the actionlint binary
+- `flush-caches.yml` – Delete GitHub Actions caches for the current branch
+- `tag-if-missing.yml` – Create and push a missing SemVer tag (via Toolbox Envy
+  scripts)
 
 Details: [docs/common.md](docs/common.md)
 
@@ -64,11 +62,10 @@ Details: [docs/common.md](docs/common.md)
 
 Workflows specific to Flutter projects:
 
-- `flutter/check-flutter.yml` – Format, analyze, and test using pinned Flutter
-- `flutter/preload-caches-flutter.yml` – Cache pinned Flutter dependencies
-- `flutter/bump-version-flutter.yml` – Bump version and changelog, open PR
-- `flutter/draft-release-flutter.yml` – Draft release, build, sign, and upload
-  assets
+- `check-flutter.yml` – Format, analyze, and test using pinned Flutter
+- `preload-caches-flutter.yml` – Cache pinned Flutter dependencies
+- `bump-version-flutter.yml` – Bump version and changelog, open PR
+- `draft-release-flutter.yml` – Draft release, build, sign, and upload assets
 
 Details: [docs/flutter.md](docs/flutter.md)
 
@@ -76,21 +73,23 @@ Details: [docs/flutter.md](docs/flutter.md)
 
 Workflows specific to Rust projects:
 
-- `rust/check-rust.yml` – fmt, clippy, stable matrix, MSRV
-- `rust/check-rust-beta.yml` – Beta toolchain coverage
-- `rust/check-rust-miri.yml` – Miri coverage (nightly)
-- `rust/preload-caches-rust.yml` – Cache stable and MSRV dependencies
-- `rust/bump-version-rust.yml` – cargo-release version and replace, open PR
-- `rust/tag-untagged-releases-rust.yml` – Tag and push missing crate tags
-- `rust/publish-crate.yml` – Publish crates to crates.io
-- `rust/draft-release-rust.yml` – Draft release and upload compiled artifacts
-- `rust/deploy-github-pages-rust.yml` – Build rustdoc and deploy to GitHub Pages
+- `check-rust.yml` – fmt, clippy, stable matrix, MSRV
+- `check-rust-beta.yml` – Beta toolchain coverage
+- `check-rust-miri.yml` – Miri coverage (nightly)
+- `preload-caches-rust.yml` – Cache stable and MSRV dependencies
+- `bump-version-rust.yml` – cargo-release version and replace, open PR
+- `tag-untagged-releases-rust.yml` – Tag and push missing crate tags
+- `publish-crate.yml` – Publish crates to crates.io
+- `draft-release-rust.yml` – Draft release and upload compiled artifacts
+- `deploy-github-pages-rust.yml` – Build rustdoc and deploy to GitHub Pages
 
 Details: [docs/rust.md](docs/rust.md)
 
 ### Zig
 
-- `zig/deploy-github-pages-zig.yml` – Build Zig docs and deploy GitHub Pages
+Workflows specific to Zig projects:
+
+- `deploy-github-pages-zig.yml` – Build Zig docs and deploy GitHub Pages
 
 Details: [docs/zig.md](docs/zig.md)
 

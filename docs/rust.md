@@ -24,7 +24,7 @@ caching, and documentation deployment.
 ```yml
 jobs:
   rust_ci:
-    uses: EarthmanMuons/reusable-workflows/.github/workflows/rust/check-rust.yml@main
+    uses: EarthmanMuons/reusable-workflows/.github/workflows/check-rust.yml@main
 ```
 
 ---

@@ -24,7 +24,7 @@ signed Android artifacts.
 ```yml
 jobs:
   flutter_ci:
-    uses: EarthmanMuons/reusable-workflows/.github/workflows/flutter/check-flutter.yml@main
+    uses: EarthmanMuons/reusable-workflows/.github/workflows/check-flutter.yml@main
 ```
 
 ---
