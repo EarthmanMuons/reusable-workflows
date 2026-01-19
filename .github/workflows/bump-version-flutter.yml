@@ -68,15 +68,15 @@ jobs:
 
       - name: Bump ${{ inputs.level }} version for project
         run: |
-          get-package-version | bump-semver --"${{ inputs.level }}" | set-package-version
+          get-project-version | bump-semver --"${{ inputs.level }}" | set-project-version
 
       - name: Bump CHANGELOG version to match
-        run: get-package-version | bump-changelog-version
+        run: get-project-version | bump-changelog-version
 
       - id: version
         name: Get the new release version
         run: |
-          echo "release_version=$(get-package-version)" >>"$GITHUB_OUTPUT"
+          echo "release_version=$(get-project-version)" >>"$GITHUB_OUTPUT"
 
       - name: Verify changes exist
         run: |
@@ -101,8 +101,8 @@ jobs:
 
             ```
             $ flutter pub upgrade --unlock-transitive
-            $ get-package-version | bump-semver --${{ inputs.level }} | set-package-version
-            $ get-package-version | bump-changelog-version
+            $ get-project-version | bump-semver --${{ inputs.level }} | set-project-version
+            $ get-project-version | bump-changelog-version
             ```
 
             **Please review the submitted changes.**
