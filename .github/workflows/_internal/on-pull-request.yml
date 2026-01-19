@@ -17,7 +17,7 @@ jobs:
     name: detect changed files
     permissions:
       pull-requests: read
-    uses: ./.github/workflows/detect-changed-files.yml
+    uses: ./.github/workflows/common/detect-changed-files.yml
 
   check_github_actions:
     name: check github actions
@@ -29,7 +29,7 @@ jobs:
     name: check markdown
     needs: detect_changed_files
     if: needs.detect_changed_files.outputs.markdown == 'true'
-    uses: ./.github/workflows/check-markdown.yml
+    uses: ./.github/workflows/common/check-markdown.yml
     with:
       files: ${{ needs.detect_changed_files.outputs.markdown_files }}
 
@@ -37,7 +37,7 @@ jobs:
     name: check spelling
     needs: detect_changed_files
     if: needs.detect_changed_files.outputs.added_or_modified == 'true'
-    uses: ./.github/workflows/check-spelling.yml
+    uses: ./.github/workflows/common/check-spelling.yml
     with:
       files: ${{ needs.detect_changed_files.outputs.added_or_modified_files }}
 
@@ -49,6 +49,6 @@ jobs:
       - check_markdown
       - check_spelling
     if: always()
-    uses: ./.github/workflows/ready-to-merge.yml
+    uses: ./.github/workflows/common/ready-to-merge.yml
     with:
       needs_context: ${{ toJson(needs) }}
