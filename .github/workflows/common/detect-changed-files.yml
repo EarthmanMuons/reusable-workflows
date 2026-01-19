@@ -65,7 +65,7 @@ jobs:
               - '**/pubspec.*'
               - 'analysis_options.yaml'
             github_actions:
-              - added|modified: .github/workflows/*.yml
+              - added|modified: .github/workflows/**/*.yml
             markdown:
               - added|modified: '**/*.md'
             rust:

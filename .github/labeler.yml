@@ -6,4 +6,4 @@ documentation:
 
 github_actions:
   - changed-files:
-      - any-glob-to-any-file: .github/workflows/*.yml
+      - any-glob-to-any-file: .github/workflows/**/*.yml
