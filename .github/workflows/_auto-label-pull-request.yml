@@ -17,4 +17,4 @@ jobs:
     permissions:
       contents: read
       pull-requests: write
-    uses: ./.github/workflows/common/label-pull-request.yml
+    uses: ./.github/workflows/label-pull-request.yml

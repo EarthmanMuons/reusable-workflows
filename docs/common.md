@@ -9,7 +9,7 @@ maintenance, and release-safety primitives.
 ```yml
 jobs:
   spelling:
-    uses: EarthmanMuons/reusable-workflows/.github/workflows/common/check-spelling.yml@main
+    uses: EarthmanMuons/reusable-workflows/.github/workflows/check-spelling.yml@main
 ```
 
 ---
@@ -50,12 +50,12 @@ jobs:
   detect_changed_files:
     permissions:
       pull-requests: read
-    uses: EarthmanMuons/reusable-workflows/.github/workflows/common/detect-changed-files.yml@main
+    uses: EarthmanMuons/reusable-workflows/.github/workflows/detect-changed-files.yml@main
 
   check_spelling:
     needs: detect_changed_files
     if: needs.detect_changed_files.outputs.added_or_modified == 'true'
-    uses: EarthmanMuons/reusable-workflows/.github/workflows/common/check-spelling.yml@main
+    uses: EarthmanMuons/reusable-workflows/.github/workflows/check-spelling.yml@main
     with:
       files: ${{ needs.detect_changed_files.outputs.added_or_modified_files }}
 ```
@@ -146,7 +146,7 @@ jobs:
       - check_markdown
       - check_spelling
     if: always()
-    uses: EarthmanMuons/reusable-workflows/.github/workflows/common/ready-to-merge.yml@main
+    uses: EarthmanMuons/reusable-workflows/.github/workflows/ready-to-merge.yml@main
     with:
       needs_context: ${{ toJson(needs) }}
 ```

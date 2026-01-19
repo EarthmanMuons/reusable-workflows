@@ -11,4 +11,4 @@ on:
 jobs:
   cache_actionlint:
     name: cache actionlint
-    uses: ./.github/workflows/common/preload-caches-actionlint.yml
+    uses: ./.github/workflows/preload-caches-actionlint.yml
