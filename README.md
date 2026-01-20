@@ -19,7 +19,7 @@ You call a reusable workflow by using `uses` at the job level:
 
 - `{owner}/{repo}/.github/workflows/<workflow>.yml@{ref}`
 
-For example, to call the "spelling.yml" reusable workflow:
+For example, to call the "check-spelling.yml" reusable workflow:
 
 ```yml
 jobs:
