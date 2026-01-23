@@ -83,8 +83,8 @@ jobs:
         with:
           token: ${{ steps.generate_token.outputs.token }}
           branch-suffix: timestamp
-          commit-message: Prepare ${{ inputs.package }} v${{ env.release_version }} ${{ inputs.level }} release
-          title: Prepare ${{ inputs.package }} v${{ env.release_version }} ${{ inputs.level }} release
+          commit-message: Release ${{ inputs.package }} v${{ env.release_version }}
+          title: Prepare the ${{ inputs.package }} v${{ env.release_version }} ${{ inputs.level }} release
           body: |-
             This PR was automatically created by the [bump-version](https://github.com/${{ github.repository }}/actions/runs/${{ github.run_id }}) workflow, which ran the following commands:
 

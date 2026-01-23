@@ -95,7 +95,7 @@ jobs:
           branch: release/bump-version
           branch-suffix: timestamp
           commit-message: Release v${{ steps.version.outputs.release_version }}
-          title: Prepare v${{ steps.version.outputs.release_version }} release.
+          title: Prepare the v${{ steps.version.outputs.release_version }} release
           body: |-
             This PR was automatically created by the [bump-version](https://github.com/${{ github.repository }}/actions/runs/${{ github.run_id }}) workflow, which ran the following commands:
 
