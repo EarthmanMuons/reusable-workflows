@@ -1,0 +1,120 @@
+name: bump version / flutter app
+
+on:
+  workflow_call:
+    inputs:
+      date_override:
+        description: >
+          Optional date to use instead of "now" (recommended format: YYYY-MM-DD).
+        required: false
+        type: string
+        default: ""
+      format:
+        description: >
+          Optional CalVer format string passed directly to bump-calver (blank = default).
+        required: false
+        type: string
+        default: ""
+    secrets:
+      APP_ID:
+        description: GitHub App installation ID
+        required: true
+      APP_PRIVATE_KEY:
+        description: GitHub App private key
+        required: true
+
+jobs:
+  prepare_next_release:
+    name: prepare next release
+    runs-on: ubuntu-latest
+    steps:
+      - id: generate_token
+        name: Generate a GitHub App token
+        uses: tibdex/github-app-token@3beb63f4bd073e61482598c45c71c1019b59b73a
+        with:
+          app_id: ${{ secrets.APP_ID }}
+          private_key: ${{ secrets.APP_PRIVATE_KEY }}
+
+      - name: Checkout source code
+        uses: actions/checkout@8e8c483db84b4bee98b60c0593521ed34d9990e8
+        with:
+          token: ${{ steps.generate_token.outputs.token }}
+          ref: main
+          fetch-depth: 0
+
+      - name: Add Toolbox Envy to PATH
+        uses: EarthmanMuons/toolbox-envy/.github/actions/add-to-path@main
+        with:
+          include_bins: |
+            common
+            flutter
+
+      - name: Configure Git identity
+        run: |
+          git config user.name "senile-errata[bot]"
+          git config user.email "senile-errata@users.noreply.github.com"
+
+      - name: Set up Flutter
+        uses: subosito/flutter-action@fd55f4c5af5b953cc57a2be44cb082c8f6635e8e
+        with:
+          channel: stable
+          flutter-version-file: pubspec.yaml
+          cache: true
+
+      - name: Install dependencies
+        run: flutter pub get --enforce-lockfile
+
+      - name: Update dependencies
+        run: flutter pub upgrade --unlock-transitive
+
+      - name: Bump CalVer version for project
+        run: |
+          bump-calver --format "${{ inputs.format }}" "${{ inputs.date_override }}" | set-project-version
+
+      - name: Bump CHANGELOG version to match
+        run: get-project-version | bump-changelog-version
+
+      - id: version
+        name: Get the new release version
+        run: |
+          echo "release_version=$(get-project-version)" >>"$GITHUB_OUTPUT"
+
+      - name: Verify changes exist
+        run: |
+          git update-index -q --really-refresh
+          if git diff-index --quiet HEAD --; then
+            echo "No changes detected; refusing to open PR."
+            exit 1
+          fi
+
+      - id: cpr
+        name: Create pull request
+        uses: peter-evans/create-pull-request@98357b18bf14b5342f975ff684046ec3b2a07725
+        with:
+          token: ${{ steps.generate_token.outputs.token }}
+          branch: release/bump-version
+          branch-suffix: timestamp
+          commit-message: Release v${{ steps.version.outputs.release_version }}
+          title: Prepare v${{ steps.version.outputs.release_version }} release.
+          body: |-
+            This PR was automatically created by the [bump-version](https://github.com/${{ github.repository }}/actions/runs/${{ github.run_id }}) workflow, which ran the following commands:
+
+
+            ```
+            $ flutter pub upgrade --unlock-transitive
+            $ bump-calver --format "${{ inputs.format }}" "${{ inputs.date_override }}" | set-project-version
+            $ get-project-version | bump-changelog-version
+            ```
+
+            **Please review the submitted changes.**
+
+            Once this PR is merged into the _main_ branch, an automated process will tag the commit and create a draft GitHub Release with signed assets attached for final review before publishing.
+
+      - name: Annotate workflow run with PR URL
+        run: |
+          set -euo pipefail
+          {
+          echo "### Opened pull request for release v${{ steps.version.outputs.release_version }}"
+          echo
+          echo "- ${{ steps.cpr.outputs.pull-request-url }}"
+          } >>"$GITHUB_STEP_SUMMARY"

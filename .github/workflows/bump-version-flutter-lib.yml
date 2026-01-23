@@ -1,4 +1,4 @@
-name: bump version / flutter
+name: bump version / flutter lib
 
 on:
   workflow_call:
@@ -91,10 +91,10 @@ jobs:
         uses: peter-evans/create-pull-request@98357b18bf14b5342f975ff684046ec3b2a07725
         with:
           token: ${{ steps.generate_token.outputs.token }}
-          branch: chore/bump-version-${{ inputs.level }}
+          branch: release/bump-version
           branch-suffix: timestamp
-          commit-message: Prepare v${{ steps.version.outputs.release_version }} ${{ inputs.level }} release.
-          title: Release v${{ steps.version.outputs.release_version }}
+          commit-message: Release v${{ steps.version.outputs.release_version }}
+          title: Prepare v${{ steps.version.outputs.release_version }} ${{ inputs.level }} release.
           body: |-
             This PR was automatically created by the [bump-version](https://github.com/${{ github.repository }}/actions/runs/${{ github.run_id }}) workflow, which ran the following commands:
 
