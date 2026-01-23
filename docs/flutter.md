@@ -49,9 +49,37 @@ cache to speed up CI runs.
 
 ---
 
-## bump-version-flutter.yml
+## bump-version-flutter-app.yml
 
-Bumps the project semantic version and CHANGELOG and opens a release PR.
+Intended for Flutter applications released as final artifacts (APK/IPA/etc).
+
+Bumps the project version and CHANGELOG (using CalVer), then opens a release
+preparation pull request.
+
+**Inputs**
+
+| Name          | Required |
+| ------------- | -------- |
+| date_override | false    |
+| format        | false    |
+
+**Secrets**
+
+- `APP_ID`
+- `APP_PRIVATE_KEY`
+
+**Authentication**
+
+This workflow requires a GitHub App token (see namespace note above).
+
+---
+
+## bump-version-flutter-lib.yml
+
+Intended for Flutter packages/plugins consumed as dependencies.
+
+Bumps the project version and CHANGELOG (using SemVer), then opens a release
+preparation pull request.
 
 **Inputs**
 
