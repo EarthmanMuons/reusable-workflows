@@ -73,6 +73,9 @@ jobs:
       - name: Bump CHANGELOG version to match
         run: get-project-version | bump-changelog-version
 
+      - name: Fix up CHANGELOG formatting
+        run: npx --yes prettier@latest --color --prose-wrap always --write -- **/CHANGELOG.md
+
       - id: version
         name: Get the new release version
         run: |
