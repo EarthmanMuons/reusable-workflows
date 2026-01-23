@@ -15,7 +15,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout source code
-        uses: actions/checkout@8e8c483db84b4bee98b60c0593521ed34d9990e8
+        uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd
       - name: Install beta Rust toolchain
         uses: dtolnay/rust-toolchain@f7ccc83f9ed1e5b9c81d8a67d7ad1a747e22a561
         with:
@@ -23,7 +23,7 @@ jobs:
       - name: Set override to beta Rust
         run: rustup override set beta
       - name: Install cargo-nextest
-        uses: taiki-e/install-action@2e9d707ef49c9b094d45955b60c7e5c0dfedeb14
+        uses: taiki-e/install-action@a632d43378d77581e7441d0833ad517e52ca1fef
         with:
           tool: cargo-nextest
       - name: Compile tests
