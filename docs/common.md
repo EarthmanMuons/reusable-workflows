@@ -175,6 +175,15 @@ Deletes GitHub Actions cache entries for the current branch.
 Create and push a missing SemVer tag (via
 [Toolbox Envy](https://github.com/EarthmanMuons/toolbox-envy) scripts).
 
+**Inputs**
+
+| Name                | Required |
+| ------------------- | -------- |
+| `toolbox_envy_bins` | true     |
+
+The `toolbox_envy_bins` entries must exist as `bin/<name>` in Toolbox Envy and
+may be newline- or comma-separated; invalid names will fail the job.
+
 **Required secrets**
 
 - `APP_ID`
