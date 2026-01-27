@@ -105,13 +105,17 @@ and uploads them to the release.
 
 **Inputs**
 
-| Name              | Required | Default |
-| ----------------- | -------- | ------- |
-| slug              | true     | —       |
-| android_key_alias | false    | release |
+| Name                          | Required | Default    |
+| ----------------------------- | -------- | ---------- |
+| slug                          | true     | —          |
+| android_app_signing_key_alias | false    | appsigning |
+| android_upload_key_alias      | false    | upload     |
 
 **Secrets**
 
-- `ANDROID_KEYSTORE_B64`
-- `ANDROID_KEYSTORE_PASSWORD`
-- `ANDROID_KEY_PASSWORD`
+- `ANDROID_APP_SIGNING_KEYSTORE_B64`
+- `ANDROID_APP_SIGNING_KEYSTORE_PASSWORD`
+- `ANDROID_APP_SIGNING_KEY_PASSWORD`
+- `ANDROID_UPLOAD_KEYSTORE_B64`
+- `ANDROID_UPLOAD_KEYSTORE_PASSWORD`
+- `ANDROID_UPLOAD_KEY_PASSWORD`
