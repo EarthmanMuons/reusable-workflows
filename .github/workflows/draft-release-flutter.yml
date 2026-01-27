@@ -7,25 +7,44 @@ on:
         description: Asset slug name
         required: true
         type: string
-      android_key_alias:
+      android_app_signing_key_alias:
         description: >
-          Alias name of the signing key inside the Android keystore.
+          Alias name of the app signing key inside the Android keystore.
         required: false
         type: string
-        default: release
+        default: appsigning
+      android_upload_key_alias:
+        description: >
+          Alias name of the upload key inside the Android keystore.
+        required: false
+        type: string
+        default: upload
     secrets:
-      ANDROID_KEYSTORE_B64:
+      ANDROID_APP_SIGNING_KEYSTORE_B64:
         description: >
-          Base64-encoded Android signing keystore (PKCS12 or JKS) used by Gradle
-          to sign release App Bundles and APKs in CI.
+          Base64-encoded Android app signing keystore (PKCS12 or JKS) used by
+          Gradle to sign release APKs in CI.
         required: true
-      ANDROID_KEYSTORE_PASSWORD:
+      ANDROID_APP_SIGNING_KEYSTORE_PASSWORD:
         description: >
-          Password protecting the Android signing keystore file.
+          Password protecting the Android app signing keystore file.
         required: true
-      ANDROID_KEY_PASSWORD:
+      ANDROID_APP_SIGNING_KEY_PASSWORD:
         description: >
-          Password for the signing key alias within the Android keystore.
+          Password for the app signing key alias within the Android keystore.
+        required: true
+      ANDROID_UPLOAD_KEYSTORE_B64:
+        description: >
+          Base64-encoded Android upload keystore (PKCS12 or JKS) used by
+          Gradle to sign release App Bundles in CI.
+        required: true
+      ANDROID_UPLOAD_KEYSTORE_PASSWORD:
+        description: >
+          Password protecting the Android upload keystore file.
+        required: true
+      ANDROID_UPLOAD_KEY_PASSWORD:
+        description: >
+          Password for the upload key alias within the Android keystore.
         required: true
 
 permissions:
@@ -88,16 +107,30 @@ jobs:
       - name: Install dependencies
         run: flutter pub get --enforce-lockfile
 
-      - name: Configure Android app signing
+      - name: Configure Android signing (upload key)
         env:
-          ANDROID_KEYSTORE_B64: ${{ secrets.ANDROID_KEYSTORE_B64 }}
-          ANDROID_KEYSTORE_PASSWORD: ${{ secrets.ANDROID_KEYSTORE_PASSWORD }}
-          ANDROID_KEY_ALIAS: ${{ inputs.android_key_alias }}
-          ANDROID_KEY_PASSWORD: ${{ secrets.ANDROID_KEY_PASSWORD }}
+          ANDROID_SIGNING_ROLE: upload
+          ANDROID_SIGNING_FORCE_DECODE: 1
+          ANDROID_KEYSTORE_B64: ${{ secrets.ANDROID_UPLOAD_KEYSTORE_B64 }}
+          ANDROID_KEYSTORE_FILENAME: upload-keystore.p12
+          ANDROID_KEYSTORE_PASSWORD: ${{ secrets.ANDROID_UPLOAD_KEYSTORE_PASSWORD }}
+          ANDROID_KEY_ALIAS: ${{ inputs.android_upload_key_alias }}
+          ANDROID_KEY_PASSWORD: ${{ secrets.ANDROID_UPLOAD_KEY_PASSWORD }}
         run: android-signing-setup
 
       - name: Build release App Bundle
         run: flutter build appbundle
+
+      - name: Configure Android signing (app signing key)
+        env:
+          ANDROID_SIGNING_ROLE: appsigning
+          ANDROID_SIGNING_FORCE_DECODE: 1
+          ANDROID_KEYSTORE_B64: ${{ secrets.ANDROID_APP_SIGNING_KEYSTORE_B64 }}
+          ANDROID_KEYSTORE_FILENAME: app-signing-keystore.p12
+          ANDROID_KEYSTORE_PASSWORD: ${{ secrets.ANDROID_APP_SIGNING_KEYSTORE_PASSWORD }}
+          ANDROID_KEY_ALIAS: ${{ inputs.android_app_signing_key_alias }}
+          ANDROID_KEY_PASSWORD: ${{ secrets.ANDROID_APP_SIGNING_KEY_PASSWORD }}
+        run: android-signing-setup
 
       - name: Build release APK
         run: flutter build apk
