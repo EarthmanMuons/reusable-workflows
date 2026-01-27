@@ -43,6 +43,8 @@ jobs:
     steps:
       - name: Checkout source code
         uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd
+        with:
+          persist-credentials: false
 
       - id: gh_release
         name: Create a new GitHub draft release
@@ -53,7 +55,10 @@ jobs:
           generate_release_notes: true
 
       - name: Annotate workflow run with draft release URL
-        run: 'echo "### :shipit: Opened draft release for: [${{ inputs.slug }} ${{ github.ref_name }}](${{ steps.gh_release.outputs.url }})" >> "$GITHUB_STEP_SUMMARY"'
+        env:
+          INPUTS_SLUG: ${{ inputs.slug }}
+          GH_RELEASE_URL: ${{ steps.gh_release.outputs.url }}
+        run: 'echo "### :shipit: Opened draft release for: [${INPUTS_SLUG} ${GITHUB_REF_NAME}](${GH_RELEASE_URL})" >> "$GITHUB_STEP_SUMMARY"'
 
   build_release_assets:
     name: build release assets
@@ -63,6 +68,8 @@ jobs:
     steps:
       - name: Checkout source code
         uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd
+        with:
+          persist-credentials: false
 
       - name: Add Toolbox Envy to PATH
         uses: EarthmanMuons/toolbox-envy/.github/actions/add-to-path@main
@@ -96,7 +103,9 @@ jobs:
         run: flutter build apk
 
       - name: Stage assets + checksums
-        run: stage-release-assets --slug "${{ inputs.slug }}"
+        env:
+          INPUTS_SLUG: ${{ inputs.slug }}
+        run: stage-release-assets --slug "${INPUTS_SLUG}"
 
       - name: Upload staged dist/ as workflow artifact
         uses: actions/upload-artifact@b7c566a772e6b6bfb58ed0dc250532a479d7789f
@@ -117,6 +126,8 @@ jobs:
     steps:
       - name: Checkout source code
         uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd
+        with:
+          persist-credentials: false
 
       - name: Download staged dist/ artifact
         uses: actions/download-artifact@37930b1c2abaa49bbe596cd826c3c89aef350131
@@ -127,9 +138,10 @@ jobs:
       - name: Upload release assets
         env:
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          DRAFT_RELEASE_UPLOAD_URL: ${{ needs.create_draft_release.outputs.upload_url }}
         run: |
           set -euo pipefail
-          echo "Uploading assets to: ${{ needs.create_draft_release.outputs.upload_url }}"
+          echo "Uploading assets to: ${DRAFT_RELEASE_UPLOAD_URL}"
           ls -la dist/
           gh release upload "$GITHUB_REF_NAME" dist/* --clobber
           echo ":arrow_up: Uploaded release assets" >>"$GITHUB_STEP_SUMMARY"
