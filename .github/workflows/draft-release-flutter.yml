@@ -7,6 +7,16 @@ on:
         description: Asset slug name
         required: true
         type: string
+      build_android_aab:
+        description: Build Android App Bundle (AAB) release artifact
+        required: false
+        type: boolean
+        default: true
+      build_ios_ipa:
+        description: Build iOS IPA release artifact
+        required: false
+        type: boolean
+        default: true
       android_app_signing_key_alias:
         description: >
           Alias name of the app signing key inside the Android keystore.
@@ -37,15 +47,27 @@ on:
         description: >
           Base64-encoded Android upload keystore (PKCS12 or JKS) used by
           Gradle to sign release App Bundles in CI.
-        required: true
+        required: false
       ANDROID_UPLOAD_KEYSTORE_PASSWORD:
         description: >
           Password protecting the Android upload keystore file.
-        required: true
+        required: false
       ANDROID_UPLOAD_KEY_PASSWORD:
         description: >
           Password for the upload key alias within the Android keystore.
-        required: true
+        required: false
+      IOS_SIGNING_CERT_B64:
+        description: >
+          Base64-encoded iOS distribution signing certificate (P12) used for App Store builds.
+        required: false
+      IOS_SIGNING_CERT_PASSWORD:
+        description: >
+          Password protecting the iOS signing certificate.
+        required: false
+      IOS_PROVISIONING_PROFILE_B64:
+        description: >
+          Base64-encoded iOS provisioning profile for App Store builds.
+        required: false
 
 permissions:
   contents: read
@@ -79,8 +101,8 @@ jobs:
           GH_RELEASE_URL: ${{ steps.gh_release.outputs.url }}
         run: 'echo "### :shipit: Opened draft release for: [${INPUTS_SLUG} ${GITHUB_REF_NAME}](${GH_RELEASE_URL})" >> "$GITHUB_STEP_SUMMARY"'
 
-  build_release_assets:
-    name: build release assets
+  build_android_release_assets:
+    name: build android release assets
     needs:
       - create_draft_release
     runs-on: ubuntu-latest
@@ -108,6 +130,7 @@ jobs:
         run: flutter pub get --enforce-lockfile
 
       - name: Configure Android signing (upload key)
+        if: ${{ inputs.build_android_aab }}
         env:
           ANDROID_SIGNING_ROLE: upload
           ANDROID_SIGNING_FORCE_DECODE: 1
@@ -119,6 +142,7 @@ jobs:
         run: android-signing-setup
 
       - name: Build release App Bundle
+        if: ${{ inputs.build_android_aab }}
         run: flutter build appbundle
 
       - name: Configure Android signing (app signing key)
@@ -135,7 +159,7 @@ jobs:
       - name: Build release APK
         run: flutter build apk
 
-      - name: Stage assets + checksums
+      - name: Stage assets
         env:
           INPUTS_SLUG: ${{ inputs.slug }}
         run: stage-release-assets --slug "${INPUTS_SLUG}"
@@ -143,7 +167,59 @@ jobs:
       - name: Upload staged dist/ as workflow artifact
         uses: actions/upload-artifact@b7c566a772e6b6bfb58ed0dc250532a479d7789f
         with:
-          name: release-dist
+          name: release-dist-android
+          path: dist/**
+          if-no-files-found: error
+          retention-days: 7
+
+  build_ios_release_assets:
+    name: build ios release assets
+    needs:
+      - create_draft_release
+    if: ${{ inputs.build_ios_ipa }}
+    runs-on: macos-latest
+    steps:
+      - name: Checkout source code
+        uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd
+        with:
+          persist-credentials: false
+
+      - name: Add Toolbox Envy to PATH
+        uses: EarthmanMuons/toolbox-envy/.github/actions/add-to-path@main
+        with:
+          include_bins: |
+            common
+            flutter
+
+      - name: Set up Flutter
+        uses: subosito/flutter-action@fd55f4c5af5b953cc57a2be44cb082c8f6635e8e
+        with:
+          channel: stable
+          flutter-version-file: pubspec.yaml
+          cache: true
+
+      - name: Install dependencies
+        run: flutter pub get --enforce-lockfile
+
+      - name: Configure iOS signing
+        env:
+          IOS_SIGNING_CERT_B64: ${{ secrets.IOS_SIGNING_CERT_B64 }}
+          IOS_SIGNING_CERT_PASSWORD: ${{ secrets.IOS_SIGNING_CERT_PASSWORD }}
+          IOS_PROVISIONING_PROFILE_B64: ${{ secrets.IOS_PROVISIONING_PROFILE_B64 }}
+        run: ios-signing-setup
+
+      - name: Build release IPA
+        run: flutter build ipa
+
+      - name: Stage assets
+        env:
+          INPUTS_SLUG: ${{ inputs.slug }}
+        run: stage-release-assets --slug "${INPUTS_SLUG}"
+
+      - name: Upload staged dist/ as workflow artifact
+        uses: actions/upload-artifact@b7c566a772e6b6bfb58ed0dc250532a479d7789f
+        with:
+          name: release-dist-ios
           path: dist/**
           if-no-files-found: error
           retention-days: 7
@@ -152,7 +228,8 @@ jobs:
     name: upload release assets
     needs:
       - create_draft_release
-      - build_release_assets
+      - build_android_release_assets
+      - build_ios_release_assets
     runs-on: ubuntu-latest
     permissions:
       contents: write
@@ -162,11 +239,27 @@ jobs:
         with:
           persist-credentials: false
 
-      - name: Download staged dist/ artifact
+      - name: Download staged Android artifacts
         uses: actions/download-artifact@37930b1c2abaa49bbe596cd826c3c89aef350131
         with:
-          name: release-dist
+          name: release-dist-android
           path: dist
+
+      - name: Download staged iOS artifacts
+        if: ${{ inputs.build_ios_ipa }}
+        uses: actions/download-artifact@37930b1c2abaa49bbe596cd826c3c89aef350131
+        with:
+          name: release-dist-ios
+          path: dist
+
+      - name: Add Toolbox Envy to PATH
+        uses: EarthmanMuons/toolbox-envy/.github/actions/add-to-path@main
+        with:
+          include_bins: |
+            common
+
+      - name: Generate combined checksums
+        run: create-sha256sums
 
       - name: Upload release assets
         env:
