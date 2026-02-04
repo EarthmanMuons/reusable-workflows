@@ -214,6 +214,7 @@ jobs:
           IOS_SIGNING_CERT_PASSWORD: ${{ secrets.IOS_SIGNING_CERT_PASSWORD }}
           IOS_PROVISIONING_PROFILE_B64: ${{ secrets.IOS_PROVISIONING_PROFILE_B64 }}
           IOS_KEYCHAIN_PASSWORD: ${{ steps.generate_password.outputs.password }}
+          IOS_SIGNING_DEBUG: 1
         run: ios-signing-setup
 
       - name: Build release IPA
