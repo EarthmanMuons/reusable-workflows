@@ -220,7 +220,7 @@ jobs:
       - name: Build release IPA
         env:
           OTHER_CODE_SIGN_FLAGS: --keychain ${{ steps.ios_signing.outputs.keychain_path }}
-        run: flutter build ipa
+        run: flutter build ipa --export-options-plist=ios/ExportOptions.plist
 
       - name: Stage assets
         env:
