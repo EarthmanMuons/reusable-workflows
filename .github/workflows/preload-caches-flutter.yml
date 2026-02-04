@@ -11,7 +11,7 @@ jobs:
       matrix:
         os:
           - ubuntu-latest
-          - macos-latest
+          - macos-26
     runs-on: ${{ matrix.os }}
     steps:
       - name: Checkout source code
