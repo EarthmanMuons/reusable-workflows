@@ -6,15 +6,25 @@ on:
 jobs:
   cache_flutter:
     name: cache flutter / pinned
-    runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false
+      matrix:
+        os:
+          - ubuntu-latest
+          - macos-latest
+    runs-on: ${{ matrix.os }}
     steps:
       - name: Checkout source code
         uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd
+        with:
+          persist-credentials: false
+
       - name: Set up Flutter
         uses: subosito/flutter-action@fd55f4c5af5b953cc57a2be44cb082c8f6635e8e
         with:
           channel: stable
           flutter-version-file: pubspec.yaml
           cache: true
+
       - name: Install dependencies
         run: flutter pub get --enforce-lockfile
