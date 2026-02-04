@@ -201,11 +201,19 @@ jobs:
       - name: Install dependencies
         run: flutter pub get --enforce-lockfile
 
+      - id: generate_password
+        name: Generate ephemeral iOS keychain password
+        run: |
+          pw="$(openssl rand -hex 24)"
+          echo "::add-mask::$pw"
+          echo "password=$pw" >>"$GITHUB_OUTPUT"
+
       - name: Configure iOS signing
         env:
           IOS_SIGNING_CERT_B64: ${{ secrets.IOS_SIGNING_CERT_B64 }}
           IOS_SIGNING_CERT_PASSWORD: ${{ secrets.IOS_SIGNING_CERT_PASSWORD }}
           IOS_PROVISIONING_PROFILE_B64: ${{ secrets.IOS_PROVISIONING_PROFILE_B64 }}
+          IOS_KEYCHAIN_PASSWORD: ${{ steps.generate_password.outputs.password }}
         run: ios-signing-setup
 
       - name: Build release IPA
