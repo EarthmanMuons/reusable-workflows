@@ -177,7 +177,7 @@ jobs:
     needs:
       - create_draft_release
     if: ${{ inputs.build_ios_ipa }}
-    runs-on: macos-latest
+    runs-on: macos-26
     steps:
       - name: Checkout source code
         uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd
