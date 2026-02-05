@@ -2,10 +2,14 @@ name: check github actions
 
 on:
   workflow_call:
+    inputs:
+      zizmor_persona:
+        type: string
+        default: "regular"
 
 jobs:
-  lint_workflows:
-    name: lint workflows
+  lint_actionlint:
+    name: lint workflows with actionlint
     runs-on: ubuntu-latest
     steps:
       - name: Checkout source code
@@ -17,3 +21,18 @@ jobs:
         uses: raven-actions/actionlint@e01d1ea33dd6a5ed517d95b4c0c357560ac6f518
         with:
           group-result: false
+
+  lint_zizmor:
+    name: lint workflows with zizmor
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout source code
+        uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd
+        with:
+          persist-credentials: false
+
+      - name: Lint GitHub Actions workflow files
+        uses: zizmorcore/zizmor-action@0dce2577a4760a2749d8cfb7a84b7d5585ebcb7d # v0.5.0
+        with:
+          advanced-security: false
+          persona: ${{ inputs.zizmor_persona }}
