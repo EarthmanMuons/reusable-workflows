@@ -1,0 +1,9 @@
+rules:
+  unpinned-uses:
+    config:
+      policies:
+        # This is a first-party, single-maintainer repo used as shared CI
+        # infrastructure. It intentionally tracks `@main` as a rolling release
+        # so improvements to reusable scripts are picked up automatically
+        # across projects. All third-party actions remain strictly ref-pinned.
+        EarthmanMuons/toolbox-envy/*: ref-pin
