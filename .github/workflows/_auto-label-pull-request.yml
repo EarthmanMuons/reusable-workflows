@@ -1,7 +1,7 @@
 name: auto-label pull request
 
 on:
-  pull_request_target:
+  pull_request_target: # zizmor: ignore[dangerous-triggers] required to label PRs from forks; no checkout or untrusted code
     types:
       - opened
       - synchronize
