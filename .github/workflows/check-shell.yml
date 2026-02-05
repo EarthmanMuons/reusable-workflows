@@ -10,6 +10,9 @@ jobs:
     steps:
       - name: Checkout source code
         uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd
+        with:
+          persist-credentials: false
+
       - name: Check formatting
         uses: luizm/action-sh-checker@883217215b11c1fabbf00eb1a9a041f62d74c744
         env:
@@ -23,6 +26,9 @@ jobs:
     steps:
       - name: Checkout source code
         uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd
+        with:
+          persist-credentials: false
+
       - name: Check lints
         uses: luizm/action-sh-checker@883217215b11c1fabbf00eb1a9a041f62d74c744
         with:

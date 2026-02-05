@@ -43,6 +43,7 @@ jobs:
         with:
           ref: main
           fetch-depth: 0
+          persist-credentials: false
 
       - name: Install stable Rust toolchain
         uses: dtolnay/rust-toolchain@f7ccc83f9ed1e5b9c81d8a67d7ad1a747e22a561
@@ -61,21 +62,30 @@ jobs:
           tool: cargo-release
 
       - name: Update cargo dependencies for package ${{ inputs.package }}
-        run: cargo update --package "${{ inputs.package }}"
+        env:
+          INPUTS_PACKAGE: ${{ inputs.package }}
+        run: cargo update --package "${INPUTS_PACKAGE}"
 
       - name: Bump ${{ inputs.level }} version for package ${{ inputs.package }}
-        run: cargo release version -v --execute --no-confirm --package "${{ inputs.package }}" "${{ inputs.level }}"
+        env:
+          INPUTS_PACKAGE: ${{ inputs.package }}
+          INPUTS_LEVEL: ${{ inputs.level }}
+        run: cargo release version -v --execute --no-confirm --package "${INPUTS_PACKAGE}" "${INPUTS_LEVEL}"
 
       - name: Perform pre-release replacements
-        run: cargo release replace -v --execute --no-confirm --package "${{ inputs.package }}"
+        env:
+          INPUTS_PACKAGE: ${{ inputs.package }}
+        run: cargo release replace -v --execute --no-confirm --package "${INPUTS_PACKAGE}"
 
       - name: Fix up CHANGELOG formatting
         run: npx --yes prettier@latest --color --prose-wrap always --write -- **/CHANGELOG.md
 
       - name: Get the new release version
-        run: |-
-          version=$(cargo metadata --no-deps --format-version=1 | jq -r '.packages[] | select(.name == "${{ inputs.package }}") | .version')
-          echo "release_version=${version}" >> "$GITHUB_ENV"
+        env:
+          INPUTS_PACKAGE: ${{ inputs.package }}
+        run: |
+          version=$(cargo metadata --no-deps --format-version=1 | jq -r '.packages[] | select(.name == "${INPUTS_PACKAGE}") | .version')
+          echo "release_version=${version}" >>"$GITHUB_ENV"
 
       - id: cpr
         name: Create pull request
@@ -101,6 +111,9 @@ jobs:
             Once this PR is merged into the _main_ branch, an automated process will tag the commit.
 
       - name: Annotate workflow run with PR URL
-        run: |-
-          echo "### :shipit: Opened pull request for ${{ inputs.package }} v${{ env.release_version }}:" >> "$GITHUB_STEP_SUMMARY"
-          echo "- ${{ steps.cpr.outputs.pull-request-url }}" >> "$GITHUB_STEP_SUMMARY"
+        env:
+          INPUTS_PACKAGE: ${{ inputs.package }}
+          STEPS_CPR_OUTPUTS_PULL_REQUEST_URL: ${{ steps.cpr.outputs.pull-request-url }}
+        run: |
+          echo "### :shipit: Opened pull request for ${INPUTS_PACKAGE} v${RELEASE_VERSION}:" >> "$GITHUB_STEP_SUMMARY"
+          echo "- ${STEPS_CPR_OUTPUTS_PULL_REQUEST_URL}" >> "$GITHUB_STEP_SUMMARY"

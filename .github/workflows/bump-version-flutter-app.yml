@@ -41,6 +41,7 @@ jobs:
           token: ${{ steps.generate_token.outputs.token }}
           ref: main
           fetch-depth: 0
+          persist-credentials: false
 
       - name: Add Toolbox Envy to PATH
         uses: EarthmanMuons/toolbox-envy/.github/actions/add-to-path@main
@@ -68,8 +69,11 @@ jobs:
         run: flutter pub upgrade --unlock-transitive
 
       - name: Bump CalVer version for project
+        env:
+          INPUTS_FORMAT: ${{ inputs.format }}
+          INPUTS_DATE_OVERRIDE: ${{ inputs.date_override }}
         run: |
-          bump-calver --format "${{ inputs.format }}" "${{ inputs.date_override }}" | set-project-version
+          bump-calver --format "${INPUTS_FORMAT}" "${INPUTS_DATE_OVERRIDE}" | set-project-version
 
       - name: Bump CHANGELOG version to match
         run: get-project-version | bump-changelog-version
@@ -114,10 +118,13 @@ jobs:
             Once this PR is merged into the _main_ branch, an automated process will tag the commit and create a draft GitHub Release with signed assets attached for final review before publishing.
 
       - name: Annotate workflow run with PR URL
+        env:
+          STEPS_VERSION_OUTPUTS_RELEASE_VERSION: ${{ steps.version.outputs.release_version }}
+          STEPS_CPR_OUTPUTS_PULL_REQUEST_URL: ${{ steps.cpr.outputs.pull-request-url }}
         run: |
           set -euo pipefail
           {
-          echo "### Opened pull request for release v${{ steps.version.outputs.release_version }}"
+          echo "### Opened pull request for release v${STEPS_VERSION_OUTPUTS_RELEASE_VERSION}"
           echo
-          echo "- ${{ steps.cpr.outputs.pull-request-url }}"
+          echo "- ${STEPS_CPR_OUTPUTS_PULL_REQUEST_URL}"
           } >>"$GITHUB_STEP_SUMMARY"

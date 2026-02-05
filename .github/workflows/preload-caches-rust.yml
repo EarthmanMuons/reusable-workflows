@@ -26,19 +26,25 @@ jobs:
     steps:
       - name: Checkout source code
         uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd
+        with:
+          persist-credentials: false
+
       - name: Install stable Rust toolchain
         uses: dtolnay/rust-toolchain@f7ccc83f9ed1e5b9c81d8a67d7ad1a747e22a561
         with:
           toolchain: stable
+
       - name: Cache dependencies
         uses: Swatinem/rust-cache@779680da715d629ac1d338a641029a2f4372abb5
         with:
           shared-key: stable-${{ matrix.platform }}
         timeout-minutes: 5
+
       - name: Install cargo-nextest
         uses: taiki-e/install-action@7e574ed8bb89811282a11aecb3fe1d043bf5bf0e
         with:
           tool: cargo-nextest
+
       - name: Check packages and dependencies for errors
         run: cargo check --locked --all-targets
 
@@ -49,29 +55,41 @@ jobs:
     steps:
       - name: Checkout source code
         uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd
+        with:
+          persist-credentials: false
+
       - id: msrv
         name: Get MSRV from package metadata
         run: awk -F '"' '/rust-version/{ print "version=" $2 }' Cargo.toml >> "$GITHUB_OUTPUT"
+
       - name: Install ${{ steps.msrv.outputs.version }} Rust toolchain
         uses: dtolnay/rust-toolchain@f7ccc83f9ed1e5b9c81d8a67d7ad1a747e22a561
         with:
           toolchain: ${{ steps.msrv.outputs.version }}
+
       - name: Install nightly Rust toolchain
         uses: dtolnay/rust-toolchain@f7ccc83f9ed1e5b9c81d8a67d7ad1a747e22a561
         with:
           toolchain: nightly
+
       - name: Resolve minimal dependency versions instead of maximum
         run: cargo +nightly update -Z direct-minimal-versions
+
       - name: Set override to MSRV Rust
-        run: rustup override set ${{ steps.msrv.outputs.version }}
+        env:
+          STEPS_MSRV_OUTPUTS_VERSION: ${{ steps.msrv.outputs.version }}
+        run: rustup override set ${STEPS_MSRV_OUTPUTS_VERSION}
+
       - name: Cache dependencies
         uses: Swatinem/rust-cache@779680da715d629ac1d338a641029a2f4372abb5
         with:
           shared-key: msrv-ubuntu-latest
         timeout-minutes: 5
+
       - name: Install cargo-nextest
         uses: taiki-e/install-action@7e574ed8bb89811282a11aecb3fe1d043bf5bf0e
         with:
           tool: cargo-nextest
+
       - name: Check packages and dependencies for errors
         run: cargo check --locked --all-targets

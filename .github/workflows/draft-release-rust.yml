@@ -27,14 +27,21 @@ jobs:
     steps:
       - name: Checkout source code
         uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd
+        with:
+          persist-credentials: false
+
       - id: gh_release
         name: Create a new GitHub draft release
         uses: softprops/action-gh-release@a06a81a03ee405af7f2048a818ed3f03bbf83c7b
         with:
           draft: true
           generate_release_notes: true
+
       - name: Annotate workflow run with draft release URL
-        run: 'echo "### :shipit: Opened draft release for: [${{ inputs.package }} ${{ github.ref_name }}](${{ steps.gh_release.outputs.url }})" >> "$GITHUB_STEP_SUMMARY"'
+        env:
+          INPUTS_PACKAGE: ${{ inputs.package }}
+          STEPS_GH_RELEASE_OUTPUTS_URL: ${{ steps.gh_release.outputs.url }}
+        run: 'echo "### :shipit: Opened draft release for: [${INPUTS_PACKAGE} ${GITHUB_REF_NAME}](${STEPS_GH_RELEASE_OUTPUTS_URL})" >> "$GITHUB_STEP_SUMMARY"'
 
   upload_release_assets:
     name: upload release assets
@@ -71,39 +78,50 @@ jobs:
     steps:
       - name: Checkout source code
         uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd
+        with:
+          persist-credentials: false
+
       - name: Install musl tools
         if: matrix.os == 'ubuntu-latest'
         run: sudo apt-get install -y musl-tools
+
       - name: Install stable Rust toolchain
         uses: dtolnay/rust-toolchain@f7ccc83f9ed1e5b9c81d8a67d7ad1a747e22a561
         with:
           toolchain: stable
           targets: ${{ matrix.target }}
+
       - name: Cache dependencies
         uses: Swatinem/rust-cache@779680da715d629ac1d338a641029a2f4372abb5
         with:
           shared-key: stable-ubuntu-latest
         timeout-minutes: 5
+
       - name: Install cross
         if: matrix.os == 'ubuntu-latest'
         uses: taiki-e/install-action@7e574ed8bb89811282a11aecb3fe1d043bf5bf0e
         with:
           tool: cross
+
       - name: Building release assets
-        run: |-
+        run: |
           if [[ "${{ matrix.build_tool }}" == "cross" ]]; then
           	cargo xtask dist --target "${{ matrix.target }}" --cross
           else
           	cargo xtask dist --target "${{ matrix.target }}"
           fi
+
       - name: Uploading release assets
-        run: |-
+        env:
+          INPUTS_PACKAGE: ${{ inputs.package }}
+          NEEDS_CREATE_DRAFT_RELEASE_OUTPUTS_UPLOAD_URL: ${{ needs.create_draft_release.outputs.upload_url }}
+        run: |
           if [[ "${{ matrix.os }}" == "windows-latest" ]]; then
             extension="zip"
           else
             extension="tar.gz"
           fi
-          filename="${{ inputs.package }}-${GITHUB_REF_NAME:1}-${{ matrix.target }}.${extension}"
-          echo "Uploading ${filename} to: ${{ needs.create_draft_release.outputs.upload_url }}"
+          filename="${INPUTS_PACKAGE}-${GITHUB_REF_NAME:1}-${{ matrix.target }}.${extension}"
+          echo "Uploading ${filename} to: ${NEEDS_CREATE_DRAFT_RELEASE_OUTPUTS_UPLOAD_URL}"
           gh release upload "$GITHUB_REF_NAME" "target/dist/${filename}"
           echo ":arrow_up: Uploaded release asset ${filename}" >>"$GITHUB_STEP_SUMMARY"

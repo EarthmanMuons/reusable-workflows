@@ -33,6 +33,7 @@ jobs:
           token: ${{ steps.generate_token.outputs.token }}
           ref: main
           fetch-depth: 0
+          persist-credentials: false
 
       - name: Add Toolbox Envy to PATH
         uses: EarthmanMuons/toolbox-envy/.github/actions/add-to-path@main
@@ -58,5 +59,7 @@ jobs:
           {
           echo "### :sparkles: New tag created"
           echo
-          echo "- \`${{ steps.tag.outputs.tag }}\`"
+          echo "- \`${STEPS_TAG_OUTPUTS_TAG}\`"
           } >>"$GITHUB_STEP_SUMMARY"
+        env:
+          STEPS_TAG_OUTPUTS_TAG: ${{ steps.tag.outputs.tag }}
