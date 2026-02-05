@@ -20,15 +20,16 @@ jobs:
 
           NEEDS_CONTEXT="$INPUTS_NEEDS_CONTEXT"
 
-          JOB_IDS=$(echo "$NEEDS_CONTEXT" | jq -r 'keys[]')
-          for JOB_ID in $JOB_IDS; do
-            RESULT=$(echo "$NEEDS_CONTEXT" | jq -r ".[\"$JOB_ID\"].result")
-            echo "$JOB_ID job result: $RESULT"
-            if [[ $RESULT != "success" && $RESULT != "skipped" ]]; then
-              echo "***"
-              echo "Error: The $JOB_ID job did not pass."
-              exit 1
-            fi
-          done
+          if jq -e '
+            to_entries[]
+            | select(.value.result != "success" and .value.result != "skipped")
+          ' <<<"$NEEDS_CONTEXT" >/dev/null; then
+            jq -r '
+              to_entries[]
+              | select(.value.result != "success" and .value.result != "skipped")
+              | "::error::Job \(.key) finished with result: \(.value.result)"
+            ' <<<"$NEEDS_CONTEXT"
+            exit 1
+          fi
 
-          echo "All jobs passed or were skipped."
+          echo "::notice::All jobs passed or were skipped."
