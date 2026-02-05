@@ -78,7 +78,7 @@ jobs:
       - name: Set override to MSRV Rust
         env:
           STEPS_MSRV_OUTPUTS_VERSION: ${{ steps.msrv.outputs.version }}
-        run: rustup override set ${STEPS_MSRV_OUTPUTS_VERSION}
+        run: rustup override set "${STEPS_MSRV_OUTPUTS_VERSION}"
 
       - name: Cache dependencies
         uses: Swatinem/rust-cache@779680da715d629ac1d338a641029a2f4372abb5

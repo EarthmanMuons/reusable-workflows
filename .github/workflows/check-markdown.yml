@@ -24,4 +24,15 @@ jobs:
         env:
           INPUTS_PRETTIER_VERSION: ${{ inputs.prettier_version }}
           INPUTS_FILES: ${{ inputs.files }}
-        run: npx --yes "prettier@${INPUTS_PRETTIER_VERSION}" --check --debug-check --color --prose-wrap always -- ${INPUTS_FILES}
+        run: |
+          set -euo pipefail
+
+          # Split INPUTS_FILES into an array (space-separated)
+          IFS=' ' read -r -a files <<<"$INPUTS_FILES"
+
+          npx --yes "prettier@${INPUTS_PRETTIER_VERSION}" \
+            --check \
+            --debug-check \
+            --color \
+            --prose-wrap always \
+            -- "${files[@]}"
