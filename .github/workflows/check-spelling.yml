@@ -14,6 +14,9 @@ jobs:
     steps:
       - name: Checkout source code
         uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd
+        with:
+          persist-credentials: false
+
       - name: Check files for common misspellings
         uses: crate-ci/typos@06d010dfe4c84fdab1a25ea02b57b3585018ba80
         with:

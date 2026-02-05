@@ -22,6 +22,7 @@ jobs:
         uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd
         with:
           fetch-depth: 0
+          persist-credentials: false
 
       - name: Install stable Rust toolchain
         uses: dtolnay/rust-toolchain@f7ccc83f9ed1e5b9c81d8a67d7ad1a747e22a561
@@ -45,6 +46,6 @@ jobs:
         run: cargo release publish -v --execute --no-confirm --allow-branch="HEAD"
 
       - name: Annotate workflow run with published crate URL
-        run: |-
+        run: |
           echo "### :shipit: Published crate for ${GITHUB_REF_NAME}:" >>"$GITHUB_STEP_SUMMARY"
           echo "- https://crates.io/crates/${GITHUB_REF_NAME%-v*}/${GITHUB_REF_NAME#*-v}/" >>"$GITHUB_STEP_SUMMARY"

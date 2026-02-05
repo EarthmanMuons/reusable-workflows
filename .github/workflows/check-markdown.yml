@@ -17,5 +17,11 @@ jobs:
     steps:
       - name: Checkout source code
         uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd
+        with:
+          persist-credentials: false
+
       - name: Check Markdown file formatting
-        run: npx --yes "prettier@${{ inputs.prettier_version }}" --check --debug-check --color --prose-wrap always -- ${{ inputs.files }}
+        env:
+          INPUTS_PRETTIER_VERSION: ${{ inputs.prettier_version }}
+          INPUTS_FILES: ${{ inputs.files }}
+        run: npx --yes "prettier@${INPUTS_PRETTIER_VERSION}" --check --debug-check --color --prose-wrap always -- ${INPUTS_FILES}
