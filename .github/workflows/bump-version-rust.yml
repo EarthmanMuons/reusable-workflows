@@ -41,9 +41,17 @@ jobs:
       - name: Checkout source code
         uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd
         with:
+          token: ${{ steps.generate_token.outputs.token }}
           ref: main
           fetch-depth: 0
           persist-credentials: false
+
+      - name: Add Toolbox Envy to PATH
+        uses: EarthmanMuons/toolbox-envy/.github/actions/add-to-path@main
+        with:
+          include_bins: |
+            common
+            rust
 
       - name: Install stable Rust toolchain
         uses: dtolnay/rust-toolchain@f7ccc83f9ed1e5b9c81d8a67d7ad1a747e22a561
@@ -80,21 +88,22 @@ jobs:
       - name: Fix up CHANGELOG formatting
         run: npx --yes prettier@latest --color --prose-wrap always --write -- **/CHANGELOG.md
 
-      - name: Get the new release version
+      - id: version
+        name: Get the new release version
         env:
           INPUTS_PACKAGE: ${{ inputs.package }}
         run: |
-          version=$(cargo metadata --no-deps --format-version=1 | jq -r '.packages[] | select(.name == "${INPUTS_PACKAGE}") | .version')
-          echo "release_version=${version}" >>"$GITHUB_ENV"
+          echo "release_version=$(get-project-version "$INPUTS_PACKAGE")" >>"$GITHUB_OUTPUT"
 
       - id: cpr
         name: Create pull request
         uses: peter-evans/create-pull-request@c0f553fe549906ede9cf27b5156039d195d2ece0
         with:
           token: ${{ steps.generate_token.outputs.token }}
+          branch: release/bump-version
           branch-suffix: timestamp
-          commit-message: Release ${{ inputs.package }} v${{ env.release_version }}
-          title: Prepare the ${{ inputs.package }} v${{ env.release_version }} ${{ inputs.level }} release
+          commit-message: Release ${{ inputs.package }} v${{ steps.version.outputs.release_version }}
+          title: Prepare the ${{ inputs.package }} v${{ steps.version.outputs.release_version }} ${{ inputs.level }} release
           body: |-
             This PR was automatically created by the [bump-version](https://github.com/${{ github.repository }}/actions/runs/${{ github.run_id }}) workflow, which ran the following commands:
 
@@ -113,7 +122,12 @@ jobs:
       - name: Annotate workflow run with PR URL
         env:
           INPUTS_PACKAGE: ${{ inputs.package }}
-          STEPS_CPR_OUTPUTS_PULL_REQUEST_URL: ${{ steps.cpr.outputs.pull-request-url }}
+          PULL_REQUEST_URL: ${{ steps.cpr.outputs.pull-request-url }}
+          RELEASE_VERSION: ${{ steps.version.outputs.release_version }}
         run: |
-          echo "### :shipit: Opened pull request for ${INPUTS_PACKAGE} v${RELEASE_VERSION}:" >> "$GITHUB_STEP_SUMMARY"
-          echo "- ${STEPS_CPR_OUTPUTS_PULL_REQUEST_URL}" >> "$GITHUB_STEP_SUMMARY"
+          set -euo pipefail
+          {
+          echo "### :shipit: Opened pull request for ${INPUTS_PACKAGE} release v${RELEASE_VERSION}:"
+          echo
+          echo "- ${PULL_REQUEST_URL}"
+          } >>"$GITHUB_STEP_SUMMARY"
