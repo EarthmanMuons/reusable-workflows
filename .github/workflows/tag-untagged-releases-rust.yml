@@ -69,8 +69,26 @@ jobs:
       - name: Add any missing tags
         run: cargo release tag -v --execute --no-confirm || true
 
+      - name: Mask GitHub App token
+        env:
+          TOKEN: ${{ steps.generate_token.outputs.token }}
+        run: echo "::add-mask::${TOKEN}"
+
+      - name: Configure Git credentials for tag push
+        run: |
+          git config --global url."https://x-access-token:${TOKEN}@github.com/".insteadOf "https://github.com/"
+        env:
+          TOKEN: ${{ steps.generate_token.outputs.token }}
+
       - name: Push any new tags
         run: cargo release push -v --execute --no-confirm
+
+      - name: Remove Git credentials override
+        if: always()
+        env:
+          TOKEN: ${{ steps.generate_token.outputs.token }}
+        run: |
+          git config --global --unset-all url."https://x-access-token:${TOKEN}@github.com/".insteadOf
 
       - name: Capture tags after
         run: |
