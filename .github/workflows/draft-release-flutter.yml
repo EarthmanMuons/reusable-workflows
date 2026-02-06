@@ -106,6 +106,7 @@ jobs:
     needs:
       - create_draft_release
     runs-on: ubuntu-latest
+    environment: signing
     steps:
       - name: Checkout source code
         uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd
@@ -178,6 +179,7 @@ jobs:
       - create_draft_release
     if: ${{ inputs.build_ios_ipa }}
     runs-on: macos-26
+    environment: signing
     steps:
       - name: Checkout source code
         uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd
