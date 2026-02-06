@@ -86,14 +86,6 @@ jobs:
         run: |
           echo "release_version=$(get-project-version)" >>"$GITHUB_OUTPUT"
 
-      - name: Verify changes exist
-        run: |
-          git update-index -q --really-refresh
-          if git diff-index --quiet HEAD --; then
-            echo "No changes detected; refusing to open PR."
-            exit 1
-          fi
-
       - id: cpr
         name: Create pull request
         uses: peter-evans/create-pull-request@c0f553fe549906ede9cf27b5156039d195d2ece0
@@ -119,12 +111,12 @@ jobs:
 
       - name: Annotate workflow run with PR URL
         env:
-          STEPS_VERSION_OUTPUTS_RELEASE_VERSION: ${{ steps.version.outputs.release_version }}
-          STEPS_CPR_OUTPUTS_PULL_REQUEST_URL: ${{ steps.cpr.outputs.pull-request-url }}
+          RELEASE_VERSION: ${{ steps.version.outputs.release_version }}
+          PULL_REQUEST_URL: ${{ steps.cpr.outputs.pull-request-url }}
         run: |
           set -euo pipefail
           {
-          echo "### Opened pull request for release v${STEPS_VERSION_OUTPUTS_RELEASE_VERSION}"
+          echo "### :shipit: Opened pull request for release v${RELEASE_VERSION}"
           echo
-          echo "- ${STEPS_CPR_OUTPUTS_PULL_REQUEST_URL}"
+          echo "- ${PULL_REQUEST_URL}"
           } >>"$GITHUB_STEP_SUMMARY"
