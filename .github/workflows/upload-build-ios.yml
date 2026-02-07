@@ -1,0 +1,84 @@
+name: app store connect
+
+on:
+  workflow_call:
+    inputs:
+      asc_issuer_id:
+        description: >
+          App Store Connect issuer identifier. Required for JWT authentication.
+        required: true
+        type: string
+      asc_key_id:
+        description: >
+          App Store Connect API key identifier. Required for JWT authentication.
+        required: true
+        type: string
+      release_tag:
+        required: true
+        type: string
+    secrets:
+      ASC_AUTH_KEY_B64:
+        description: >
+          Base64-encoded AuthKey file (.p8) used for App Store Connect API JWT authentication.
+        required: true
+
+jobs:
+  upload_build:
+    runs-on: macos-latest
+    environment: release
+    permissions:
+      contents: read
+    steps:
+      - name: Add Toolbox Envy to PATH
+        uses: EarthmanMuons/toolbox-envy/.github/actions/add-to-path@main
+        with:
+          include_bins: |
+            common
+            flutter
+
+      - id: asc_auth
+        name: Configure App Store Connect authentication
+        env:
+          ASC_AUTH_KEY_B64: ${{ secrets.ASC_AUTH_KEY_B64 }}
+          ASC_KEY_ID: ${{ inputs.asc_key_id }}
+        run: asc-auth-key-setup
+
+      - name: Download release assets
+        env:
+          GH_TOKEN: ${{ github.token }}
+          RELEASE_TAG: ${{ inputs.release_tag }}
+        run: |
+          set -euo pipefail
+
+          mkdir -p dist
+          gh release download "$RELEASE_TAG" \
+            --pattern "*.ipa" \
+            --pattern "sha256sums.txt" \
+            --dir dist
+
+      - id: verify_assets
+        name: Verify release assets
+        run: verify-checksums --dir dist --pattern '*.ipa'
+
+      - name: Upload ipa
+        env:
+          API_PRIVATE_KEYS_DIR: ${{ steps.asc_auth.outputs.asc_key_dir }}
+          ASC_ISSUER_ID: ${{ inputs.asc_issuer_id }}
+          ASC_KEY_ID: ${{ inputs.asc_key_id }}
+          ASSET_PATH: ${{ steps.verify_assets.outputs.asset_path }}
+        run: |
+          set -euo pipefail
+          xcrun altool --upload-app --type ios \
+            -f "${ASSET_PATH}" \
+            --apiKey "$ASC_KEY_ID" \
+            --apiIssuer "$ASC_ISSUER_ID"
+
+      - name: Annotate workflow run with uploaded ipa
+        env:
+          ASSET_NAME: ${{ steps.verify_assets.outputs.asset_name }}
+        run: |
+          {
+            printf '### :shipit: Uploaded iOS build:\n'
+            printf '\n'
+            printf -- '- [%s]\n' "${ASSET_NAME}"
+          } >>"$GITHUB_STEP_SUMMARY"
