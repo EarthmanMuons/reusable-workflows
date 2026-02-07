@@ -272,7 +272,7 @@ jobs:
             common
 
       - name: Generate combined checksums
-        run: create-sha256sums
+        run: create-checksums
 
       - name: Upload release assets
         env:
