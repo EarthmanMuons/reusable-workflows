@@ -272,7 +272,7 @@ jobs:
             common
 
       - name: Generate combined checksums
-        run: create-checksums
+        run: create-checksums --dir dist
 
       - name: Upload release assets
         env:
