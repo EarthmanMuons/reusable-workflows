@@ -3,6 +3,9 @@ name: app store connect
 on:
   workflow_call:
     inputs:
+      release_tag:
+        required: true
+        type: string
       asc_issuer_id:
         description: >
           App Store Connect issuer identifier. Required for JWT authentication.
@@ -11,9 +14,6 @@ on:
       asc_key_id:
         description: >
           App Store Connect API key identifier. Required for JWT authentication.
-        required: true
-        type: string
-      release_tag:
         required: true
         type: string
     secrets:
@@ -29,19 +29,17 @@ jobs:
     permissions:
       contents: read
     steps:
+      - name: Checkout source code
+        uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd
+        with:
+          persist-credentials: false
+
       - name: Add Toolbox Envy to PATH
         uses: EarthmanMuons/toolbox-envy/.github/actions/add-to-path@main
         with:
           include_bins: |
             common
             flutter
-
-      - id: asc_auth
-        name: Configure App Store Connect authentication
-        env:
-          ASC_AUTH_KEY_B64: ${{ secrets.ASC_AUTH_KEY_B64 }}
-          ASC_KEY_ID: ${{ inputs.asc_key_id }}
-        run: asc-auth-key-setup
 
       - name: Download release assets
         env:
@@ -60,6 +58,13 @@ jobs:
         name: Verify release assets
         run: verify-checksums --dir dist --pattern '*.ipa'
 
+      - id: asc_auth
+        name: Configure App Store Connect authentication
+        env:
+          ASC_AUTH_KEY_B64: ${{ secrets.ASC_AUTH_KEY_B64 }}
+          ASC_KEY_ID: ${{ inputs.asc_key_id }}
+        run: asc-auth-key-setup
+
       - name: Upload ipa
         env:
           API_PRIVATE_KEYS_DIR: ${{ steps.asc_auth.outputs.asc_key_dir }}
@@ -69,7 +74,7 @@ jobs:
         run: |
           set -euo pipefail
           xcrun altool --upload-app --type ios \
-            -f "${ASSET_PATH}" \
+            -f dist/*.ipa \
             --apiKey "$ASC_KEY_ID" \
             --apiIssuer "$ASC_ISSUER_ID"
 

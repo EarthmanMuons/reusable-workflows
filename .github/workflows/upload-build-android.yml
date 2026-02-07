@@ -1,0 +1,99 @@
+name: google play console
+
+on:
+  workflow_call:
+    inputs:
+      release_tag:
+        required: true
+        type: string
+      gcp_wif_provider:
+        description: >
+          Full resource name of the Google Cloud Workload Identity Federation
+          provider used for GitHub OIDC authentication
+          (format: projects/PROJECT_NUMBER/locations/global/workloadIdentityPools/POOL_ID/providers/PROVIDER_ID).
+        required: true
+        type: string
+      gcp_service_account:
+        description: >
+          Email address of the Google Cloud service account to impersonate via
+          Workload Identity Federation. This service account must be granted
+          the appropriate permissions in the Google Play Console for uploading
+          Android app builds (no static service account keys are used).
+        required: true
+        type: string
+      package_name:
+        description: >
+          The Android application ID of the app in Google Play (for example,
+          'com.earthmanmuons.whatchord'). This must match the package name used
+          when the app was first created in the Play Console.
+        required: true
+        type: string
+      track:
+        description: >
+          The Google Play release track to which the uploaded app bundle will be
+          assigned (such as 'internal', 'alpha', 'beta', or 'production').
+        required: false
+        type: string
+        default: internal
+      release_status:
+        description: >
+          The release status to apply after uploading the app bundle.
+          Use 'draft' to create a draft release in the Play Console for
+          manual review and publishing, or 'completed' to publish
+          immediately to the selected track.
+        required: false
+        type: string
+        default: draft
+
+jobs:
+  upload_build:
+    runs-on: ubuntu-latest
+    environment: release
+    permissions:
+      contents: read
+      id-token: write
+    steps:
+      - name: Checkout source code
+        uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd
+        with:
+          persist-credentials: false
+
+      - name: Add Toolbox Envy to PATH
+        uses: EarthmanMuons/toolbox-envy/.github/actions/add-to-path@main
+        with:
+          include_bins: |
+            common
+            flutter
+
+      - name: Download release assets
+        env:
+          GH_TOKEN: ${{ github.token }}
+          RELEASE_TAG: ${{ inputs.release_tag }}
+        run: |
+          set -euo pipefail
+
+          mkdir -p dist
+          gh release download "$RELEASE_TAG" \
+            --pattern "*.aab" \
+            --pattern "sha256sums.txt" \
+            --dir dist
+
+      - id: verify_assets
+        name: Verify release assets
+        run: verify-checksums --dir dist --pattern '*.aab'
+
+      - id: gcp_auth
+        name: Configure Google Cloud authentication
+        uses: google-github-actions/auth@7c6bc770dae815cd3e89ee6cdf493a5fab2cc093
+        with:
+          workload_identity_provider: ${{ inputs.gcp_wif_provider }}
+          service_account: ${{ inputs.gcp_service_account }}
+
+      - name: upload aab
+        uses: r0adkll/upload-google-play@935ef9c68bb393a8e6116b1575626a7f5be3a7fb
+        with:
+          serviceAccountJson: ${{ steps.gcp_auth.outputs.credentials_file_path }}
+          packageName: ${{ inputs.package_name }}
+          releaseFiles: dist/*.aab
+          track: ${{ inputs.track }}
+          status: ${{ inputs.release_status }}
