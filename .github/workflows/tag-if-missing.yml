@@ -52,14 +52,19 @@ jobs:
           tag="$(get-project-version | tag-if-missing)"
           echo "tag=$tag" >>"$GITHUB_OUTPUT"
 
-      - name: Annotate workflow run with new tag
-        if: ${{ steps.tag.outputs.tag != '' }}
-        run: |
-          set -euo pipefail
-          {
-          echo "### :sparkles: New tag created"
-          echo
-          echo "- \`${STEPS_TAG_OUTPUTS_TAG}\`"
-          } >>"$GITHUB_STEP_SUMMARY"
+      - name: Annotate workflow run with tag result
         env:
           STEPS_TAG_OUTPUTS_TAG: ${{ steps.tag.outputs.tag }}
+        run: |
+          set -euo pipefail
+
+          if [[ -n "${STEPS_TAG_OUTPUTS_TAG}" ]]; then
+            echo "::notice::Created missing tag ${STEPS_TAG_OUTPUTS_TAG}."
+            {
+              echo "### :sparkles: New tags:"
+              echo
+              echo "- \`${STEPS_TAG_OUTPUTS_TAG}\`"
+            } >>"$GITHUB_STEP_SUMMARY"
+          else
+            echo "::notice::No missing tags were found."
+          fi

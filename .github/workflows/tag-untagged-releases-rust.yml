@@ -83,7 +83,29 @@ jobs:
 
       - name: Annotate workflow run with new tags
         run: |
-          if [[ "${TAGS_BEFORE}" != "${TAGS_AFTER}" ]]; then
-            echo "### :sparkles: New tags:" >>"$GITHUB_STEP_SUMMARY";
-            comm -3 <(echo "${TAGS_BEFORE}") <(echo "${TAGS_AFTER}") | sed -e 's/^[[:space:]]*//' -e 's/^/- /' >>"$GITHUB_STEP_SUMMARY";
+          NEW_TAGS="$(
+            comm -13 \
+              <(printf '%s\n' "${TAGS_BEFORE}" | sed '/^$/d' | sort) \
+              <(printf '%s\n' "${TAGS_AFTER}" | sed '/^$/d' | sort)
+          )"
+
+          if [[ -n "${NEW_TAGS}" ]]; then
+            NEW_TAG_COUNT="$(printf '%s\n' "${NEW_TAGS}" | sed '/^$/d' | wc -l | tr -d ' ')"
+            if [[ "${NEW_TAG_COUNT}" == "1" ]]; then
+              echo "::notice::Created missing tag $(printf '%s\n' "${NEW_TAGS}" | head -n1)."
+            else
+              echo "::notice::Created ${NEW_TAG_COUNT} missing tags."
+            fi
+
+            echo "::group::New tags"
+            printf '%s\n' "${NEW_TAGS}"
+            echo "::endgroup::"
+
+            {
+              echo "### :sparkles: New tags:"
+              echo
+              printf '%s\n' "${NEW_TAGS}" | sed -e 's/^/- /'
+            } >>"$GITHUB_STEP_SUMMARY"
+          else
+            echo "::notice::No new release tags were needed."
           fi

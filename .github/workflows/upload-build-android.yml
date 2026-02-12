@@ -65,6 +65,29 @@ jobs:
             common
             flutter
 
+      - name: Validate upload options
+        env:
+          INPUTS_TRACK: ${{ inputs.track }}
+          INPUTS_RELEASE_STATUS: ${{ inputs.release_status }}
+        run: |
+          set -euo pipefail
+
+          case "${INPUTS_TRACK}" in
+            internal|alpha|beta|production) ;;
+            *)
+              echo "::error::Invalid track '${INPUTS_TRACK}' (expected internal, alpha, beta, or production)."
+              exit 1
+              ;;
+          esac
+
+          case "${INPUTS_RELEASE_STATUS}" in
+            draft|completed|inProgress|halted) ;;
+            *)
+              echo "::error::Invalid release_status '${INPUTS_RELEASE_STATUS}' (expected draft, completed, inProgress, or halted)."
+              exit 1
+              ;;
+          esac
+
       - name: Download release assets
         env:
           GH_TOKEN: ${{ github.token }}
@@ -73,13 +96,15 @@ jobs:
           set -euo pipefail
 
           mkdir -p dist
-          gh release download "$RELEASE_TAG" \
+          if ! gh release download "$RELEASE_TAG" \
             --pattern "*.aab" \
             --pattern "sha256sums.txt" \
-            --dir dist
+            --dir dist; then
+            echo "::error::Failed to download release assets for tag '${RELEASE_TAG}'. Expected at least one .aab and sha256sums.txt."
+            exit 1
+          fi
 
-      - id: verify_assets
-        name: Verify release assets
+      - name: Verify release assets
         run: verify-checksums --dir dist --pattern '*.aab'
 
       - id: gcp_auth
@@ -97,3 +122,12 @@ jobs:
           releaseFiles: dist/*.aab
           track: ${{ inputs.track }}
           status: ${{ inputs.release_status }}
+
+      - name: Annotate workflow run with uploaded aab
+        run: |
+          ASSET_NAME="$(basename dist/*.aab)"
+          {
+            printf '### :shipit: Uploaded Android build:\n'
+            printf '\n'
+            printf -- '- [%s]\n' "${ASSET_NAME}"
+          } >>"$GITHUB_STEP_SUMMARY"

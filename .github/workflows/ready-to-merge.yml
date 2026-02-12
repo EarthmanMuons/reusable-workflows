@@ -20,6 +20,11 @@ jobs:
 
           NEEDS_CONTEXT="$INPUTS_NEEDS_CONTEXT"
 
+          if ! jq -e . <<<"$NEEDS_CONTEXT" >/dev/null; then
+            echo "::error::Invalid needs_context JSON input."
+            exit 1
+          fi
+
           if jq -e '
             to_entries[]
             | select(.value.result != "success" and .value.result != "skipped")

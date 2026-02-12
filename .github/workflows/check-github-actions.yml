@@ -31,6 +31,18 @@ jobs:
         with:
           persist-credentials: false
 
+      - name: Validate zizmor persona
+        env:
+          INPUTS_ZIZMOR_PERSONA: ${{ inputs.zizmor_persona }}
+        run: |
+          case "${INPUTS_ZIZMOR_PERSONA}" in
+            regular|pedantic|auditor) ;;
+            *)
+              echo "::error::Invalid zizmor_persona '${INPUTS_ZIZMOR_PERSONA}' (expected regular, pedantic, or auditor)."
+              exit 1
+              ;;
+          esac
+
       - name: Lint GitHub Actions workflow files
         uses: zizmorcore/zizmor-action@0dce2577a4760a2749d8cfb7a84b7d5585ebcb7d # v0.5.0
         with:
