@@ -33,23 +33,23 @@ jobs:
           token: ${{ steps.generate_token.outputs.token }}
           ref: main
           fetch-depth: 0
-          persist-credentials: false
-
-      - name: Add Toolbox Envy to PATH
-        uses: EarthmanMuons/toolbox-envy/.github/actions/add-to-path@main
-        with:
-          include_bins: ${{ inputs.toolbox_envy_bins }}
+          persist-credentials: true
 
       - name: Configure Git identity
         run: |
           git config user.name "senile-errata[bot]"
           git config user.email "senile-errata@users.noreply.github.com"
 
+      - name: Add Toolbox Envy to PATH
+        uses: EarthmanMuons/toolbox-envy/.github/actions/add-to-path@main
+        with:
+          include_bins: ${{ inputs.toolbox_envy_bins }}
+
       - id: tag
         name: Add any missing tags
         run: |
           set -euo pipefail
-          tag="$(get-project-version | tag-if-missing || true)"
+          tag="$(get-project-version | tag-if-missing)"
           echo "tag=$tag" >>"$GITHUB_OUTPUT"
 
       - name: Annotate workflow run with new tag
