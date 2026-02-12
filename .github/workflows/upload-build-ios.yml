@@ -1,26 +1,12 @@
 name: upload build
 
+# See docs/flutter.md for required `release` environment variables and secrets.
 on:
   workflow_call:
     inputs:
       release_tag:
         required: true
         type: string
-      asc_issuer_id:
-        description: >
-          App Store Connect issuer identifier. Required for JWT authentication.
-        required: true
-        type: string
-      asc_key_id:
-        description: >
-          App Store Connect API key identifier. Required for JWT authentication.
-        required: true
-        type: string
-    secrets:
-      ASC_AUTH_KEY_B64:
-        description: >
-          Base64-encoded AuthKey file (.p8) used for App Store Connect API JWT authentication.
-        required: true
 
 jobs:
   upload_build:
@@ -61,18 +47,39 @@ jobs:
       - name: Verify release assets
         run: verify-checksums --dir dist --pattern '*.ipa'
 
+      - name: Validate App Store Connect authentication configuration
+        env:
+          ASC_ISSUER_ID: ${{ vars.ASC_ISSUER_ID }}
+          ASC_KEY_ID: ${{ vars.ASC_KEY_ID }}
+          ASC_AUTH_KEY_B64: ${{ secrets.ASC_AUTH_KEY_B64 }}
+        run: |
+          set -euo pipefail
+
+          if [[ -z "${ASC_ISSUER_ID}" ]]; then
+            echo "::error::Missing ASC_ISSUER_ID in the release environment."
+            exit 1
+          fi
+          if [[ -z "${ASC_KEY_ID}" ]]; then
+            echo "::error::Missing ASC_KEY_ID in the release environment."
+            exit 1
+          fi
+          if [[ -z "${ASC_AUTH_KEY_B64}" ]]; then
+            echo "::error::Missing ASC_AUTH_KEY_B64 in the release environment."
+            exit 1
+          fi
+
       - id: asc_auth
         name: Configure App Store Connect authentication
         env:
           ASC_AUTH_KEY_B64: ${{ secrets.ASC_AUTH_KEY_B64 }}
-          ASC_KEY_ID: ${{ inputs.asc_key_id }}
+          ASC_KEY_ID: ${{ vars.ASC_KEY_ID }}
         run: asc-auth-key-setup
 
       - name: Upload ipa
         env:
           API_PRIVATE_KEYS_DIR: ${{ steps.asc_auth.outputs.asc_key_dir }}
-          ASC_ISSUER_ID: ${{ inputs.asc_issuer_id }}
-          ASC_KEY_ID: ${{ inputs.asc_key_id }}
+          ASC_ISSUER_ID: ${{ vars.ASC_ISSUER_ID }}
+          ASC_KEY_ID: ${{ vars.ASC_KEY_ID }}
         run: |
           set -euo pipefail
           xcrun altool --upload-app --type ios \

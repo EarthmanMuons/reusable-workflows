@@ -1,5 +1,6 @@
 name: draft release / flutter
 
+# See docs/flutter.md for required `signing` environment variables and secrets.
 on:
   workflow_call:
     inputs:
@@ -29,45 +30,6 @@ on:
         required: false
         type: string
         default: upload
-    secrets:
-      ANDROID_APP_SIGNING_KEYSTORE_B64:
-        description: >
-          Base64-encoded Android app signing keystore (PKCS12 or JKS) used by
-          Gradle to sign release APKs in CI.
-        required: true
-      ANDROID_APP_SIGNING_KEYSTORE_PASSWORD:
-        description: >
-          Password protecting the Android app signing keystore file.
-        required: true
-      ANDROID_APP_SIGNING_KEY_PASSWORD:
-        description: >
-          Password for the app signing key alias within the Android keystore.
-        required: true
-      ANDROID_UPLOAD_KEYSTORE_B64:
-        description: >
-          Base64-encoded Android upload keystore (PKCS12 or JKS) used by
-          Gradle to sign release App Bundles in CI.
-        required: false
-      ANDROID_UPLOAD_KEYSTORE_PASSWORD:
-        description: >
-          Password protecting the Android upload keystore file.
-        required: false
-      ANDROID_UPLOAD_KEY_PASSWORD:
-        description: >
-          Password for the upload key alias within the Android keystore.
-        required: false
-      IOS_SIGNING_CERT_B64:
-        description: >
-          Base64-encoded iOS distribution signing certificate (P12) used for App Store builds.
-        required: false
-      IOS_SIGNING_CERT_PASSWORD:
-        description: >
-          Password protecting the iOS signing certificate.
-        required: false
-      IOS_PROVISIONING_PROFILE_B64:
-        description: >
-          Base64-encoded iOS provisioning profile for App Store builds.
-        required: false
 
 permissions:
   contents: read
@@ -130,6 +92,28 @@ jobs:
       - name: Install dependencies
         run: flutter pub get --enforce-lockfile
 
+      - name: Validate Android upload key secrets
+        if: ${{ inputs.build_android_aab }}
+        env:
+          ANDROID_UPLOAD_KEYSTORE_B64: ${{ secrets.ANDROID_UPLOAD_KEYSTORE_B64 }}
+          ANDROID_UPLOAD_KEYSTORE_PASSWORD: ${{ secrets.ANDROID_UPLOAD_KEYSTORE_PASSWORD }}
+          ANDROID_UPLOAD_KEY_PASSWORD: ${{ secrets.ANDROID_UPLOAD_KEY_PASSWORD }}
+        run: |
+          set -euo pipefail
+
+          if [[ -z "${ANDROID_UPLOAD_KEYSTORE_B64}" ]]; then
+            echo "::error::Missing ANDROID_UPLOAD_KEYSTORE_B64 in the signing environment."
+            exit 1
+          fi
+          if [[ -z "${ANDROID_UPLOAD_KEYSTORE_PASSWORD}" ]]; then
+            echo "::error::Missing ANDROID_UPLOAD_KEYSTORE_PASSWORD in the signing environment."
+            exit 1
+          fi
+          if [[ -z "${ANDROID_UPLOAD_KEY_PASSWORD}" ]]; then
+            echo "::error::Missing ANDROID_UPLOAD_KEY_PASSWORD in the signing environment."
+            exit 1
+          fi
+
       - name: Configure Android signing (upload key)
         if: ${{ inputs.build_android_aab }}
         env:
@@ -145,6 +129,27 @@ jobs:
       - name: Build release App Bundle
         if: ${{ inputs.build_android_aab }}
         run: flutter build appbundle
+
+      - name: Validate Android app signing secrets
+        env:
+          ANDROID_APP_SIGNING_KEYSTORE_B64: ${{ secrets.ANDROID_APP_SIGNING_KEYSTORE_B64 }}
+          ANDROID_APP_SIGNING_KEYSTORE_PASSWORD: ${{ secrets.ANDROID_APP_SIGNING_KEYSTORE_PASSWORD }}
+          ANDROID_APP_SIGNING_KEY_PASSWORD: ${{ secrets.ANDROID_APP_SIGNING_KEY_PASSWORD }}
+        run: |
+          set -euo pipefail
+
+          if [[ -z "${ANDROID_APP_SIGNING_KEYSTORE_B64}" ]]; then
+            echo "::error::Missing ANDROID_APP_SIGNING_KEYSTORE_B64 in the signing environment."
+            exit 1
+          fi
+          if [[ -z "${ANDROID_APP_SIGNING_KEYSTORE_PASSWORD}" ]]; then
+            echo "::error::Missing ANDROID_APP_SIGNING_KEYSTORE_PASSWORD in the signing environment."
+            exit 1
+          fi
+          if [[ -z "${ANDROID_APP_SIGNING_KEY_PASSWORD}" ]]; then
+            echo "::error::Missing ANDROID_APP_SIGNING_KEY_PASSWORD in the signing environment."
+            exit 1
+          fi
 
       - name: Configure Android signing (app signing key)
         env:
@@ -202,6 +207,27 @@ jobs:
 
       - name: Install dependencies
         run: flutter pub get --enforce-lockfile
+
+      - name: Validate iOS signing secrets
+        env:
+          IOS_SIGNING_CERT_B64: ${{ secrets.IOS_SIGNING_CERT_B64 }}
+          IOS_SIGNING_CERT_PASSWORD: ${{ secrets.IOS_SIGNING_CERT_PASSWORD }}
+          IOS_PROVISIONING_PROFILE_B64: ${{ secrets.IOS_PROVISIONING_PROFILE_B64 }}
+        run: |
+          set -euo pipefail
+
+          if [[ -z "${IOS_SIGNING_CERT_B64}" ]]; then
+            echo "::error::Missing IOS_SIGNING_CERT_B64 in the signing environment."
+            exit 1
+          fi
+          if [[ -z "${IOS_SIGNING_CERT_PASSWORD}" ]]; then
+            echo "::error::Missing IOS_SIGNING_CERT_PASSWORD in the signing environment."
+            exit 1
+          fi
+          if [[ -z "${IOS_PROVISIONING_PROFILE_B64}" ]]; then
+            echo "::error::Missing IOS_PROVISIONING_PROFILE_B64 in the signing environment."
+            exit 1
+          fi
 
       - id: generate_password
         name: Generate ephemeral password
