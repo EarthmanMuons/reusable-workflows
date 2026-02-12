@@ -1,4 +1,4 @@
-name: google play console
+name: upload build
 
 on:
   workflow_call:
@@ -47,6 +47,7 @@ on:
 
 jobs:
   upload_build:
+    name: google play console
     runs-on: ubuntu-latest
     environment: release
     permissions:

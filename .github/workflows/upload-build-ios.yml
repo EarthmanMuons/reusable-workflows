@@ -1,4 +1,4 @@
-name: app store connect
+name: upload build
 
 on:
   workflow_call:
@@ -24,6 +24,7 @@ on:
 
 jobs:
   upload_build:
+    name: app store connect
     runs-on: macos-latest
     environment: release
     permissions:
