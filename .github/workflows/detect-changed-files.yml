@@ -77,3 +77,55 @@ jobs:
             zig:
               - '**/*.zig'
               - '**/*.zon'
+
+      - name: Annotate workflow run with changed file categories
+        env:
+          ADDED_OR_MODIFIED: ${{ steps.filter.outputs.added_or_modified }}
+          ADDED_OR_MODIFIED_FILES: ${{ steps.filter.outputs.added_or_modified_files }}
+          FLUTTER: ${{ steps.filter.outputs.flutter }}
+          FLUTTER_FILES: ${{ steps.filter.outputs.flutter_files }}
+          GITHUB_ACTIONS: ${{ steps.filter.outputs.github_actions }}
+          GITHUB_ACTIONS_FILES: ${{ steps.filter.outputs.github_actions_files }}
+          MARKDOWN: ${{ steps.filter.outputs.markdown }}
+          MARKDOWN_FILES: ${{ steps.filter.outputs.markdown_files }}
+          RUST: ${{ steps.filter.outputs.rust }}
+          RUST_FILES: ${{ steps.filter.outputs.rust_files }}
+          ZIG: ${{ steps.filter.outputs.zig }}
+          ZIG_FILES: ${{ steps.filter.outputs.zig_files }}
+        run: |
+          set -euo pipefail
+
+          append_summary() {
+            local label="$1"
+            local changed="$2"
+            local files="$3"
+            {
+              echo "- ${label}: ${changed}"
+              if [[ "${changed}" == "true" && -n "${files}" ]]; then
+                printf '%s\n' "${files}" | sed -e 's/^/  - `/' -e 's/$/`/'
+              fi
+            } >>"$GITHUB_STEP_SUMMARY"
+          }
+
+          emit_category() {
+            local label="$1"
+            local changed="$2"
+            local files="$3"
+            if [[ "${changed}" == "true" ]]; then
+              echo "::notice::${label} changed."
+              if [[ -n "${files}" ]]; then
+                echo "::group::${label} changed files"
+                printf '%s\n' "${files}"
+                echo "::endgroup::"
+              fi
+            fi
+            append_summary "${label}" "${changed}" "${files}"
+          }
+
+          echo "### :mag: Changed file categories" >>"$GITHUB_STEP_SUMMARY"
+          emit_category "Any tracked files" "${ADDED_OR_MODIFIED}" "${ADDED_OR_MODIFIED_FILES}"
+          emit_category "Flutter" "${FLUTTER}" "${FLUTTER_FILES}"
+          emit_category "GitHub Actions" "${GITHUB_ACTIONS}" "${GITHUB_ACTIONS_FILES}"
+          emit_category "Markdown" "${MARKDOWN}" "${MARKDOWN_FILES}"
+          emit_category "Rust" "${RUST}" "${RUST_FILES}"
+          emit_category "Zig" "${ZIG}" "${ZIG_FILES}"

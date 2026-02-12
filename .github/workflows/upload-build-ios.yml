@@ -49,13 +49,15 @@ jobs:
           set -euo pipefail
 
           mkdir -p dist
-          gh release download "$RELEASE_TAG" \
+          if ! gh release download "$RELEASE_TAG" \
             --pattern "*.ipa" \
             --pattern "sha256sums.txt" \
-            --dir dist
+            --dir dist; then
+            echo "::error::Failed to download release assets for tag '${RELEASE_TAG}'. Expected at least one .ipa and sha256sums.txt."
+            exit 1
+          fi
 
-      - id: verify_assets
-        name: Verify release assets
+      - name: Verify release assets
         run: verify-checksums --dir dist --pattern '*.ipa'
 
       - id: asc_auth
@@ -70,7 +72,6 @@ jobs:
           API_PRIVATE_KEYS_DIR: ${{ steps.asc_auth.outputs.asc_key_dir }}
           ASC_ISSUER_ID: ${{ inputs.asc_issuer_id }}
           ASC_KEY_ID: ${{ inputs.asc_key_id }}
-          ASSET_PATH: ${{ steps.verify_assets.outputs.asset_path }}
         run: |
           set -euo pipefail
           xcrun altool --upload-app --type ios \
@@ -79,9 +80,8 @@ jobs:
             --apiIssuer "$ASC_ISSUER_ID"
 
       - name: Annotate workflow run with uploaded ipa
-        env:
-          ASSET_NAME: ${{ steps.verify_assets.outputs.asset_name }}
         run: |
+          ASSET_NAME="$(basename dist/*.ipa)"
           {
             printf '### :shipit: Uploaded iOS build:\n'
             printf '\n'
