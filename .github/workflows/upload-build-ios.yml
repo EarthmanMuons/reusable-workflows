@@ -9,6 +9,8 @@ on:
         type: string
     secrets:
       ASC_AUTH_KEY_B64:
+        description: >
+          Base64-encoded AuthKey file (.p8) used for App Store Connect API JWT authentication.
         required: false
 
 jobs:
