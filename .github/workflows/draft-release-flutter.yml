@@ -30,6 +30,25 @@ on:
         required: false
         type: string
         default: upload
+    secrets:
+      ANDROID_APP_SIGNING_KEYSTORE_B64:
+        required: false
+      ANDROID_APP_SIGNING_KEYSTORE_PASSWORD:
+        required: false
+      ANDROID_APP_SIGNING_KEY_PASSWORD:
+        required: false
+      ANDROID_UPLOAD_KEYSTORE_B64:
+        required: false
+      ANDROID_UPLOAD_KEYSTORE_PASSWORD:
+        required: false
+      ANDROID_UPLOAD_KEY_PASSWORD:
+        required: false
+      IOS_SIGNING_CERT_B64:
+        required: false
+      IOS_SIGNING_CERT_PASSWORD:
+        required: false
+      IOS_PROVISIONING_PROFILE_B64:
+        required: false
 
 permissions:
   contents: read
