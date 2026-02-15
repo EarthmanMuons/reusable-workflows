@@ -32,22 +32,42 @@ on:
         default: upload
     secrets:
       ANDROID_APP_SIGNING_KEYSTORE_B64:
-        required: false
+        description: >
+          Base64-encoded Android app signing keystore (PKCS12 or JKS) used by
+          Gradle to sign release APKs in CI.
+        required: true
       ANDROID_APP_SIGNING_KEYSTORE_PASSWORD:
-        required: false
+        description: >
+          Password protecting the Android app signing keystore file.
+        required: true
       ANDROID_APP_SIGNING_KEY_PASSWORD:
-        required: false
+        description: >
+          Password for the app signing key alias within the Android keystore.
+        required: true
       ANDROID_UPLOAD_KEYSTORE_B64:
+        description: >
+          Base64-encoded Android upload keystore (PKCS12 or JKS) used by
+          Gradle to sign release App Bundles in CI.
         required: false
       ANDROID_UPLOAD_KEYSTORE_PASSWORD:
+        description: >
+          Password protecting the Android upload keystore file.
         required: false
       ANDROID_UPLOAD_KEY_PASSWORD:
+        description: >
+          Password for the upload key alias within the Android keystore.
         required: false
       IOS_SIGNING_CERT_B64:
+        description: >
+          Base64-encoded iOS distribution signing certificate (P12) used for App Store builds.
         required: false
       IOS_SIGNING_CERT_PASSWORD:
+        description: >
+          Password protecting the iOS signing certificate.
         required: false
       IOS_PROVISIONING_PROFILE_B64:
+        description: >
+          Base64-encoded iOS provisioning profile for App Store builds.
         required: false
 
 permissions:
