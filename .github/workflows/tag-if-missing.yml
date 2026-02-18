@@ -17,7 +17,7 @@ on:
 
 jobs:
   tag_if_missing:
-    name: tag if missing
+    name: ensure tag exists
     runs-on: ubuntu-latest
     steps:
       - id: generate_token
