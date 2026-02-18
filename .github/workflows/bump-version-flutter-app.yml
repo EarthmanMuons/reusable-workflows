@@ -81,6 +81,9 @@ jobs:
       - name: Fix up CHANGELOG formatting
         run: npx --yes prettier@latest --color --prose-wrap always --write -- **/CHANGELOG.md
 
+      - name: Rotate unreleased whatsnew docs into release directory
+        run: get-project-version | rotate-whatsnew
+
       - id: version
         name: Get the new release version
         run: |
@@ -103,6 +106,7 @@ jobs:
             $ flutter pub upgrade --unlock-transitive
             $ bump-calver --format "${{ inputs.format }}" "${{ inputs.date_override }}" | set-project-version
             $ get-project-version | bump-changelog-version
+            $ get-project-version | rotate-whatsnew
             ```
 
             **Please review the submitted changes.**
