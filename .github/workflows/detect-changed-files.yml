@@ -84,8 +84,8 @@ jobs:
           ADDED_OR_MODIFIED_FILES: ${{ steps.filter.outputs.added_or_modified_files }}
           FLUTTER: ${{ steps.filter.outputs.flutter }}
           FLUTTER_FILES: ${{ steps.filter.outputs.flutter_files }}
-          GITHUB_ACTIONS: ${{ steps.filter.outputs.github_actions }}
-          GITHUB_ACTIONS_FILES: ${{ steps.filter.outputs.github_actions_files }}
+          GH_ACTIONS: ${{ steps.filter.outputs.github_actions }}
+          GH_ACTIONS_FILES: ${{ steps.filter.outputs.github_actions_files }}
           MARKDOWN: ${{ steps.filter.outputs.markdown }}
           MARKDOWN_FILES: ${{ steps.filter.outputs.markdown_files }}
           RUST: ${{ steps.filter.outputs.rust }}
@@ -125,7 +125,7 @@ jobs:
           echo "### :mag: Changed file categories" >>"$GITHUB_STEP_SUMMARY"
           emit_category "Any tracked files" "${ADDED_OR_MODIFIED}" "${ADDED_OR_MODIFIED_FILES}"
           emit_category "Flutter" "${FLUTTER}" "${FLUTTER_FILES}"
-          emit_category "GitHub Actions" "${GITHUB_ACTIONS}" "${GITHUB_ACTIONS_FILES}"
+          emit_category "GitHub Actions" "${GH_ACTIONS}" "${GH_ACTIONS_FILES}"
           emit_category "Markdown" "${MARKDOWN}" "${MARKDOWN_FILES}"
           emit_category "Rust" "${RUST}" "${RUST_FILES}"
           emit_category "Zig" "${ZIG}" "${ZIG_FILES}"
