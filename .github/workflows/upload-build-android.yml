@@ -108,6 +108,11 @@ jobs:
             exit 1
           fi
 
+      - name: Debug OIDC Claims
+        uses: steve-todorov/oidc-debugger-action@b6d83b24a379e77233fb6b26f1c1a662c4bf443c
+        with:
+          audience: "${{ github.server_url }}/${{ github.repository }}"
+
       - id: gcp_auth
         name: Configure Google Cloud authentication
         uses: google-github-actions/auth@7c6bc770dae815cd3e89ee6cdf493a5fab2cc093
