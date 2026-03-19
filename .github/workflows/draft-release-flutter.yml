@@ -318,14 +318,14 @@ jobs:
           persist-credentials: false
 
       - name: Download staged Android artifacts
-        uses: actions/download-artifact@70fc10c6e5e1ce46ad2ea6f2b72d43f7d47b13c3
+        uses: actions/download-artifact@3e5f45b2cfb9172054b4087a40e8e0b5a5461e7c
         with:
           name: release-dist-android
           path: dist
 
       - name: Download staged iOS artifacts
         if: ${{ inputs.build_ios_ipa }}
-        uses: actions/download-artifact@70fc10c6e5e1ce46ad2ea6f2b72d43f7d47b13c3
+        uses: actions/download-artifact@3e5f45b2cfb9172054b4087a40e8e0b5a5461e7c
         with:
           name: release-dist-ios
           path: dist
