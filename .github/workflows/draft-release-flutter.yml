@@ -90,7 +90,7 @@ jobs:
 
       - id: gh_release
         name: Create a new GitHub draft release
-        uses: softprops/action-gh-release@a06a81a03ee405af7f2048a818ed3f03bbf83c7b
+        uses: softprops/action-gh-release@153bb8e04406b158c6c84fc1615b65b24149a1fe
         if: github.ref_type == 'tag'
         with:
           draft: true
@@ -318,14 +318,14 @@ jobs:
           persist-credentials: false
 
       - name: Download staged Android artifacts
-        uses: actions/download-artifact@70fc10c6e5e1ce46ad2ea6f2b72d43f7d47b13c3
+        uses: actions/download-artifact@3e5f45b2cfb9172054b4087a40e8e0b5a5461e7c
         with:
           name: release-dist-android
           path: dist
 
       - name: Download staged iOS artifacts
         if: ${{ inputs.build_ios_ipa }}
-        uses: actions/download-artifact@70fc10c6e5e1ce46ad2ea6f2b72d43f7d47b13c3
+        uses: actions/download-artifact@3e5f45b2cfb9172054b4087a40e8e0b5a5461e7c
         with:
           name: release-dist-ios
           path: dist
