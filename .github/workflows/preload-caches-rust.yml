@@ -30,18 +30,18 @@ jobs:
           persist-credentials: false
 
       - name: Install stable Rust toolchain
-        uses: dtolnay/rust-toolchain@efa25f7f19611383d5b0ccf2d1c8914531636bf9
+        uses: dtolnay/rust-toolchain@3c5f7ea28cd621ae0bf5283f0e981fb97b8a7af9
         with:
           toolchain: stable
 
       - name: Cache dependencies
-        uses: Swatinem/rust-cache@779680da715d629ac1d338a641029a2f4372abb5
+        uses: Swatinem/rust-cache@c19371144df3bb44fab255c43d04cbc2ab54d1c4
         with:
           shared-key: stable-${{ matrix.platform }}
         timeout-minutes: 5
 
       - name: Install cargo-nextest
-        uses: taiki-e/install-action@7e574ed8bb89811282a11aecb3fe1d043bf5bf0e
+        uses: taiki-e/install-action@5939f3337e40968c39aa70f5ecb1417a92fb25a0
         with:
           tool: cargo-nextest
 
@@ -63,12 +63,12 @@ jobs:
         run: awk -F '"' '/rust-version/{ print "version=" $2 }' Cargo.toml >> "$GITHUB_OUTPUT"
 
       - name: Install ${{ steps.msrv.outputs.version }} Rust toolchain
-        uses: dtolnay/rust-toolchain@efa25f7f19611383d5b0ccf2d1c8914531636bf9
+        uses: dtolnay/rust-toolchain@3c5f7ea28cd621ae0bf5283f0e981fb97b8a7af9
         with:
           toolchain: ${{ steps.msrv.outputs.version }}
 
       - name: Install nightly Rust toolchain
-        uses: dtolnay/rust-toolchain@efa25f7f19611383d5b0ccf2d1c8914531636bf9
+        uses: dtolnay/rust-toolchain@3c5f7ea28cd621ae0bf5283f0e981fb97b8a7af9
         with:
           toolchain: nightly
 
@@ -81,13 +81,13 @@ jobs:
         run: rustup override set "${STEPS_MSRV_OUTPUTS_VERSION}"
 
       - name: Cache dependencies
-        uses: Swatinem/rust-cache@779680da715d629ac1d338a641029a2f4372abb5
+        uses: Swatinem/rust-cache@c19371144df3bb44fab255c43d04cbc2ab54d1c4
         with:
           shared-key: msrv-ubuntu-latest
         timeout-minutes: 5
 
       - name: Install cargo-nextest
-        uses: taiki-e/install-action@7e574ed8bb89811282a11aecb3fe1d043bf5bf0e
+        uses: taiki-e/install-action@5939f3337e40968c39aa70f5ecb1417a92fb25a0
         with:
           tool: cargo-nextest
 
