@@ -116,7 +116,7 @@ jobs:
           service_account: ${{ vars.GCP_SERVICE_ACCOUNT }}
 
       - name: upload aab
-        uses: r0adkll/upload-google-play@935ef9c68bb393a8e6116b1575626a7f5be3a7fb
+        uses: r0adkll/upload-google-play@7f5b759879c088a86faf85d18779f7f14e79a086
         with:
           serviceAccountJson: ${{ steps.gcp_auth.outputs.credentials_file_path }}
           packageName: ${{ vars.GOOGLE_PLAY_PACKAGE_NAME }}
