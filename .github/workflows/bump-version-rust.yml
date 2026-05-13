@@ -81,11 +81,6 @@ jobs:
         with:
           tool: cargo-release
 
-      - name: Update cargo dependencies for package ${{ inputs.package }}
-        env:
-          INPUTS_PACKAGE: ${{ inputs.package }}
-        run: cargo update --package "${INPUTS_PACKAGE}"
-
       - name: Bump ${{ inputs.level }} version for package ${{ inputs.package }}
         env:
           INPUTS_PACKAGE: ${{ inputs.package }}
