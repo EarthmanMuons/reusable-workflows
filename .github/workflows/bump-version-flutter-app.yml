@@ -100,7 +100,6 @@ jobs:
 
 
             ```
-            $ flutter pub upgrade --unlock-transitive
             $ bump-calver --format "${{ inputs.format }}" "${{ inputs.date_override }}" | set-project-version
             $ get-project-version | bump-changelog-version
             $ get-project-version | rotate-whatsnew
