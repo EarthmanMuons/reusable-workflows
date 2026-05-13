@@ -121,7 +121,7 @@ jobs:
           serviceAccountJson: ${{ steps.gcp_auth.outputs.credentials_file_path }}
           packageName: ${{ vars.GOOGLE_PLAY_PACKAGE_NAME }}
           releaseFiles: dist/*.aab
-          track: ${{ inputs.track }}
+          tracks: ${{ inputs.track }}
           status: ${{ inputs.release_status }}
 
       - name: Annotate workflow run with uploaded aab
