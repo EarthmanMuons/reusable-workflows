@@ -65,9 +65,6 @@ jobs:
       - name: Install dependencies
         run: flutter pub get --enforce-lockfile
 
-      - name: Update dependencies
-        run: flutter pub upgrade --unlock-transitive
-
       - name: Bump CalVer version for project
         env:
           INPUTS_FORMAT: ${{ inputs.format }}
