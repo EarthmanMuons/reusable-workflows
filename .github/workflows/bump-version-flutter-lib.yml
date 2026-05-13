@@ -69,9 +69,6 @@ jobs:
       - name: Install dependencies
         run: flutter pub get --enforce-lockfile
 
-      - name: Update dependencies
-        run: flutter pub upgrade --unlock-transitive
-
       - name: Bump ${{ inputs.level }} version for project
         env:
           INPUTS_LEVEL: ${{ inputs.level }}
@@ -106,7 +103,6 @@ jobs:
 
 
             ```
-            $ flutter pub upgrade --unlock-transitive
             $ get-project-version | bump-semver --${{ inputs.level }} | set-project-version
             $ get-project-version | bump-changelog-version
             $ get-project-version | rotate-whatsnew

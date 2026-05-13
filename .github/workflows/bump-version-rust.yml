@@ -116,7 +116,6 @@ jobs:
 
 
             ```
-            $ cargo update --package ${{ inputs.package }}
             $ cargo release version --execute --package ${{ inputs.package }} ${{ inputs.level }}
             $ cargo release replace --execute --package ${{ inputs.package }}
             $ prettier --prose-wrap always --write -- **/CHANGELOG.md
