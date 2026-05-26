@@ -68,6 +68,27 @@ jobs:
               ;;
           esac
 
+      - id: release_notes
+        name: Resolve Google Play release notes directory
+        env:
+          RELEASE_TAG: ${{ inputs.release_tag }}
+        run: |
+          set -euo pipefail
+
+          RELEASE_VERSION="${RELEASE_TAG#v}"
+          WHATS_NEW_DIRECTORY="docs/whatsnew/${RELEASE_VERSION}"
+
+          if [[ -z "${RELEASE_VERSION}" ]]; then
+            echo "::error::Could not derive a release version from release_tag '${RELEASE_TAG}'."
+            exit 1
+          fi
+          if [[ ! -d "${WHATS_NEW_DIRECTORY}" ]]; then
+            echo "::notice::Skipping Google Play release notes because '${WHATS_NEW_DIRECTORY}' does not exist."
+            exit 0
+          fi
+
+          echo "whats_new_directory=${WHATS_NEW_DIRECTORY}" >>"$GITHUB_OUTPUT"
+
       - name: Download release assets
         env:
           GH_TOKEN: ${{ github.token }}
@@ -115,7 +136,19 @@ jobs:
           workload_identity_provider: ${{ vars.GCP_WIF_PROVIDER }}
           service_account: ${{ vars.GCP_SERVICE_ACCOUNT }}
 
+      - name: upload aab with release notes
+        if: ${{ steps.release_notes.outputs.whats_new_directory != '' }}
+        uses: r0adkll/upload-google-play@e738b9dd8f2476ea806d921b64aacd24f34515a5
+        with:
+          serviceAccountJson: ${{ steps.gcp_auth.outputs.credentials_file_path }}
+          packageName: ${{ vars.GOOGLE_PLAY_PACKAGE_NAME }}
+          releaseFiles: dist/*.aab
+          tracks: ${{ inputs.track }}
+          status: ${{ inputs.release_status }}
+          whatsNewDirectory: ${{ steps.release_notes.outputs.whats_new_directory }}
+
       - name: upload aab
+        if: ${{ steps.release_notes.outputs.whats_new_directory == '' }}
         uses: r0adkll/upload-google-play@e738b9dd8f2476ea806d921b64aacd24f34515a5
         with:
           serviceAccountJson: ${{ steps.gcp_auth.outputs.credentials_file_path }}
