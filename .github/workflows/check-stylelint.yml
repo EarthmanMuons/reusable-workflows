@@ -6,6 +6,12 @@ on:
       files:
         type: string
         default: "**/*.css"
+      stylelint_config_recess_order_version:
+        type: string
+        default: "latest"
+      stylelint_config_standard_version:
+        type: string
+        default: "latest"
       stylelint_version:
         type: string
         default: "latest"
@@ -23,7 +29,10 @@ jobs:
       - name: Lint CSS files
         env:
           INPUTS_FILES: ${{ inputs.files }}
+          INPUTS_STYLELINT_CONFIG_RECESS_ORDER_VERSION: ${{ inputs.stylelint_config_recess_order_version }}
+          INPUTS_STYLELINT_CONFIG_STANDARD_VERSION: ${{ inputs.stylelint_config_standard_version }}
           INPUTS_STYLELINT_VERSION: ${{ inputs.stylelint_version }}
+        # zizmor: ignore[adhoc-packages] This reusable workflow intentionally installs caller-selected stylelint packages on ephemeral runners.
         run: |
           set -euo pipefail
 
@@ -35,4 +44,12 @@ jobs:
           # Split INPUTS_FILES into an array (space-separated)
           IFS=' ' read -r -a files <<<"$INPUTS_FILES"
 
-          npx --yes "stylelint@${INPUTS_STYLELINT_VERSION}" -- "${files[@]}"
+          npm install \
+            --no-save \
+            --no-package-lock \
+            --ignore-scripts \
+            "stylelint@${INPUTS_STYLELINT_VERSION}" \
+            "stylelint-config-recess-order@${INPUTS_STYLELINT_CONFIG_RECESS_ORDER_VERSION}" \
+            "stylelint-config-standard@${INPUTS_STYLELINT_CONFIG_STANDARD_VERSION}"
+
+          npx --no-install stylelint -- "${files[@]}"

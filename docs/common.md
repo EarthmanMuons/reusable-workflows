@@ -144,16 +144,19 @@ Detects common misspellings across files using
 
 ## check-stylelint.yml
 
-Lints CSS files using [stylelint](https://stylelint.io/). By default, it runs
-the latest published stylelint package through `npx`; callers can pin
-`stylelint_version` when they need a fixed version.
+Lints CSS files using [stylelint](https://stylelint.io/). By default, it
+installs the latest published `stylelint`, `stylelint-config-standard`, and
+`stylelint-config-recess-order` packages into the runner workspace; callers can
+pin package versions when they need fixed versions.
 
 **Inputs**
 
-| Name                | Required | Default    |
-| ------------------- | -------- | ---------- |
-| `files`             | false    | `**/*.css` |
-| `stylelint_version` | false    | `latest`   |
+| Name                                    | Required | Default    |
+| --------------------------------------- | -------- | ---------- |
+| `files`                                 | false    | `**/*.css` |
+| `stylelint_config_recess_order_version` | false    | `latest`   |
+| `stylelint_config_standard_version`     | false    | `latest`   |
+| `stylelint_version`                     | false    | `latest`   |
 
 **Typical usage with changed files**
 
