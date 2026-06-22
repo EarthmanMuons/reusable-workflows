@@ -58,10 +58,10 @@ preparation pull request.
 
 **Inputs**
 
-| Name          | Required |
-| ------------- | -------- |
-| date_override | false    |
-| format        | false    |
+| Name            | Required | Default |
+| --------------- | -------- | ------- |
+| `date_override` | false    | `""`    |
+| `format`        | false    | `""`    |
 
 **Secrets**
 
@@ -83,9 +83,9 @@ preparation pull request.
 
 **Inputs**
 
-| Name  | Required |
-| ----- | -------- |
-| level | true     |
+| Name    | Required | Default |
+| ------- | -------- | ------- |
+| `level` | true     | —       |
 
 **Secrets**
 
@@ -105,19 +105,33 @@ and uploads them to the release.
 
 **Inputs**
 
-| Name                          | Required | Default    |
-| ----------------------------- | -------- | ---------- |
-| slug                          | true     | —          |
-| build_android_aab             | false    | true       |
-| build_ios_ipa                 | false    | true       |
-| android_app_signing_key_alias | false    | appsigning |
-| android_upload_key_alias      | false    | upload     |
+| Name                            | Required | Default      |
+| ------------------------------- | -------- | ------------ |
+| `slug`                          | true     | —            |
+| `build_android_aab`             | false    | `true`       |
+| `build_ios_ipa`                 | false    | `true`       |
+| `android_app_signing_key_alias` | false    | `appsigning` |
+| `android_upload_key_alias`      | false    | `upload`     |
+
+**Secrets**
+
+| Name                                    | Required |
+| --------------------------------------- | -------- |
+| `ANDROID_APP_SIGNING_KEYSTORE_B64`      | true     |
+| `ANDROID_APP_SIGNING_KEYSTORE_PASSWORD` | true     |
+| `ANDROID_APP_SIGNING_KEY_PASSWORD`      | true     |
+| `ANDROID_UPLOAD_KEYSTORE_B64`           | false    |
+| `ANDROID_UPLOAD_KEYSTORE_PASSWORD`      | false    |
+| `ANDROID_UPLOAD_KEY_PASSWORD`           | false    |
+| `IOS_SIGNING_CERT_B64`                  | false    |
+| `IOS_SIGNING_CERT_PASSWORD`             | false    |
+| `IOS_PROVISIONING_PROFILE_B64`          | false    |
 
 **Environment Configuration**
 
-This workflow reads signing material from the `signing` environment in the
-calling repository. Callers do not need to pass signing secrets through
-`workflow_call`.
+This workflow runs build jobs in the `signing` environment and reads signing
+material through the `secrets` context. Optional workflow-call secrets are still
+validated at runtime when the corresponding artifact type is enabled.
 
 **Required in `signing` environment (always)**
 
@@ -155,11 +169,11 @@ Workload Identity Federation (WIF).
 
 **Inputs**
 
-| Name           | Required | Default  |
-| -------------- | -------- | -------- |
-| release_tag    | true     | —        |
-| track          | false    | internal |
-| release_status | false    | draft    |
+| Name             | Required | Default    |
+| ---------------- | -------- | ---------- |
+| `release_tag`    | true     | —          |
+| `track`          | false    | `internal` |
+| `release_status` | false    | `draft`    |
 
 **Environment Configuration**
 
@@ -185,9 +199,15 @@ authentication.
 
 **Inputs**
 
-| Name        | Required | Default |
-| ----------- | -------- | ------- |
-| release_tag | true     | —       |
+| Name          | Required | Default |
+| ------------- | -------- | ------- |
+| `release_tag` | true     | —       |
+
+**Secrets**
+
+| Name               | Required |
+| ------------------ | -------- |
+| `ASC_AUTH_KEY_B64` | false    |
 
 **Environment Configuration**
 

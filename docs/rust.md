@@ -61,8 +61,12 @@ versions, update documentation, and open a PR.
 
 **Inputs**
 
-- package
-- level
+| Name      | Required | Default |
+| --------- | -------- | ------- |
+| `package` | true     | —       |
+| `level`   | true     | —       |
+
+`level` must be `major`, `minor`, `patch`, `release`, `rc`, `beta`, or `alpha`.
 
 **Secrets**
 
@@ -94,15 +98,25 @@ This workflow requires a GitHub App token (see namespace note above).
 
 Publishes an unpublished Rust crate to crates.io.
 
-**Required secret**
+**Required permissions**
 
-- `CARGO_REGISTRY_TOKEN`
+- `id-token: write`
+
+This workflow uses trusted publishing through
+[`rust-lang/crates-io-auth-action`](https://github.com/rust-lang/crates-io-auth-action)
+instead of a `CARGO_REGISTRY_TOKEN` secret.
 
 ---
 
 ## draft-release-rust.yml
 
 Creates a GitHub draft release and uploads compiled artifacts across platforms.
+
+**Inputs**
+
+| Name      | Required | Default |
+| --------- | -------- | ------- |
+| `package` | true     | —       |
 
 ---
 

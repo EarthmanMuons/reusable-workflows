@@ -68,11 +68,26 @@ jobs:
 Lints GitHub Actions workflow files using
 [actionlint](https://github.com/rhysd/actionlint).
 
+**Inputs**
+
+| Name             | Required | Default   |
+| ---------------- | -------- | --------- |
+| `zizmor_persona` | false    | `regular` |
+
+`zizmor_persona` must be `regular`, `pedantic`, or `auditor`.
+
 ---
 
 ## check-markdown.yml
 
 Checks Markdown formatting using [Prettier](https://prettier.io/).
+
+**Inputs**
+
+| Name               | Required | Default   |
+| ------------------ | -------- | --------- |
+| `files`            | false    | `**/*.md` |
+| `prettier_version` | false    | `latest`  |
 
 ---
 
@@ -88,6 +103,12 @@ Formats and lints shell scripts using
 Detects common misspellings across files using
 [typos](https://github.com/crate-ci/typos).
 
+**Inputs**
+
+| Name    | Required | Default |
+| ------- | -------- | ------- |
+| `files` | false    | `.`     |
+
 ---
 
 ## check-stylelint.yml
@@ -98,10 +119,10 @@ the latest published stylelint package through `npx`; callers can pin
 
 **Inputs**
 
-| Name                | Default    |
-| ------------------- | ---------- |
-| `files`             | `**/*.css` |
-| `stylelint_version` | `latest`   |
+| Name                | Required | Default    |
+| ------------------- | -------- | ---------- |
+| `files`             | false    | `**/*.css` |
+| `stylelint_version` | false    | `latest`   |
 
 **Typical usage with changed files**
 
@@ -157,9 +178,9 @@ branch protection rules.
 
 **Inputs**
 
-| Name            | Required |
-| --------------- | -------- |
-| `needs_context` | true     |
+| Name            | Required | Default |
+| --------------- | -------- | ------- |
+| `needs_context` | true     | —       |
 
 `needs_context` should be set to `${{ toJson(needs) }}`.
 
@@ -210,9 +231,9 @@ Create and push a missing SemVer tag (via
 
 **Inputs**
 
-| Name                | Required |
-| ------------------- | -------- |
-| `toolbox_envy_bins` | true     |
+| Name                | Required | Default |
+| ------------------- | -------- | ------- |
+| `toolbox_envy_bins` | true     | —       |
 
 The `toolbox_envy_bins` entries must exist as `bin/<name>` in Toolbox Envy and
 may be newline- or comma-separated; invalid names will fail the job.
