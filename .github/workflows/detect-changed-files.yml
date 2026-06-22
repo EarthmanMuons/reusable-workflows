@@ -19,6 +19,10 @@ on:
         value: ${{ jobs.filter_changes.outputs.github_actions }}
       github_actions_files:
         value: ${{ jobs.filter_changes.outputs.github_actions_files }}
+      html:
+        value: ${{ jobs.filter_changes.outputs.html }}
+      html_files:
+        value: ${{ jobs.filter_changes.outputs.html_files }}
       markdown:
         value: ${{ jobs.filter_changes.outputs.markdown }}
       markdown_files:
@@ -47,6 +51,8 @@ jobs:
       flutter_files: ${{ steps.filter.outputs.flutter_files }}
       github_actions: ${{ steps.filter.outputs.github_actions }}
       github_actions_files: ${{ steps.filter.outputs.github_actions_files }}
+      html: ${{ steps.filter.outputs.html }}
+      html_files: ${{ steps.filter.outputs.html_files }}
       markdown: ${{ steps.filter.outputs.markdown }}
       markdown_files: ${{ steps.filter.outputs.markdown_files }}
       rust: ${{ steps.filter.outputs.rust }}
@@ -77,6 +83,8 @@ jobs:
             github_actions:
               - added|modified: .github/workflows/*.yml
               - added|modified: .github/workflows/*.yaml
+            html:
+              - added|modified: '**/*.html'
             markdown:
               - added|modified: '**/*.md'
             rust:
@@ -96,6 +104,8 @@ jobs:
           FLUTTER_FILES: ${{ steps.filter.outputs.flutter_files }}
           GH_ACTIONS: ${{ steps.filter.outputs.github_actions }}
           GH_ACTIONS_FILES: ${{ steps.filter.outputs.github_actions_files }}
+          HTML: ${{ steps.filter.outputs.html }}
+          HTML_FILES: ${{ steps.filter.outputs.html_files }}
           MARKDOWN: ${{ steps.filter.outputs.markdown }}
           MARKDOWN_FILES: ${{ steps.filter.outputs.markdown_files }}
           RUST: ${{ steps.filter.outputs.rust }}
@@ -137,6 +147,7 @@ jobs:
           emit_category "CSS" "${CSS}" "${CSS_FILES}"
           emit_category "Flutter" "${FLUTTER}" "${FLUTTER_FILES}"
           emit_category "GitHub Actions" "${GH_ACTIONS}" "${GH_ACTIONS_FILES}"
+          emit_category "HTML" "${HTML}" "${HTML_FILES}"
           emit_category "Markdown" "${MARKDOWN}" "${MARKDOWN_FILES}"
           emit_category "Rust" "${RUST}" "${RUST_FILES}"
           emit_category "Zig" "${ZIG}" "${ZIG_FILES}"

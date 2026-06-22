@@ -46,6 +46,7 @@ General-purpose workflows intended for use by any repository:
 
 - `detect-changed-files.yml` – Expose paths-filter outputs for conditional jobs
 - `check-github-actions.yml` – Lint workflows via actionlint
+- `check-html.yml` – Format and lint HTML via Prettier
 - `check-markdown.yml` – Format and lint Markdown via Prettier
 - `check-shell.yml` – Format and lint shell scripts
 - `check-spelling.yml` – Spellcheck via typos

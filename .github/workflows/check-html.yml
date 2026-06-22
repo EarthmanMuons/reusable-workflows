@@ -1,0 +1,37 @@
+name: check html
+
+on:
+  workflow_call:
+    inputs:
+      files:
+        type: string
+        default: "**/*.html"
+      prettier_version:
+        type: string
+        default: "latest"
+
+jobs:
+  format:
+    name: format
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout source code
+        uses: actions/checkout@df4cb1c069e1874edd31b4311f1884172cec0e10
+        with:
+          persist-credentials: false
+
+      - name: Check HTML file formatting
+        env:
+          INPUTS_PRETTIER_VERSION: ${{ inputs.prettier_version }}
+          INPUTS_FILES: ${{ inputs.files }}
+        run: |
+          set -euo pipefail
+
+          # Split INPUTS_FILES into an array (space-separated)
+          IFS=' ' read -r -a files <<<"$INPUTS_FILES"
+
+          npx --yes "prettier@${INPUTS_PRETTIER_VERSION}" \
+            --check \
+            --debug-check \
+            --color \
+            -- "${files[@]}"
