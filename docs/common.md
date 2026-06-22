@@ -40,6 +40,7 @@ For each filter name listed below:
 | `css`               | CSS changes                                 |
 | `flutter`           | Dart / pubspec / analysis options changes   |
 | `github_actions`    | Workflow changes under `.github/workflows/` |
+| `html`              | HTML changes                                |
 | `markdown`          | Markdown changes                            |
 | `rust`              | Rust / Cargo changes                        |
 | `zig`               | Zig / zon changes                           |
@@ -75,6 +76,36 @@ Lints GitHub Actions workflow files using
 | `zizmor_persona` | false    | `regular` |
 
 `zizmor_persona` must be `regular`, `pedantic`, or `auditor`.
+
+---
+
+## check-html.yml
+
+Checks HTML formatting using [Prettier](https://prettier.io/).
+
+**Inputs**
+
+| Name               | Required | Default     |
+| ------------------ | -------- | ----------- |
+| `files`            | false    | `**/*.html` |
+| `prettier_version` | false    | `latest`    |
+
+**Typical usage with changed files**
+
+```yml
+jobs:
+  detect_changed_files:
+    permissions:
+      pull-requests: read
+    uses: EarthmanMuons/reusable-workflows/.github/workflows/detect-changed-files.yml@main
+
+  check_html:
+    needs: detect_changed_files
+    if: needs.detect_changed_files.outputs.html == 'true'
+    uses: EarthmanMuons/reusable-workflows/.github/workflows/check-html.yml@main
+    with:
+      files: ${{ needs.detect_changed_files.outputs.html_files }}
+```
 
 ---
 
