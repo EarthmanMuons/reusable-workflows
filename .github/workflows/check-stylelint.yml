@@ -1,0 +1,38 @@
+name: check stylelint
+
+on:
+  workflow_call:
+    inputs:
+      files:
+        type: string
+        default: "**/*.css"
+      stylelint_version:
+        type: string
+        default: "latest"
+
+jobs:
+  lint:
+    name: lint
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout source code
+        uses: actions/checkout@df4cb1c069e1874edd31b4311f1884172cec0e10
+        with:
+          persist-credentials: false
+
+      - name: Lint CSS files
+        env:
+          INPUTS_FILES: ${{ inputs.files }}
+          INPUTS_STYLELINT_VERSION: ${{ inputs.stylelint_version }}
+        run: |
+          set -euo pipefail
+
+          if [[ -z "${INPUTS_FILES}" ]]; then
+            echo "No CSS files to lint."
+            exit 0
+          fi
+
+          # Split INPUTS_FILES into an array (space-separated)
+          IFS=' ' read -r -a files <<<"$INPUTS_FILES"
+
+          npx --yes "stylelint@${INPUTS_STYLELINT_VERSION}" -- "${files[@]}"

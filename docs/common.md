@@ -37,6 +37,7 @@ For each filter name listed below:
 | Filter              | Meaning                                     |
 | ------------------- | ------------------------------------------- |
 | `added_or_modified` | Any file added or modified                  |
+| `css`               | CSS changes                                 |
 | `flutter`           | Dart / pubspec / analysis options changes   |
 | `github_actions`    | Workflow changes under `.github/workflows/` |
 | `markdown`          | Markdown changes                            |
@@ -86,6 +87,38 @@ Formats and lints shell scripts using
 
 Detects common misspellings across files using
 [typos](https://github.com/crate-ci/typos).
+
+---
+
+## check-stylelint.yml
+
+Lints CSS files using [stylelint](https://stylelint.io/). By default, it runs
+the latest published stylelint package through `npx`; callers can pin
+`stylelint_version` when they need a fixed version.
+
+**Inputs**
+
+| Name                | Default    |
+| ------------------- | ---------- |
+| `files`             | `**/*.css` |
+| `stylelint_version` | `latest`   |
+
+**Typical usage with changed files**
+
+```yml
+jobs:
+  detect_changed_files:
+    permissions:
+      pull-requests: read
+    uses: EarthmanMuons/reusable-workflows/.github/workflows/detect-changed-files.yml@main
+
+  check_stylelint:
+    needs: detect_changed_files
+    if: needs.detect_changed_files.outputs.css == 'true'
+    uses: EarthmanMuons/reusable-workflows/.github/workflows/check-stylelint.yml@main
+    with:
+      files: ${{ needs.detect_changed_files.outputs.css_files }}
+```
 
 ---
 

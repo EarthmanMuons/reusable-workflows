@@ -7,6 +7,10 @@ on:
         value: ${{ jobs.filter_changes.outputs.added_or_modified }}
       added_or_modified_files:
         value: ${{ jobs.filter_changes.outputs.added_or_modified_files }}
+      css:
+        value: ${{ jobs.filter_changes.outputs.css }}
+      css_files:
+        value: ${{ jobs.filter_changes.outputs.css_files }}
       flutter:
         value: ${{ jobs.filter_changes.outputs.flutter }}
       flutter_files:
@@ -37,6 +41,8 @@ jobs:
     outputs:
       added_or_modified: ${{ steps.filter.outputs.added_or_modified }}
       added_or_modified_files: ${{ steps.filter.outputs.added_or_modified_files }}
+      css: ${{ steps.filter.outputs.css }}
+      css_files: ${{ steps.filter.outputs.css_files }}
       flutter: ${{ steps.filter.outputs.flutter }}
       flutter_files: ${{ steps.filter.outputs.flutter_files }}
       github_actions: ${{ steps.filter.outputs.github_actions }}
@@ -62,6 +68,8 @@ jobs:
           filters: |
             added_or_modified:
               - added|modified: '**'
+            css:
+              - added|modified: '**/*.css'
             flutter:
               - '**/*.dart'
               - '**/pubspec.*'
@@ -82,6 +90,8 @@ jobs:
         env:
           ADDED_OR_MODIFIED: ${{ steps.filter.outputs.added_or_modified }}
           ADDED_OR_MODIFIED_FILES: ${{ steps.filter.outputs.added_or_modified_files }}
+          CSS: ${{ steps.filter.outputs.css }}
+          CSS_FILES: ${{ steps.filter.outputs.css_files }}
           FLUTTER: ${{ steps.filter.outputs.flutter }}
           FLUTTER_FILES: ${{ steps.filter.outputs.flutter_files }}
           GH_ACTIONS: ${{ steps.filter.outputs.github_actions }}
@@ -124,6 +134,7 @@ jobs:
 
           echo "### :mag: Changed file categories" >>"$GITHUB_STEP_SUMMARY"
           emit_category "Any tracked files" "${ADDED_OR_MODIFIED}" "${ADDED_OR_MODIFIED_FILES}"
+          emit_category "CSS" "${CSS}" "${CSS_FILES}"
           emit_category "Flutter" "${FLUTTER}" "${FLUTTER_FILES}"
           emit_category "GitHub Actions" "${GH_ACTIONS}" "${GH_ACTIONS_FILES}"
           emit_category "Markdown" "${MARKDOWN}" "${MARKDOWN_FILES}"
