@@ -1,4 +1,4 @@
-name: check stylelint
+name: check css
 
 on:
   workflow_call:

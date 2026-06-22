@@ -64,6 +64,41 @@ jobs:
 
 ---
 
+## check-css.yml
+
+Lints CSS files using [stylelint](https://stylelint.io/). By default, it
+installs the latest published `stylelint`, `stylelint-config-standard`, and
+`stylelint-config-recess-order` packages into the runner workspace; callers can
+pin package versions when they need fixed versions.
+
+**Inputs**
+
+| Name                                    | Required | Default    |
+| --------------------------------------- | -------- | ---------- |
+| `files`                                 | false    | `**/*.css` |
+| `stylelint_config_recess_order_version` | false    | `latest`   |
+| `stylelint_config_standard_version`     | false    | `latest`   |
+| `stylelint_version`                     | false    | `latest`   |
+
+**Typical usage with changed files**
+
+```yml
+jobs:
+  detect_changed_files:
+    permissions:
+      pull-requests: read
+    uses: EarthmanMuons/reusable-workflows/.github/workflows/detect-changed-files.yml@main
+
+  check_css:
+    needs: detect_changed_files
+    if: needs.detect_changed_files.outputs.css == 'true'
+    uses: EarthmanMuons/reusable-workflows/.github/workflows/check-css.yml@main
+    with:
+      files: ${{ needs.detect_changed_files.outputs.css_files }}
+```
+
+---
+
 ## check-github-actions.yml
 
 Lints GitHub Actions workflow files using
@@ -139,43 +174,6 @@ Detects common misspellings across files using
 | Name    | Required | Default |
 | ------- | -------- | ------- |
 | `files` | false    | `.`     |
-
----
-
-## check-stylelint.yml
-
-Lints CSS files using [stylelint](https://stylelint.io/). By default, it
-installs the latest published `stylelint`, `stylelint-config-standard`, and
-`stylelint-config-recess-order` packages into the runner workspace; callers can
-pin package versions when they need fixed versions.
-
-**Inputs**
-
-| Name                                    | Required | Default    |
-| --------------------------------------- | -------- | ---------- |
-| `files`                                 | false    | `**/*.css` |
-| `stylelint_config_recess_order_version` | false    | `latest`   |
-| `stylelint_config_standard_version`     | false    | `latest`   |
-| `stylelint_version`                     | false    | `latest`   |
-
-**Typical usage with changed files**
-
-```yml
-jobs:
-  detect_changed_files:
-    permissions:
-      pull-requests: read
-    uses: EarthmanMuons/reusable-workflows/.github/workflows/detect-changed-files.yml@main
-
-  check_stylelint:
-    needs: detect_changed_files
-    if: needs.detect_changed_files.outputs.css == 'true'
-    uses: EarthmanMuons/reusable-workflows/.github/workflows/check-stylelint.yml@main
-    with:
-      files: ${{ needs.detect_changed_files.outputs.css_files }}
-```
-
----
 
 ## label-pull-request.yml
 
