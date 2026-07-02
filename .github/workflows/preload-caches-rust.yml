@@ -30,7 +30,7 @@ jobs:
           persist-credentials: false
 
       - name: Install stable Rust toolchain
-        uses: dtolnay/rust-toolchain@67ef31d5b988238dd797d409d6f9574278e20537
+        uses: dtolnay/rust-toolchain@fa04a1451ff1842e2626ccb99004d0195b455a88
         with:
           toolchain: stable
 
@@ -41,7 +41,7 @@ jobs:
         timeout-minutes: 5
 
       - name: Install cargo-nextest
-        uses: taiki-e/install-action@b8cecb83565409bcc297b2df6e77f030b2a468d5
+        uses: taiki-e/install-action@682e7d9e49c5e653d371fc6adbda67653461378a
         with:
           tool: cargo-nextest
 
@@ -63,12 +63,12 @@ jobs:
         run: awk -F '"' '/rust-version/{ print "version=" $2 }' Cargo.toml >> "$GITHUB_OUTPUT"
 
       - name: Install ${{ steps.msrv.outputs.version }} Rust toolchain
-        uses: dtolnay/rust-toolchain@67ef31d5b988238dd797d409d6f9574278e20537
+        uses: dtolnay/rust-toolchain@fa04a1451ff1842e2626ccb99004d0195b455a88
         with:
           toolchain: ${{ steps.msrv.outputs.version }}
 
       - name: Install nightly Rust toolchain
-        uses: dtolnay/rust-toolchain@67ef31d5b988238dd797d409d6f9574278e20537
+        uses: dtolnay/rust-toolchain@fa04a1451ff1842e2626ccb99004d0195b455a88
         with:
           toolchain: nightly
 
@@ -87,7 +87,7 @@ jobs:
         timeout-minutes: 5
 
       - name: Install cargo-nextest
-        uses: taiki-e/install-action@b8cecb83565409bcc297b2df6e77f030b2a468d5
+        uses: taiki-e/install-action@682e7d9e49c5e653d371fc6adbda67653461378a
         with:
           tool: cargo-nextest
 
