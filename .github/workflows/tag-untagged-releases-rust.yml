@@ -43,7 +43,7 @@ jobs:
           git config user.email "senile-errata@users.noreply.github.com"
 
       - name: Install stable Rust toolchain
-        uses: dtolnay/rust-toolchain@67ef31d5b988238dd797d409d6f9574278e20537
+        uses: dtolnay/rust-toolchain@fa04a1451ff1842e2626ccb99004d0195b455a88
         with:
           toolchain: stable
 
@@ -54,7 +54,7 @@ jobs:
         timeout-minutes: 5
 
       - name: Install cargo-release
-        uses: taiki-e/install-action@b8cecb83565409bcc297b2df6e77f030b2a468d5
+        uses: taiki-e/install-action@682e7d9e49c5e653d371fc6adbda67653461378a
         with:
           tool: cargo-release
 
