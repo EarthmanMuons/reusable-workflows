@@ -49,6 +49,7 @@ General-purpose workflows intended for use by any repository:
 - `check-github-actions.yml` – Lint workflows via actionlint
 - `check-html.yml` – Format and lint HTML via Prettier
 - `check-markdown.yml` – Format and lint Markdown via Prettier
+- `check-python.yml` – Format and lint Python via Ruff
 - `check-shell.yml` – Format and lint shell scripts
 - `check-spelling.yml` – Spellcheck via typos
 - `label-pull-request.yml` – Apply labels via actions/labeler

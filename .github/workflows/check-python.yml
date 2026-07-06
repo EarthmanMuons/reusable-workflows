@@ -1,0 +1,54 @@
+name: check python
+
+on:
+  workflow_call:
+    inputs:
+      files:
+        type: string
+        default: "."
+      ruff_version:
+        type: string
+        default: "latest"
+
+jobs:
+  format:
+    name: format
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout source code
+        uses: actions/checkout@9c091bb21b7c1c1d1991bb908d89e4e9dddfe3e0
+        with:
+          persist-credentials: false
+
+      - name: Check Python file formatting
+        if: inputs.files != ''
+        uses: astral-sh/ruff-action@278981a28ce3188b1e39527901f38254bf3aac89 # v4.1.0
+        with:
+          args: format --check --diff
+          src: ${{ inputs.files }}
+          version: ${{ inputs.ruff_version }}
+
+      - name: Skip formatting
+        if: inputs.files == ''
+        run: echo "No Python files to format."
+
+  lint:
+    name: lint
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout source code
+        uses: actions/checkout@9c091bb21b7c1c1d1991bb908d89e4e9dddfe3e0
+        with:
+          persist-credentials: false
+
+      - name: Check Python lints
+        if: inputs.files != ''
+        uses: astral-sh/ruff-action@278981a28ce3188b1e39527901f38254bf3aac89 # v4.1.0
+        with:
+          args: check --output-format=github
+          src: ${{ inputs.files }}
+          version: ${{ inputs.ruff_version }}
+
+      - name: Skip linting
+        if: inputs.files == ''
+        run: echo "No Python files to lint."

@@ -27,6 +27,10 @@ on:
         value: ${{ jobs.filter_changes.outputs.markdown }}
       markdown_files:
         value: ${{ jobs.filter_changes.outputs.markdown_files }}
+      python:
+        value: ${{ jobs.filter_changes.outputs.python }}
+      python_files:
+        value: ${{ jobs.filter_changes.outputs.python_files }}
       rust:
         value: ${{ jobs.filter_changes.outputs.rust }}
       rust_files:
@@ -44,7 +48,8 @@ jobs:
     runs-on: ubuntu-latest
     outputs:
       added_or_modified: ${{ steps.filter.outputs.added_or_modified }}
-      added_or_modified_files: ${{ steps.filter.outputs.added_or_modified_files }}
+      added_or_modified_files:
+        ${{ steps.filter.outputs.added_or_modified_files }}
       css: ${{ steps.filter.outputs.css }}
       css_files: ${{ steps.filter.outputs.css_files }}
       flutter: ${{ steps.filter.outputs.flutter }}
@@ -55,6 +60,8 @@ jobs:
       html_files: ${{ steps.filter.outputs.html_files }}
       markdown: ${{ steps.filter.outputs.markdown }}
       markdown_files: ${{ steps.filter.outputs.markdown_files }}
+      python: ${{ steps.filter.outputs.python }}
+      python_files: ${{ steps.filter.outputs.python_files }}
       rust: ${{ steps.filter.outputs.rust }}
       rust_files: ${{ steps.filter.outputs.rust_files }}
       zig: ${{ steps.filter.outputs.zig }}
@@ -87,6 +94,9 @@ jobs:
               - added|modified: '**/*.html'
             markdown:
               - added|modified: '**/*.md'
+            python:
+              - added|modified: '**/*.py'
+              - added|modified: '**/*.pyi'
             rust:
               - '**/*.rs'
               - '**/Cargo.*'
@@ -97,7 +107,8 @@ jobs:
       - name: Annotate workflow run with changed file categories
         env:
           ADDED_OR_MODIFIED: ${{ steps.filter.outputs.added_or_modified }}
-          ADDED_OR_MODIFIED_FILES: ${{ steps.filter.outputs.added_or_modified_files }}
+          ADDED_OR_MODIFIED_FILES:
+            ${{ steps.filter.outputs.added_or_modified_files }}
           CSS: ${{ steps.filter.outputs.css }}
           CSS_FILES: ${{ steps.filter.outputs.css_files }}
           FLUTTER: ${{ steps.filter.outputs.flutter }}
@@ -108,6 +119,8 @@ jobs:
           HTML_FILES: ${{ steps.filter.outputs.html_files }}
           MARKDOWN: ${{ steps.filter.outputs.markdown }}
           MARKDOWN_FILES: ${{ steps.filter.outputs.markdown_files }}
+          PYTHON: ${{ steps.filter.outputs.python }}
+          PYTHON_FILES: ${{ steps.filter.outputs.python_files }}
           RUST: ${{ steps.filter.outputs.rust }}
           RUST_FILES: ${{ steps.filter.outputs.rust_files }}
           ZIG: ${{ steps.filter.outputs.zig }}
@@ -149,5 +162,6 @@ jobs:
           emit_category "GitHub Actions" "${GH_ACTIONS}" "${GH_ACTIONS_FILES}"
           emit_category "HTML" "${HTML}" "${HTML_FILES}"
           emit_category "Markdown" "${MARKDOWN}" "${MARKDOWN_FILES}"
+          emit_category "Python" "${PYTHON}" "${PYTHON_FILES}"
           emit_category "Rust" "${RUST}" "${RUST_FILES}"
           emit_category "Zig" "${ZIG}" "${ZIG_FILES}"
