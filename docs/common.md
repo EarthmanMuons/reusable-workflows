@@ -42,6 +42,7 @@ For each filter name listed below:
 | `github_actions`    | Workflow changes under `.github/workflows/` |
 | `html`              | HTML changes                                |
 | `markdown`          | Markdown changes                            |
+| `python`            | Python source changes                       |
 | `rust`              | Rust / Cargo changes                        |
 | `zig`               | Zig / zon changes                           |
 
@@ -154,6 +155,38 @@ Checks Markdown formatting using [Prettier](https://prettier.io/).
 | ------------------ | -------- | --------- |
 | `files`            | false    | `**/*.md` |
 | `prettier_version` | false    | `latest`  |
+
+---
+
+## check-python.yml
+
+Formats and lints Python files using [Ruff](https://docs.astral.sh/ruff/).
+Callers can pass a whitespace-delimited list of Python files, or omit `files` to
+check the whole repository.
+
+**Inputs**
+
+| Name           | Required | Default  |
+| -------------- | -------- | -------- |
+| `files`        | false    | `.`      |
+| `ruff_version` | false    | `latest` |
+
+**Typical usage with changed files**
+
+```yml
+jobs:
+  detect_changed_files:
+    permissions:
+      pull-requests: read
+    uses: EarthmanMuons/reusable-workflows/.github/workflows/detect-changed-files.yml@main
+
+  check_python:
+    needs: detect_changed_files
+    if: needs.detect_changed_files.outputs.python == 'true'
+    uses: EarthmanMuons/reusable-workflows/.github/workflows/check-python.yml@main
+    with:
+      files: ${{ needs.detect_changed_files.outputs.python_files }}
+```
 
 ---
 
