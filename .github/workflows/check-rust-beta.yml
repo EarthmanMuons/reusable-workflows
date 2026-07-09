@@ -28,7 +28,7 @@ jobs:
         run: rustup override set beta
 
       - name: Install cargo-nextest
-        uses: taiki-e/install-action@682e7d9e49c5e653d371fc6adbda67653461378a
+        uses: taiki-e/install-action@16b05812d776ae1dfaabc8277e421fb6d2506419
         with:
           tool: cargo-nextest
 
