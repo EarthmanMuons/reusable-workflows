@@ -48,6 +48,14 @@ jobs:
       - name: Check lints
         run: flutter analyze
 
+      - name: Check local package lints
+        run: |
+          set -euo pipefail
+          for package in packages/*/; do
+            [ -f "${package}pubspec.yaml" ] || continue
+            (cd "$package" && dart pub get && dart analyze --fatal-infos)
+          done
+
   test:
     name: test
     runs-on: ubuntu-latest
@@ -69,3 +77,15 @@ jobs:
 
       - name: Run tests
         run: flutter test
+
+      - name: Run local package tests
+        run: |
+          set -euo pipefail
+          for package in packages/*/; do
+            [ -d "${package}test" ] || continue
+            if grep -qE '^\s+sdk:\s*flutter\s*$' "${package}pubspec.yaml"; then
+              (cd "$package" && flutter pub get && flutter test)
+            else
+              (cd "$package" && dart pub get && dart test)
+            fi
+          done
