@@ -65,7 +65,8 @@ Details: [docs/common.md](docs/common.md)
 
 Workflows specific to Flutter projects:
 
-- `check-flutter.yml` – Format, analyze, and test using pinned Flutter
+- `check-flutter.yml` – Format, analyze, and test using pinned Flutter,
+  including any local packages under `packages/`
 - `preload-caches-flutter.yml` – Cache pinned Flutter dependencies
 - `bump-version-flutter-app.yml` – Bump CalVer version and changelog, open PR
 - `bump-version-flutter-lib.yml` – Bump SemVer version and changelog, open PR
