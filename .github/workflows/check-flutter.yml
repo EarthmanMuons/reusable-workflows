@@ -45,9 +45,8 @@ jobs:
       - name: Install dependencies
         run: flutter pub get --enforce-lockfile
 
-      - name: Check lints
-        run: flutter analyze
-
+      # Runs before the root analyze: resolving each package also gives the
+      # root analyzer a package config for the nested contexts it discovers.
       - name: Check local package lints
         run: |
           set -euo pipefail
@@ -55,6 +54,9 @@ jobs:
             [ -f "${package}pubspec.yaml" ] || continue
             (cd "$package" && dart pub get && dart analyze --fatal-infos)
           done
+
+      - name: Check lints
+        run: flutter analyze
 
   test:
     name: test
