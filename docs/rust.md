@@ -61,12 +61,16 @@ versions, update documentation, and open a PR.
 
 **Inputs**
 
-| Name      | Required | Default |
-| --------- | -------- | ------- |
-| `package` | true     | —       |
-| `level`   | true     | —       |
+| Name               | Required | Default |
+| ------------------ | -------- | ------- |
+| `package`          | true     | —       |
+| `level`            | true     | —       |
+| `prettier_plugins` | false    | `""`    |
 
 `level` must be `major`, `minor`, `patch`, `release`, `rc`, `beta`, or `alpha`.
+
+`prettier_plugins` covers the CHANGELOG formatting step; see
+[Prettier plugins](common.md#prettier-plugins).
 
 **Secrets**
 

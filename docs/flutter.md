@@ -58,10 +58,14 @@ preparation pull request.
 
 **Inputs**
 
-| Name            | Required | Default |
-| --------------- | -------- | ------- |
-| `date_override` | false    | `""`    |
-| `format`        | false    | `""`    |
+| Name               | Required | Default |
+| ------------------ | -------- | ------- |
+| `date_override`    | false    | `""`    |
+| `format`           | false    | `""`    |
+| `prettier_plugins` | false    | `""`    |
+
+`prettier_plugins` covers the CHANGELOG formatting step; see
+[Prettier plugins](common.md#prettier-plugins).
 
 **Secrets**
 
@@ -83,9 +87,13 @@ preparation pull request.
 
 **Inputs**
 
-| Name    | Required | Default |
-| ------- | -------- | ------- |
-| `level` | true     | —       |
+| Name               | Required | Default |
+| ------------------ | -------- | ------- |
+| `level`            | true     | —       |
+| `prettier_plugins` | false    | `""`    |
+
+`prettier_plugins` covers the CHANGELOG formatting step; see
+[Prettier plugins](common.md#prettier-plugins).
 
 **Secrets**
 

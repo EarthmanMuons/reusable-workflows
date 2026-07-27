@@ -12,6 +12,42 @@ jobs:
     uses: EarthmanMuons/reusable-workflows/.github/workflows/check-spelling.yml@main
 ```
 
+## Prettier Plugins
+
+Prettier loads the plugins named by a project's configuration at startup, before
+it looks at any file, and resolves them from the checkout root. A repository
+whose `.prettierrc` declares a plugin will therefore fail **every** Prettier job
+with an error like:
+
+```
+[error] Cannot find package 'prettier-plugin-astro' imported from /home/runner/work/PROJECT/PROJECT/noop.js
+```
+
+That happens regardless of which file types the job formats, so a Markdown-only
+check fails just as an HTML one does.
+
+Workflows that run Prettier accept a `prettier_plugins` input listing the npm
+packages to install into the checkout beforehand, so Prettier can resolve them.
+Entries are whitespace-delimited and may pin a version:
+
+```yml
+jobs:
+  check_markdown:
+    uses: EarthmanMuons/reusable-workflows/.github/workflows/check-markdown.yml@main
+    with:
+      prettier_plugins: prettier-plugin-astro
+```
+
+The packages are only installed, never enabled on the command line; the
+project's own Prettier configuration remains the source of truth for which
+plugins are active. Leaving the input empty preserves the default behavior of
+running Prettier with no additional packages.
+
+Applies to [check-html.yml](#check-htmlyml),
+[check-markdown.yml](#check-markdownyml), and the CHANGELOG formatting step in
+the `bump-version-*` workflows documented under [Flutter](flutter.md) and
+[Rust](rust.md).
+
 ---
 
 ## detect-changed-files.yml
@@ -124,7 +160,10 @@ Checks HTML formatting using [Prettier](https://prettier.io/).
 | Name               | Required | Default     |
 | ------------------ | -------- | ----------- |
 | `files`            | false    | `**/*.html` |
+| `prettier_plugins` | false    | `""`        |
 | `prettier_version` | false    | `latest`    |
+
+See [Prettier plugins](#prettier-plugins) for when `prettier_plugins` is needed.
 
 **Typical usage with changed files**
 
@@ -154,7 +193,10 @@ Checks Markdown formatting using [Prettier](https://prettier.io/).
 | Name               | Required | Default   |
 | ------------------ | -------- | --------- |
 | `files`            | false    | `**/*.md` |
+| `prettier_plugins` | false    | `""`      |
 | `prettier_version` | false    | `latest`  |
+
+See [Prettier plugins](#prettier-plugins) for when `prettier_plugins` is needed.
 
 ---
 
