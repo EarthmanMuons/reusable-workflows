@@ -6,6 +6,9 @@ on:
       files:
         type: string
         default: "**/*.html"
+      prettier_plugins:
+        type: string
+        default: ""
       prettier_version:
         type: string
         default: "latest"
@@ -22,15 +25,34 @@ jobs:
 
       - name: Check HTML file formatting
         env:
+          INPUTS_PRETTIER_PLUGINS: ${{ inputs.prettier_plugins }}
           INPUTS_PRETTIER_VERSION: ${{ inputs.prettier_version }}
           INPUTS_FILES: ${{ inputs.files }}
+        # zizmor: ignore[adhoc-packages] This reusable workflow intentionally installs caller-selected Prettier packages on ephemeral runners.
         run: |
           set -euo pipefail
 
           # Split INPUTS_FILES into an array (space-separated)
           IFS=' ' read -r -a files <<<"$INPUTS_FILES"
 
-          npx --yes "prettier@${INPUTS_PRETTIER_VERSION}" \
+          if [[ -n "${INPUTS_PRETTIER_PLUGINS}" ]]; then
+            # Plugins named by the caller's Prettier config must be resolvable
+            # from the checkout, so install them alongside Prettier itself.
+            IFS=' ' read -r -a plugins <<<"$INPUTS_PRETTIER_PLUGINS"
+
+            npm install \
+              --no-save \
+              --no-package-lock \
+              --ignore-scripts \
+              "prettier@${INPUTS_PRETTIER_VERSION}" \
+              "${plugins[@]}"
+
+            prettier=(npx --no-install prettier)
+          else
+            prettier=(npx --yes "prettier@${INPUTS_PRETTIER_VERSION}")
+          fi
+
+          "${prettier[@]}" \
             --check \
             --debug-check \
             --color \

@@ -15,6 +15,13 @@ on:
         required: false
         type: string
         default: ""
+      prettier_plugins:
+        description: >
+          Optional whitespace-delimited list of npm package specs to install so that
+          Prettier can resolve the plugins named by the project's configuration.
+        required: false
+        type: string
+        default: ""
     secrets:
       APP_ID:
         description: GitHub App installation ID
@@ -78,7 +85,35 @@ jobs:
         run: get-project-version | bump-changelog-version
 
       - name: Fix up CHANGELOG formatting
-        run: npx --yes prettier@latest --color --prose-wrap always --write -- **/CHANGELOG.md
+        env:
+          INPUTS_PRETTIER_PLUGINS: ${{ inputs.prettier_plugins }}
+        # zizmor: ignore[adhoc-packages] This reusable workflow intentionally installs caller-selected Prettier packages on ephemeral runners.
+        run: |
+          set -euo pipefail
+
+          if [[ -n "${INPUTS_PRETTIER_PLUGINS}" ]]; then
+            # Plugins named by the project's Prettier config must be resolvable
+            # from the checkout, so install them alongside Prettier itself.
+            IFS=' ' read -r -a plugins <<<"$INPUTS_PRETTIER_PLUGINS"
+
+            # Keep the installed packages out of the release pull request.
+            if [[ ! -e node_modules ]]; then
+              trap 'rm -rf node_modules' EXIT
+            fi
+
+            npm install \
+              --no-save \
+              --no-package-lock \
+              --ignore-scripts \
+              prettier@latest \
+              "${plugins[@]}"
+
+            prettier=(npx --no-install prettier)
+          else
+            prettier=(npx --yes prettier@latest)
+          fi
+
+          "${prettier[@]}" --color --prose-wrap always --write -- **/CHANGELOG.md
 
       - name: Rotate unreleased whatsnew docs into release directory
         run: get-project-version | rotate-whatsnew
