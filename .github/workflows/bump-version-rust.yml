@@ -60,7 +60,7 @@ jobs:
           permission-pull-requests: write
 
       - name: Checkout source code
-        uses: actions/checkout@9c091bb21b7c1c1d1991bb908d89e4e9dddfe3e0
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1
         with:
           token: ${{ steps.generate_token.outputs.token }}
           ref: main
@@ -86,7 +86,7 @@ jobs:
         timeout-minutes: 5
 
       - name: Install cargo-release
-        uses: taiki-e/install-action@ed67fa35ac944f3a9b33f12c4dd43b6f31a47e20
+        uses: taiki-e/install-action@7572810d7dd469b651bb7793945692cf78da5dd7
         with:
           tool: cargo-release
 
