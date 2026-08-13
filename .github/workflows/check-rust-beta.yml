@@ -20,7 +20,7 @@ jobs:
           persist-credentials: false
 
       - name: Install beta Rust toolchain
-        uses: dtolnay/rust-toolchain@2c7215f132e9ebf062739d9130488b56d53c060c
+        uses: dtolnay/rust-toolchain@6c977a6ca4077a0ceb28ffbe03f59d46e9ac8772
         with:
           toolchain: beta
 
@@ -28,7 +28,7 @@ jobs:
         run: rustup override set beta
 
       - name: Install cargo-nextest
-        uses: taiki-e/install-action@7572810d7dd469b651bb7793945692cf78da5dd7
+        uses: taiki-e/install-action@91ddec75689c4c78665b598d188dc821c5a43e5c
         with:
           tool: cargo-nextest
 
