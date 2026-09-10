@@ -18,6 +18,6 @@ jobs:
           persist-credentials: false
 
       - name: Check files for common misspellings
-        uses: crate-ci/typos@a8168dc2984a9e2352f183ffe788f0f23a300389
+        uses: crate-ci/typos@d43b6c087ac471e2ea7b8af622ff15f05c0c365b
         with:
           files: "${{ inputs.files }}"
