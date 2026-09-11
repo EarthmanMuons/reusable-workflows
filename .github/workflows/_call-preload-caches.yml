@@ -22,4 +22,4 @@ permissions:
 jobs:
   cache_actionlint:
     name: cache actionlint
-    uses: ./.github/workflows/preload-caches-actionlint.yml
+    uses: $/.github/workflows/preload-caches-actionlint.yml
