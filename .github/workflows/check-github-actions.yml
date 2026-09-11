@@ -21,6 +21,8 @@ jobs:
         uses: raven-actions/actionlint@3d39aea434753780c3b3d4a1a31c854b4dbf49d7
         with:
           group-result: false
+          # TODO: actionlint 1.7.12 doesn't support the July 2026 self-repository syntax
+          flags: -ignore reusable.*workflow.*call.*at.*uses.*is.*not.*following.*the.*format
 
   lint_zizmor:
     name: lint workflows with zizmor
@@ -44,7 +46,7 @@ jobs:
           esac
 
       - name: Lint GitHub Actions workflow files
-        uses: zizmorcore/zizmor-action@3dc1ecc9bcb9e94e9b2c709687979e1298497054 # v0.6.2
+        uses: zizmorcore/zizmor-action@cc914d7f3750a2d13d75c7f184a1060aa0e9d482 # v0.6.4
         with:
           advanced-security: false
           persona: ${{ inputs.zizmor_persona }}
