@@ -86,7 +86,7 @@ jobs:
         timeout-minutes: 5
 
       - name: Install cargo-release
-        uses: taiki-e/install-action@5bf6ce016fd2e72eefc647cbca1e4213f65955b8
+        uses: taiki-e/install-action@fa23953489c080190314742a9b907f8e97c6767c
         with:
           tool: cargo-release
 
