@@ -102,7 +102,7 @@ jobs:
 
       - name: Install cross
         if: matrix.os == 'ubuntu-latest'
-        uses: taiki-e/install-action@86f7a0ffb25f40114606501a311ebcfaf882ea32
+        uses: taiki-e/install-action@c509219cf42fba86913069efd0ade2458c59337b
         with:
           tool: cross
 
