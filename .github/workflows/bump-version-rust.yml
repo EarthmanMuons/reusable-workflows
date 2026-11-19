@@ -86,7 +86,7 @@ jobs:
         timeout-minutes: 5
 
       - name: Install cargo-release
-        uses: taiki-e/install-action@c509219cf42fba86913069efd0ade2458c59337b
+        uses: taiki-e/install-action@cfdb7ed4ccc7c7dce37759eae89dc5674b469b39
         with:
           tool: cargo-release
 
@@ -141,7 +141,7 @@ jobs:
 
       - id: cpr
         name: Create pull request
-        uses: peter-evans/create-pull-request@5f6978faf089d4d20b00c7766989d076bb2fc7f1
+        uses: peter-evans/create-pull-request@3ffccacd46053766916f087ce41d627c0b8cf2d1
         with:
           token: ${{ steps.generate_token.outputs.token }}
           branch: release/bump-version
